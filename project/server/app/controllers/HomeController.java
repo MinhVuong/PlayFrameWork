@@ -3,6 +3,7 @@ package controllers;
 import play.mvc.*;
 
 import views.html.*;
+import services.AccountService;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -10,6 +11,7 @@ import views.html.*;
  */
 public class HomeController extends Controller {
 
+	private AccountService accountService = new AccountService();
     /**
      * An action that renders an HTML page with a welcome message.
      * The configuration in the <code>routes</code> file means that
@@ -19,5 +21,7 @@ public class HomeController extends Controller {
     public Result index() {
         return ok(index.render("Your new application is ready."));
     }
+    
+   
 
 }
