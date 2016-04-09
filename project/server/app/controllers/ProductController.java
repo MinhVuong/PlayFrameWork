@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
@@ -16,11 +18,12 @@ import models.CustomerGroup;
 
 public class ProductController extends Controller {
 
-	private CustomerGroupService groupsService = new CustomerGroupService(); 
+	private CustomerGroupService groups = new CustomerGroupService();
+	
 	
 	public Result login()
 	{
-		List<CustomerGroup> list = groupsService.getAccounts();
-		 return ok(Json.toJson(list));
+		List<CustomerGroup> list = groups.getAccounts();
+		return ok(Json.toJson(list));
 	}
 }
