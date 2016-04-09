@@ -1,7 +1,6 @@
 package controllers;
 
 import play.mvc.*;
-
 import views.html.*;
 
 /**
@@ -20,4 +19,5 @@ public class HomeController extends Controller {
         return ok(index.render("Your new application is ready."));
     }
 
+   
 }
