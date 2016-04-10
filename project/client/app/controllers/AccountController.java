@@ -9,6 +9,12 @@ public class AccountController extends Controller {
 	{
 		return ok(login.render(""));
 	}
+	public Result loginSubmit()
+	{
+		return ok(index.render(""));
+	}
+	
+	
 	public Result forgot()
 	{
 		return ok(forgot.render(""));

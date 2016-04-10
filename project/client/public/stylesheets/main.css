@@ -1484,6 +1484,9 @@ h2.title {
 .login-form form span{
   line-height: 25px;
 }
+.login-form form a{
+  margin-left: -20px;
+}
 
 .login-form form span input {
   width: 15px;
@@ -1504,6 +1507,7 @@ h2.title {
   display: block;
   font-family: 'Roboto', sans-serif;
   padding: 6px 25px;
+  margin-top: 20px;
 }
 
 .login-form label{
