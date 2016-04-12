@@ -26,13 +26,13 @@
 				<div class="col-sm-4">
 					<div class="signup-form"><!--sign up form-->
 						<h2>New User Signup!</h2>
-						<form action="#" method="post">
-							<input type="email" placeholder="Email Address" required>
-							<input id="password" type="password" placeholder="Password" minlength="6" required>
+						<form action="@routes.AccountController.registerSubmit" method="post">
+							<input type="email" name="email" placeholder="Email Address" required>
+							<input type="password" name="password" placeholder="Password" minlength="6" required>
 							<input type="password" placeholder="Password Again" minlength="6" required oninput="check(this)">
-							<input type="text" placeholder="First Name" required>
-							<input type="text" placeholder="Last Name" required>
-							<select required>
+							<input type="text" name="firstName" placeholder="First Name" required>
+							<input type="text" name="lastName" placeholder="Last Name" required>
+							<select name="gender" required>
 							  <option value=""> ---Gender---</option>
 							  <option value="1">Men</option>
 							  <option value="0">Women</option>

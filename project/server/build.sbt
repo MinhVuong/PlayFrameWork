@@ -12,6 +12,8 @@ libraryDependencies ++= Seq(
   javaWs,
   javaJpa,
   "org.hibernate" % "hibernate-entitymanager" % "5.1.0.Final",
-  "mysql" % "mysql-connector-java" % "5.1.18"
+  "mysql" % "mysql-connector-java" % "5.1.18",
+  "org.mindrot" % "jbcrypt" % "0.3m",
+  "com.typesafe.play" % "play-mailer_2.11" % "5.0.0-M1"
 )
 PlayKeys.externalizeResources := false
