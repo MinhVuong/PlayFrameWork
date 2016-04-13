@@ -1,17 +1,15 @@
 package controllers;
 
 
-import java.util.List;
+
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import entities.CustomerEntity;
+import pakageResult.RegisterPakage;
 import play.Logger;
-import play.db.jpa.JPAApi;
-import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
@@ -19,7 +17,7 @@ import play.mvc.Result;
 import services.CustomerService;
 import models.Register;
 import business.AccountHelper;
-import business.MailHelper;
+import business.DateHelper;
 
 
 public class AccountController extends Controller {
@@ -39,36 +37,55 @@ public class AccountController extends Controller {
 	public Result register()
 	{
 		loger.info("Submit Register");
-		Register register = new Register();
-		register.setFirstName("Vuong");
-		register.setLastName("Tran");
-		register.setGender(1);
-		register.setEmail("minhvuongtran527@gmail.com");
-		register.setPassword("minhvuong");
+		JsonNode json = request().body().asJson();
+		Register register = Json.fromJson(json, Register.class);
 	
 		CustomerEntity customer = accountHelper.generateCustomerEntityFromRegister(register);
 		int result = accounts.AddCustomer(customer, this.mailerClient);
+		RegisterPakage pakage = new RegisterPakage();
 		switch(result)
 		{
 		case 0:{
 			loger.info("Register Result: Didn't Register Account!");
-			return ok(Integer.toString(result));
+			pakage.setType(0);
+			break;
 			}
 		case 1:{
 			loger.info("Register Result: Register Successful");
-			return ok(Integer.toString(result));
+			pakage.setType(1);
+			break;
 			}
 		case 2:{
 			loger.info("Register Result: Email register had registed.");
-			return ok(Integer.toString(result));
+			pakage.setType(2);
+			break;
 			}
 		case 3:{
 			loger.info("Register Result: Didn't send email active account, so register fail!");
-			return ok(Integer.toString(result));
-			}
+			pakage.setType(3);
+			break;
+			}	
 		}
-		return ok("");
+		return ok(Json.toJson(pakage));
 	}
+	
+	public Result activeAccount(String token, Integer id)
+	{
+		if(accounts.ActiveAccount(token, id) == 1)
+			return ok("true");
+		else
+			return ok("false");
+	}
+	
+	public Result expiry()
+	{
+		DateHelper date = new DateHelper();
+		String start = date.getDateTimeCurrent();
+		String stop = date.GetDateTimeExpiryEmail(start);
+		return ok(start + " " + stop);
+	}
+
+	
 	
 	
 }

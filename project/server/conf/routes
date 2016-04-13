@@ -15,4 +15,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 # Client
 # Account Controller
-GET	/register						controllers.AccountController.register
+POST	/register						controllers.AccountController.register
+GET	/activeAccount/:token/:id						controllers.AccountController.activeAccount(token: String, id: Integer)
+
+GET	/expiry							controllers.AccountController.expiry

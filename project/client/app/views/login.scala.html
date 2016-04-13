@@ -1,4 +1,4 @@
-@(message: String)
+@(message: String, register: String)
 
 @main("Login") {	
 	<section id="form"><!--form-->
@@ -25,6 +25,12 @@
 				</div>
 				<div class="col-sm-4">
 					<div class="signup-form"><!--sign up form-->
+						@if(register.isEmpty()) {
+						} else {
+							
+							<p>Register Result<br>@register</p>
+						}
+						
 						<h2>New User Signup!</h2>
 						<form action="@routes.AccountController.registerSubmit" method="post">
 							<input type="email" name="email" placeholder="Email Address" required>

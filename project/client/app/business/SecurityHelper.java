@@ -1,4 +1,4 @@
-package models;
+package business;
 
 import org.mindrot.jbcrypt.*;
 

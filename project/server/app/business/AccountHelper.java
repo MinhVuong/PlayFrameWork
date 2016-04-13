@@ -9,11 +9,12 @@ public class AccountHelper {
 	// Create CustomerEnityt from object Register.
 	public CustomerEntity generateCustomerEntityFromRegister(Register register)
 	{
+		SecurityHelper security = new SecurityHelper();
 		CustomerEntity customer = new CustomerEntity();
 		customer.setFirstName(register.getFirstName());
 		customer.setLastName(register.getLastName());
 		customer.setEmail(register.getEmail());
-		customer.setPassword(register.getPassword());
+		customer.setPassword(security.hash(register.getPassword()));
 		customer.setGender(register.getGender());
 		customer.setGroupId(1);
 		customer.setScore(0);

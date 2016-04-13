@@ -1456,6 +1456,11 @@ h2.title {
 .signup-form {
 
 }
+.signup-form p {
+  color: #FE980F;
+  
+  margin-bottom: 30px;
+}
 
 .login-form h2, .signup-form h2 {
   color: #696763;
