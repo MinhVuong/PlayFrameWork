@@ -2,6 +2,7 @@ package business;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+
 public class SecurityHelper {
 	public String hash(String value)
 	{
@@ -13,4 +14,6 @@ public class SecurityHelper {
 	{
 		return BCrypt.checkpw(password, value);
 	}
+	
+	
 }

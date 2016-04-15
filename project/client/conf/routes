@@ -17,6 +17,12 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET		/login					controllers.AccountController.login
 POST	/loginSubmit			controllers.AccountController.loginSubmit
 POST	/registerSubmit			controllers.AccountController.registerSubmit
-GET		/forgot					controllers.AccountController.forgot
 GET		/infor					controllers.AccountController.infor
-GET		/address				controllers.AccountController.address
+POST	/address				controllers.AccountController.address
+POST	/updateInfor			controllers.AccountController.updateInfor
+POST	/changePass				controllers.AccountController.changePass
+
+
+GET		/forgot					controllers.AccountController.forgot
+
+GET	/encrypt				controllers.AccountController.encrypt

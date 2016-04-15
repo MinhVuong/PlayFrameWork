@@ -1,5 +1,6 @@
 package controllers;
 
+import PakageResult.User;
 import play.mvc.*;
 import views.html.*;
 
@@ -16,7 +17,11 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(index.render("Your new application is ready."));
+    	User user = new User();
+    	//user.setId(1);
+    	//user.setFirstName("Vuong");
+    	//user.setEmail("minhvuongtran527@gmail.com");
+        return ok(index.render(user));
     }
 
    

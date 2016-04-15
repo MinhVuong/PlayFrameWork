@@ -1,0 +1,270 @@
+@import models.Infor;
+@import models.Address;
+@(infor: Infor, address: Address)
+
+@main("Infor Accounts") {	
+	<header id="header"><!--header-->
+		<div class="header_top"><!--header_top-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="contactinfo">
+							<ul class="nav nav-pills">
+								<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
+								<li><a href="#"><i class="fa fa-envelope"></i> websmartphone527@@domain.com</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="social-icons pull-right">
+							<ul class="nav navbar-nav">
+								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+								<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header_top-->
+		
+		<div class="header-middle"><!--header-middle-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="logo pull-left">
+							<a href="index.html"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
+						</div>
+						<div  class="btn-group pull-left">
+							<div class="btn-group">
+								<select style="margin-left:10px; margin-top:10px">
+								  <option value="volvo">USD</option>
+								  <option value="saab">VND</option>
+								</select>
+								
+							</div>
+							
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<div class="shop-menu pull-right">
+							<ul class="nav navbar-nav">
+								<li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+								<li><a href="@routes.AccountController.infor()"><i class="fa fa-user"></i> @infor.getFirstName()</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header-middle-->
+	
+		<div class="header-bottom"><!--header-bottom-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-9">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+						</div>
+						<div class="mainmenu pull-left">
+							<ul class="nav navbar-nav collapse navbar-collapse">
+								<li><a href="index.html" class="active">Home</a></li>
+								<li class="dropdown"><a href="#">SmartPhone<i class="fa fa-angle-down"></i></a>
+                                    <ul role="menu" class="sub-menu">
+                                        <li><a href="shop.html">APPLE</a></li>
+										<li><a href="product-details.html">SAMSUNG</a></li> 
+										<li><a href="checkout.html">SONY</a></li> 
+										<li><a href="cart.html">OPPO</a></li>
+                                    </ul>
+                                </li> 
+                                <li class="dropdown"><a href="#">Latop<i class="fa fa-angle-down"></i></a>
+                                    <ul role="menu" class="sub-menu">
+                                        <li><a href="shop.html">DELL</a></li>
+										<li><a href="product-details.html">SONY</a></li> 
+										<li><a href="checkout.html">HP</a></li> 
+										<li><a href="cart.html">ACER</a></li>
+                                    </ul>
+                                </li> 
+							</ul>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="search_box pull-right">
+							<input type="text" placeholder="Search"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header-bottom-->
+		</header><!--/header-->
+	<section>
+		<div class="container">
+			<div class="row">
+				
+				
+				<div class="col-sm-9 padding-right">
+					<div class="account-category-tab shop-details-tab"><!--category-tab-->
+						<div class="col-sm-12">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#details" data-toggle="tab">Accounts</a></li>
+								<li><a href="#companyprofile" data-toggle="tab">Address</a></li>
+								<li><a href="#reviews" data-toggle="tab">Password</a></li>
+							</ul>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane fade active in" id="details" >
+								<div class="account-login-form" ><!--login form-->
+									<form action="@routes.AccountController.updateInfor()" method="post">
+										<label>Email: </label>
+										<input type="email" name="email" placeholder="Email Address" value="@infor.getEmail()" required disabled><br>
+										<label>Password: </label>
+										<input id="password" type="password" name="password" placeholder="Password" value="@infor.getPassword()" minlength="6" required disabled><br>
+										<label></label>
+										<span>
+										<input id="showPass" type="checkbox" onchange="check()" >
+										Show Password<br>
+										</span>
+										<label>First Name: </label>
+										<input id="first" type="text" name="firstName" placeholder="First Name" value="@infor.getFirstName()" required disabled><br>
+										<label>Last Name: </label>
+										<input id=last type="text" name="lastName" placeholder="Last Name" value="@infor.getLastName()" required disabled><br>
+										<label>Gender: </label>
+										@if(infor.getGender() == 1) {
+										<select id="gender" name="gender" required disabled>
+										  <option value=""> ---Gender---</option>
+										  <option value="1" selected>Men</option>
+										  <option value="0">Women</option>
+										</select> <br>
+										} else {
+											
+											<select id="gender" name="gender" required disabled>
+											  <option value=""> ---Gender---</option>
+											  <option value="1" >Men</option>
+											  <option value="0" selected>Women</option>
+											</select> <br>
+										}
+										<label></label>
+										<span>
+										<input id="edit" type="checkbox" onchange="Edit()" >
+										Edit Information Account<br>
+										</span>
+										
+										<button id="login_submit"  type="submit" class="btn btn-default" disabled >Update</button>
+										
+									</form>
+								</div><!--/login form-->
+							</div>
+							
+							<div class="tab-pane fade" id="companyprofile" >
+								<div class="account-login-form" ><!--login form-->
+									<form action="@routes.AccountController.address()" method="post">
+										<label>First Name: </label>
+										<input id="firstAddress" type="text" name="firstName" placeholder="First Name" value="@address.getFirstName()" required disabled><br>
+										<label>Last Name: </label>
+										<input id="lastAddress" type="text" name="lastName" placeholder="Last Name" value="@address.getLastName()" required disabled><br>
+										<label>Number Phone: </label>
+										<input id="phoneAddress" type="text" name="phone" placeholder="Number Phone" value="@address.getPhone()" required disabled><br>
+										<label>Address: </label>
+										<input id="streetAddress" type="text" name="street" placeholder="Address: 119B/68/22 Nguyễn Thị Tần P2, Q8" value="@address.getStreet()" required disabled><br>
+										<label>City: </label>
+										<input id="cityAddress" type="text" name="city" placeholder="City" value="@address.getCity()" required disabled ><br>
+										<label></label>
+										<span>
+										<input id="editAddress" type="checkbox" onchange="EditAddress()" >
+										Edit Information Account<br>
+										</span>
+										<button id="update_address_submit"  type="submit" class="btn btn-default"  disabled>Update</button>
+										
+									</form>
+								</div><!--/login form-->
+							</div>
+							<div class="tab-pane fade " id="reviews" >
+								<div class="account-login-form" ><!--login form-->
+									<form action="@routes.AccountController.changePass()" method="post">
+										<label>Nhập password cũ: </label>
+										<input id="password_old" type="password" name="passOld" placeholder="Password Old" value="" minlength="6" required ><br>
+										<label>Nhập password mới: </label>
+										<input id="password_new" type="password" name="passNew" placeholder="Password New"  value="" minlength="6" required ><br>
+										<label>Nhập lại password mới: </label>
+										<input type="password" name="password_new_again" placeholder="Password New Again" value="" minlength="6" required oninput="checkPass(this)"><br>
+										
+										<button id="update_pass_submit"  type="submit" class="btn btn-default" >Change Password</button>
+										
+									</form>
+								</div><!--/login form-->
+							</div>
+						</div>
+					</div><!--/category-tab-->
+					
+				</div>
+			</div>
+		</div>
+	</section>
+	<script  type="text/javascript">
+	var checkbox = document.getElementById("showPass");
+	function check()
+	{
+		if(checkbox.checked){
+			$('#password').removeAttr("type");
+			$('#password').prop('type', 'text');
+			
+		}
+		else {
+			$('#password').removeAttr("type");
+			$('#password').prop('type', 'password');
+		}
+	}
+	var edit = document.getElementById("edit");
+	var editAddress = document.getElementById("editAddress");
+	function Edit(){
+		if(edit.checked){
+			
+			$('#first').removeAttr("disabled")
+			$('#last').removeAttr("disabled")
+			$('#gender').removeAttr("disabled")
+			$('#login_submit').removeAttr("disabled")
+			
+		}else{
+			
+			$('#first').prop('disabled', 'disabled');
+			$('#last').prop('disabled', 'disabled');
+			$('#gender').prop('disabled', 'disabled');
+			$('#login_submit').prop('disabled', 'disabled');
+		}
+	}
+	function EditAddress(){
+		if(editAddress.checked){
+			
+			$('#firstAddress').removeAttr("disabled")
+			$('#lastAddress').removeAttr("disabled")
+			$('#phoneAddress').removeAttr("disabled")
+			$('#streetAddress').removeAttr("disabled")
+			$('#cityAddress').removeAttr("disabled")
+			$('#update_address_submit').removeAttr("disabled")
+			
+		}else{
+			
+			$('#firstAddress').prop('disabled', 'disabled');
+			$('#lastAddress').prop('disabled', 'disabled');
+			$('#streetAddress').prop('disabled', 'disabled');
+			$('#phoneAddress').prop('disabled', 'disabled');
+			$('#cityAddress').prop('disabled', 'disabled');
+			$('#update_address_submit').prop('disabled', 'disabled');
+		}
+	}
+	function checkPass(input) {
+        if (input.value != document.getElementById('password_new').value) {
+            input.setCustomValidity('Password Must be Matching.');
+        } else {
+            // input is valid -- reset the error message
+            input.setCustomValidity('');
+        }
+    }
+	</script>
+}

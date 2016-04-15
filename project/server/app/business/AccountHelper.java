@@ -1,5 +1,6 @@
 package business;
 
+import play.api.libs.Crypto;
 import models.Register;
 import entities.CustomerEntity;
 
@@ -7,14 +8,14 @@ import entities.CustomerEntity;
 public class AccountHelper {
 	
 	// Create CustomerEnityt from object Register.
-	public CustomerEntity generateCustomerEntityFromRegister(Register register)
+	public CustomerEntity generateCustomerEntityFromRegister(Register register, Crypto crypt)
 	{
-		SecurityHelper security = new SecurityHelper();
+		MyCrypto myCrypt = new MyCrypto(crypt);
 		CustomerEntity customer = new CustomerEntity();
 		customer.setFirstName(register.getFirstName());
 		customer.setLastName(register.getLastName());
 		customer.setEmail(register.getEmail());
-		customer.setPassword(security.hash(register.getPassword()));
+		customer.setPassword(myCrypt.encrypt(register.getPassword()));
 		customer.setGender(register.getGender());
 		customer.setGroupId(1);
 		customer.setScore(0);
