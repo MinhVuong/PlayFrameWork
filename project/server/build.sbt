@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   javaJpa,
+  filters,
   "org.hibernate" % "hibernate-entitymanager" % "5.1.0.Final",
   "mysql" % "mysql-connector-java" % "5.1.18",
   "org.mindrot" % "jbcrypt" % "0.3m",

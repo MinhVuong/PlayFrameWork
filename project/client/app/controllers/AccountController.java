@@ -72,7 +72,7 @@ public class AccountController extends Controller {
             	case 1:{
             		User user = pakage.getUser();
             		session.put("ID", Integer.toString(user.getId()));
-            		return ok(index.render(user));
+            		return ok(index.render(user, null, null, null, null));
             		}
             	case 0:{
             		return ok(login.render("Account didn't create!",""));

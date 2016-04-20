@@ -1,6 +1,9 @@
 @import PakageResult.User;
 @import play.mvc.Http.Session;
-@(user: User)
+@import models.ProductEntity;
+@import java.util.List;
+@import models.IndexRequest;
+@(user: User, products: List[ProductEntity], pageS: Integer, laptops: List[ProductEntity], pageL: Integer)
 
 @main("Home") {
 	<header id="header"><!--header-->
@@ -178,7 +181,7 @@
 	<section>
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-3" style="margin-left:-50px";>
+				<div class="col-sm-3" style="margin-left:-50px">
 					<div class="left-sidebar">					
 						<div class="brands_products"><!--brands_products-->
 							<h2>Prices</h2>
@@ -221,19 +224,64 @@
 				
 				<div class="col-sm-9 padding-right" >
 					<div class="features_items"><!--features_items-->
-						<h2 class="title text-center">Features Items</h2>
+					<!-- Start show products -->
+						<h2 id = "titleS" class="title text-center">Smartphone</h2>
+						<!-- Start show products -->
+						<div id = "resultS"> 
+						@for(product <- products){
 						<div class="col-sm-4" style="width:210px; margin-left: -10px">
 							<div class="product-image-wrapper">
 								<div class="single-products">
 										<div class="productinfo text-center">
-											<img src=@routes.Assets.versioned("images/home/product1.jpg") alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
+											<img width="210" height="165" src=@routes.Assets.versioned(product.getImage()) alt="" />
+											
+											<h2>@product.priceToString() <small>vnd</small></h2>
+											<p id = "nameP">@product.getName()</p>
 										</div>
 										<div class="product-overlay">
 											<div class="overlay-content">
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
+												<h2>@product.priceToString() <small>vnd</small></h2>
+												<p>@product.getName()</p>
+											</div>
+										</div>
+										@if(product.getIsNew() == 1) {
+										<img src=@routes.Assets.versioned("images/home/new.png") class="new" alt="" />
+										} else {}
+								</div>
+								<div class="choose">
+									<ul class="nav nav-pills nav-justified">
+										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+										<li><a href="#"><i class="fa fa-plus-square"></i>Add to cart</a></li>
+									</ul>
+								</div>
+								
+							</div>
+						</div>
+						}
+						</div>
+						<div class="pagination">
+					        <a onclick="pageSmart('-1')" class="page">Prev</a>
+					        @for(page <- 1 until pageS+1){
+					         <a onclick="pageSmart('@page')" class="page">@page</a>
+					        }
+					        <a onclick="pageSmart('0')" class="page">Next</a>
+					    </div>
+					</div><!--features_items-->
+					<div class="features_items"><!--features_items-->
+						<h2 class="title text-center">Laptop</h2>
+						@for(laptop <- laptops){
+						<div class="col-sm-4" style="width:210px; margin-left: -10px">
+							<div class="product-image-wrapper">
+								<div class="single-products">
+										<div class="productinfo text-center">
+											<img width="210" height="165" src=@routes.Assets.versioned(laptop.getImage()) alt="" />
+											<h2>@laptop.priceToString() <small>vnd</small></h2>
+											<p>@laptop.getName()</p>
+										</div>
+										<div class="product-overlay">
+											<div class="overlay-content">
+												<h2>@laptop.priceToString() <small>vnd</small></h2>
+												<p>@laptop.getName()</p>
 											</div>
 										</div>
 								</div>
@@ -245,359 +293,14 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product2.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product3.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product4.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-									<img src=@routes.Assets.versioned("images/home/new.png") class="new" alt="" />
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product5.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-									<img src=@routes.Assets.versioned("images/home/sale.png") class="new" alt="" />
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4" style="width:210px; margin-left: -10px">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src=@routes.Assets.versioned("images/home/product6.jpg") alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						
+						}
+						<div class="pagination">
+					        <a href="#" class="page">Prev</a>
+					        @for(page <- 1 until pageL+1){
+					         <a onclick="pageSmart('@page')" class="page">@page</a>
+					        }
+					        <a href="#" class="page">Next</a>
+					    </div>
 					</div><!--features_items-->
 					
 					
@@ -605,7 +308,35 @@
 			</div>
 		</div>
 	</section>
-	
+	<script type="text/javascript">
+	var page1 = document.getElementById("page1");
+	var name = document.getElementById("name");
+	function pageSmart(count)
+	{
+		console.log(JSON.stringify('@user'));
+		
+		var d = {'countSmartphone': "10", 'pageSmartphone': count, 'countLaptop': "10", 'pageLaptop': "1"};
+		$.ajax({
+	        type : 'POST',
+	        url : 'http://localhost:9001/productListAjax',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : JSON.stringify(d),
+	        success : function(data) {
+	            $.each(data, function(index, element) {
+	                console.log(element.name);
+	            });
+	            
+	           
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
+		alert(count);
+		//return false;
+	}
+	</script>
 	
 	
 }
