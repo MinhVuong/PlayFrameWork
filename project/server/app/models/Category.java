@@ -1,19 +1,18 @@
 package models;
 
-public class CategoryEntity {
-
+public class Category {
 	private int id;
 	private String name;
 	private int numberRow;
-	public CategoryEntity() {
+	public Category() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public CategoryEntity(int id, String name, int num) {
+	public Category(int id, String name, int numberRow) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.numberRow = num;
+		this.numberRow = numberRow;
 	}
 	public int getId() {
 		return id;
@@ -30,8 +29,8 @@ public class CategoryEntity {
 	public int getNumberRow() {
 		return numberRow;
 	}
-	public void setNumberRow(int num) {
-		this.numberRow = num;
+	public void setNumberRow(int numberRow) {
+		this.numberRow = numberRow;
 	}
 	
 }

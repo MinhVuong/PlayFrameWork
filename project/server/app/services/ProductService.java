@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import models.Category;
 import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 import entities.CustomerEntity;
@@ -156,5 +157,21 @@ public class ProductService {
 			exceptionService.AddException(exceptionEntity);
 			return null;
 		}
+	}
+	
+	public List<Category> ChangeCategoryEntityToCategory(List<CategoryEntity> entity)
+	{
+		List<Category> categories = new ArrayList<Category>();
+		int i=0;
+		for(CategoryEntity cate : entity)
+		{
+			Category category = new Category();
+			category.setId(cate.getId());
+			category.setName(cate.getName());
+			category.setNumberRow(i);
+			i++;
+			categories.add(category);
+		}
+		return categories;
 	}
 }

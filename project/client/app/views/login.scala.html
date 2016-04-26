@@ -1,5 +1,7 @@
+@import models.CategoryEntity;
+@import models.CategoryProductEntity;
 
-@(login: String, register: String)
+@(login: String, register: String, categories: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]])
 
 @main("Login") {
 	<header id="header"><!--header-->
@@ -74,22 +76,17 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="index.html" class="active">Home</a></li>
-								<li class="dropdown"><a href="#">SmartPhone<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="shop.html">APPLE</a></li>
-										<li><a href="product-details.html">SAMSUNG</a></li> 
-										<li><a href="checkout.html">SONY</a></li> 
-										<li><a href="cart.html">OPPO</a></li>
-                                    </ul>
-                                </li> 
-                                <li class="dropdown"><a href="#">Latop<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="shop.html">DELL</a></li>
-										<li><a href="product-details.html">SONY</a></li> 
-										<li><a href="checkout.html">HP</a></li> 
-										<li><a href="cart.html">ACER</a></li>
-                                    </ul>
-                                </li> 
+								@for(category <- categories){
+									<li class="dropdown"><a href="#">@category.getName()<i class="fa fa-angle-down"></i></a>
+										<ul role="menu" class="sub-menu">
+											@defining(productCategories.get(category.getNumberRow())) { cP =>
+												@for(cp <- cP){
+													<li><a href="#">@cp.getName()</a></li>
+												}
+											}
+										</ul>
+										
+									}
 							</ul>
 						</div>
 					</div>

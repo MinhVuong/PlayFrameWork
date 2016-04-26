@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import models.Category;
 import models.IndexRequest;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -69,7 +70,8 @@ public class ProductController extends Controller{
 			}
 			pakage.setIndexPakage(indexP);
 			List<CategoryEntity> categories = productS.GetCategory();
-			pakage.setCategories(categories);
+			List<Category> categoriesP = productS.ChangeCategoryEntityToCategory(categories);
+			pakage.setCategories(categoriesP);
 			for(CategoryEntity category : categories){
 				List<CategoryProductEntity> categoryProducts = productS.GetCategoryProductByIdCategory(category.getId());
 				pakage.addCategoryProducts(categoryProducts);

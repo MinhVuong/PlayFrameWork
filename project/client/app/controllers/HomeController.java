@@ -8,6 +8,7 @@ import models.IndexRequest;
 import models.ProductEntity;
 import models.CategoryEntity;
 import models.CategoryProductEntity;
+import models.Menu;
 import PakageResult.IndexPakage;
 import PakageResult.IndexFullPakage;
 import PakageResult.User;
@@ -41,6 +42,7 @@ public class HomeController extends Controller {
     	User user = new User();
     	Session session = Http.Context.current().session();
     	String userS = session("user");
+    	
     	if(userS != null)
     	{
 	    	log.info("UserS: " + userS);
@@ -70,6 +72,8 @@ public class HomeController extends Controller {
     		IndexPakage pakage = pakageF.getIndexPakage();
     		List<CategoryEntity> categories = pakageF.getCategories();
     		List<List<CategoryProductEntity>> categoryProducts = pakageF.getCategoryProducts();
+    		Menu menu = new Menu(categories, categoryProducts);
+    		session.put("menu", Json.toJson(menu).toString());
     		
             if(resp.getStatus()== 200)
             {	
@@ -82,7 +86,7 @@ public class HomeController extends Controller {
             		int pageS = pakage.getPageSmartphone();
             		int pageL = pakage.getPagelaptop();
             		
-            		return ok(index.render(user, smartphone, pageS, laptop, pageL));
+            		return ok(index.render(user, smartphone, pageS, laptop, pageL, categories, categoryProducts));
             		}
             	case 0:{
             		return ok(errorp.render("Didn't connect server !!!"));

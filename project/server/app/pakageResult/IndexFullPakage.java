@@ -3,12 +3,13 @@ package pakageResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Category;
 import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 
 public class IndexFullPakage extends AbstractPakage{
 	private IndexPakage indexPakage;
-	private List<CategoryEntity> categories;
+	private List<Category> categories;
 	private List<List<CategoryProductEntity>> categoryProducts;
 	public IndexFullPakage() {
 		super();
@@ -21,7 +22,7 @@ public class IndexFullPakage extends AbstractPakage{
 		categoryProducts = new ArrayList<List<CategoryProductEntity>>();
 	}
 	public IndexFullPakage(IndexPakage indexPakage,
-			List<CategoryEntity> categories,
+			List<Category> categories,
 			List<List<CategoryProductEntity>> categoryProducts) {
 		super();
 		this.indexPakage = indexPakage;
@@ -34,10 +35,10 @@ public class IndexFullPakage extends AbstractPakage{
 	public void setIndexPakage(IndexPakage indexPakage) {
 		this.indexPakage = indexPakage;
 	}
-	public List<CategoryEntity> getCategories() {
+	public List<Category> getCategories() {
 		return categories;
 	}
-	public void setCategories(List<CategoryEntity> categories) {
+	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
 	public List<List<CategoryProductEntity>> getCategoryProducts() {

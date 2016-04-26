@@ -16,9 +16,12 @@ import business.MyCrypto;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Address;
+import models.CategoryEntity;
+import models.CategoryProductEntity;
 import models.ChangePass;
 import models.Infor;
 import models.Login;
+import models.Menu;
 import models.Register;
 import models.ProductEntity;
 import play.Logger;
@@ -45,15 +48,34 @@ public class AccountController extends Controller {
 	{
 		this.crypto = cry;
 	}
+	private Menu GetMenuFromSession()
+	{
+		Menu menu = new Menu();
+		String menuS = session("menu");
+		if(menuS != null)
+		{
+			JsonNode menuN = Json.parse(menuS);
+			menu = (Menu) Json.fromJson(menuN, Menu.class);
+		}
+		return menu;
+	}
 	public Result login()
 	{
-		session().clear();
+		Menu menu = new Menu();
+		
+		session().remove("ID");
+		menu = GetMenuFromSession();
+		
 		log.info("Show Login");
-		return ok(login.render("", ""));
+		return ok(login.render("", "", menu.getCategories(), menu.getCategoryProducts()));
 	}
 	public CompletionStage<Result> loginSubmit()
 	{
 		log.info("Login Submit");
+		Menu menu = new Menu();
+		Menu menuS = GetMenuFromSession();
+		menu.setCategories(menuS.getCategories());
+		menu.setCategoryProducts(menuS.getCategoryProducts());
 		
 		Session session = Http.Context.current().session();
 		Login login_form = Form.form(Login.class).bindFromRequest().get();
@@ -80,17 +102,17 @@ public class AccountController extends Controller {
             		List<ProductEntity> smartphone = new ArrayList<ProductEntity>();
             		List<ProductEntity> laptop = new ArrayList<ProductEntity>();
 
-            		return ok(index.render(user, smartphone, 0, laptop, 0));
+            		return ok(index.render(user, smartphone, 0, laptop, 0, menu.getCategories(), menu.getCategoryProducts()));
             		//return redirect(routes.HomeController.index());
             		}
             	case 0:{
-            		return ok(login.render("Account didn't create!",""));
+            		return ok(login.render("Account didn't create!","", menu.getCategories(), menu.getCategoryProducts()));
             		}
             	case -1:{
-            		return ok(login.render("Password was fail!",""));
+            		return ok(login.render("Password was fail!","", menu.getCategories(), menu.getCategoryProducts()));
             	}
             	case -2:{
-            		return ok(login.render("Account didn't active!",""));
+            		return ok(login.render("Account didn't active!","", menu.getCategories(), menu.getCategoryProducts()));
             		}
             	}
             	return ok("ok");
@@ -107,6 +129,11 @@ public class AccountController extends Controller {
 	public CompletionStage<Result> registerSubmit()
 	{
 		log.info("Register Submit");
+		Menu menu = new Menu();
+		Menu menuS = GetMenuFromSession();
+		menu.setCategories(menuS.getCategories());
+		menu.setCategoryProducts(menuS.getCategoryProducts());
+		
 		Register register = Form.form(Register.class).bindFromRequest().get();
 		
 		String url = "http://localhost:9001/register";
@@ -125,16 +152,16 @@ public class AccountController extends Controller {
 		            	switch(pakage.getType())
 		            	{
 		            	case 0:{
-		            		return ok(login.render("", "Now, you don't register acccount.\n Please register other time!"));
+		            		return ok(login.render("", "Now, you don't register acccount.\n Please register other time!", menu.getCategories(), menu.getCategoryProducts()));
 		            	}
 		            	case 1:{
-		            		return ok(login.render("", "Register successful. \n Please check email to active account!"));
+		            		return ok(login.render("", "Register successful. \n Please check email to active account!", menu.getCategories(), menu.getCategoryProducts()));
 		            	}
 		            	case 2:{
-		            		return ok(login.render("", "Email register had exist!\n Please choose other email!"));
+		            		return ok(login.render("", "Email register had exist!\n Please choose other email!", menu.getCategories(), menu.getCategoryProducts()));
 		            	}
 		            	case 3:{
-		            		return ok(login.render("", "Register Fail.\n Server didn't send email to you!"));
+		            		return ok(login.render("", "Register Fail.\n Server didn't send email to you!", menu.getCategories(), menu.getCategoryProducts()));
 		            	}
 		            	}
 		            	return ok("ok");
@@ -155,10 +182,17 @@ public class AccountController extends Controller {
 	public CompletionStage<Result> infor()
 	{
 		log.info("GET Infor");
+		
+		Session session = Http.Context.current().session();
 		String id = session("ID");
 		log.info(id);
 		String url = "http://localhost:9001/infor/"+id;
 		//log.info(url);
+		Menu menu = new Menu();
+		Menu menuS = GetMenuFromSession();
+		menu.setCategories(menuS.getCategories());
+		menu.setCategoryProducts(menuS.getCategoryProducts());
+		
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).get();
 		CompletionStage<Result> result = receive.thenApply(resp -> {
 			JsonNode jsonNode = resp.asJson();
@@ -171,7 +205,7 @@ public class AccountController extends Controller {
             	case 1:{
             		Infor infor = pakage.getInfor();
             		Address address = pakage.getAddress();
-            		return ok(infor1.render(infor, address));
+            		return ok(infor1.render(infor, address, menu.getCategories(), menu.getCategoryProducts()));
             		}
             	case 0:{
             		return ok("0");
@@ -194,8 +228,14 @@ public class AccountController extends Controller {
 	{
 		log.info("Update Infor");
 		Infor infor = Form.form(Infor.class).bindFromRequest().get();
+		Session session = Http.Context.current().session();
 		String id = session("ID");
 		infor.setId(Integer.parseInt(id));
+		
+		Menu menu = new Menu();
+		Menu menuS = GetMenuFromSession();
+		menu.setCategories(menuS.getCategories());
+		menu.setCategoryProducts(menuS.getCategoryProducts());
 		
 		String url = "http://localhost:9001/updateInfor";
 		JsonNode json = Json.toJson(infor);
@@ -214,7 +254,7 @@ public class AccountController extends Controller {
             	case 1:{
             		Infor inforP = pakage.getInfor();
             		Address address = pakage.getAddress();
-            		return ok(infor1.render(inforP, address));
+            		return ok(infor1.render(inforP, address, menu.getCategories(), menu.getCategoryProducts()));
             		}
             	case 0:{
             		return ok("0");
@@ -238,8 +278,15 @@ public class AccountController extends Controller {
 		log.info("Update Address!");
 		Address address = new Address();
 		address = Form.form(Address.class).bindFromRequest().get();
+		Session session = Http.Context.current().session();
 		String id = session("ID");
 		address.setId(Integer.parseInt(id));
+		
+		Menu menu = new Menu();
+		Menu menuS = GetMenuFromSession();
+		menu.setCategories(menuS.getCategories());
+		menu.setCategoryProducts(menuS.getCategoryProducts());
+		
 		String url = "http://localhost:9001/updateAddress";
 		JsonNode json = Json.toJson(address);
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).post(json);
@@ -256,7 +303,7 @@ public class AccountController extends Controller {
             	case 1:{
             		Infor inforP = pakage.getInfor();
             		Address addressP = pakage.getAddress();
-            		return ok(infor1.render(inforP, addressP));
+            		return ok(infor1.render(inforP, addressP, menu.getCategories(), menu.getCategoryProducts()));
             		}
             	case 0:{
             		return ok("0");
@@ -279,8 +326,15 @@ public class AccountController extends Controller {
 		log.info("Change Password!");
 		ChangePass changePass = new ChangePass();
 		changePass = Form.form(ChangePass.class).bindFromRequest().get();
+		Session session = Http.Context.current().session();
 		String id = session("ID");
 		changePass.setId(Integer.parseInt(id));
+		
+		Menu menu = new Menu();
+		Menu menuS = GetMenuFromSession();
+		menu.setCategories(menuS.getCategories());
+		menu.setCategoryProducts(menuS.getCategoryProducts());
+		
 		String url = "http://localhost:9001/changePass";
 		JsonNode json = Json.toJson(changePass);
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).post(json);
@@ -298,7 +352,7 @@ public class AccountController extends Controller {
             	case 1:{
             		Infor inforP = pakage.getInfor();
             		Address addressP = pakage.getAddress();
-            		return ok(infor1.render(inforP, addressP));
+            		return ok(infor1.render(inforP, addressP, menu.getCategories(), menu.getCategoryProducts()));
             		}
             	case 0:{
             		return ok("0");
@@ -326,6 +380,12 @@ public class AccountController extends Controller {
 	{
 		
 		return ok("ok");
+	}
+	
+	public Result category(int id)
+	{
+		
+		return ok(Integer.toString(id));
 	}
 	public Result encrypt()
 	{
