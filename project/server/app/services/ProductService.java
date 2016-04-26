@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import entities.CategoryEntity;
+import entities.CategoryProductEntity;
 import entities.CustomerEntity;
 import entities.ExceptionEntity;
 import entities.ProductEntity;
@@ -98,6 +100,61 @@ public class ProductService {
 			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductEntity> GetAllProducts()", e.getMessage());
 			exceptionService.AddException(exceptionEntity);
 			return -1;
+		}
+	}
+
+	public List<CategoryEntity> GetCategory()
+	{
+
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			List<CategoryEntity> result = (List<CategoryEntity>) em.createNativeQuery("Select * From category", CategoryEntity.class).getResultList();
+			em.close();
+			return result;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<CategoryEntity> GetCategory()", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+	public List<CategoryProductEntity> GetCategoryProductByIdCategory(int category)
+	{
+
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			List<CategoryProductEntity> result = (List<CategoryProductEntity>) em.createNativeQuery("Select * From category_product Where category_id = ?", CategoryProductEntity.class).setParameter(1, (int)category).getResultList();
+			em.close();
+			return result;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<CategoryEntity> GetCategory()", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+
+	public List<ProductEntity> GetProductByCategory(int category)
+	{
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			List<ProductEntity> result = (List<ProductEntity>) em.createNativeQuery("Select * From product Where category_product_id = ?", ProductEntity.class).setParameter(1, (int)category).getResultList();
+			em.close();
+			return result;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductEntity> GetProductByCategory(int category)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
 		}
 	}
 }

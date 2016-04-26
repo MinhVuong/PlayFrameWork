@@ -103,13 +103,17 @@ public class AccountController extends Controller {
 
 		int result = accounts.Login(login, this.crypto);
 		
+		
 		LoginPakage pakage = new LoginPakage();
 		pakage.setType(result);
 		if(result == 1)
 		{
 			User user = accounts.CreateUser(login);
 			pakage.setUser(user);
+			
 		}
+		else
+			pakage.setUser(new User());
 		return ok(Json.toJson(pakage));
 	}
 

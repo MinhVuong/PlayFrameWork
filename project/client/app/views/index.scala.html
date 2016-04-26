@@ -3,9 +3,14 @@
 @import models.ProductEntity;
 @import java.util.List;
 @import models.IndexRequest;
+@import models.CategoryEntity;
+@import models.CategoryProductEntity;
+@import play.libs.Json;
 @(user: User, products: List[ProductEntity], pageS: Integer, laptops: List[ProductEntity], pageL: Integer)
 
 @main("Home") {
+	
+	<!-- @user = Json.fromJson(Json.parse(session.get("user")), User.class); -->
 	<header id="header"><!--header-->
 		<div class="header_top"><!--header_top-->
 			<div class="container">
@@ -61,6 +66,7 @@
 								} else {
 								
 								<li><a href="@routes.AccountController.infor()"><i class="fa fa-user"></i> @user.getFirstName()</a></li>
+								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> LogOut</a></li>
 								}
 								
 							</ul>

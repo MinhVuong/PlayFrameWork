@@ -28,6 +28,7 @@
   <logger name="application" level="DEBUG" />
   <logger name="AccountController" level="DEBUG" />
   <logger name="intercepter" level="DEBUG" />
+  <logger name="home" level="DEBUG" />
 
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
   <logger name="com.avaje.ebean.config.PropertyMapLoader" level="OFF" />

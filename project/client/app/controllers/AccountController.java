@@ -2,6 +2,8 @@ package controllers;
 
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -18,6 +20,7 @@ import models.ChangePass;
 import models.Infor;
 import models.Login;
 import models.Register;
+import models.ProductEntity;
 import play.Logger;
 import play.libs.ws.WS;
 import play.libs.ws.WSRequest;
@@ -54,10 +57,11 @@ public class AccountController extends Controller {
 		
 		Session session = Http.Context.current().session();
 		Login login_form = Form.form(Login.class).bindFromRequest().get();
+		log.info(login_form.getEmail() + login_form.getPassword());
 		String url = "http://localhost:9001/login";
 		
 		JsonNode json = Json.toJson(login_form);
-		CompletionStage<WSResponse> receive  = WS.url(url).post(json);
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).post(json);
 		
 		CompletionStage<Result> result = receive.thenApply(resp -> {
             
@@ -72,7 +76,12 @@ public class AccountController extends Controller {
             	case 1:{
             		User user = pakage.getUser();
             		session.put("ID", Integer.toString(user.getId()));
-            		return ok(index.render(user, null, null, null, null));
+            		session.put("user", Json.toJson(user).toString());
+            		List<ProductEntity> smartphone = new ArrayList<ProductEntity>();
+            		List<ProductEntity> laptop = new ArrayList<ProductEntity>();
+
+            		return ok(index.render(user, smartphone, 0, laptop, 0));
+            		//return redirect(routes.HomeController.index());
             		}
             	case 0:{
             		return ok(login.render("Account didn't create!",""));
@@ -105,7 +114,7 @@ public class AccountController extends Controller {
 		
 		JsonNode json = Json.toJson(register);
 		WSRequest send = WS.url(url);
-		CompletionStage<WSResponse> receive  = send.post(json);
+		CompletionStage<WSResponse> receive  = send.setRequestTimeout(60000).post(json);
 		result = receive.thenApply(resp -> {
 		            
 		    		JsonNode jsonNode = resp.asJson();
@@ -149,8 +158,8 @@ public class AccountController extends Controller {
 		String id = session("ID");
 		log.info(id);
 		String url = "http://localhost:9001/infor/"+id;
-		log.info(url);
-		CompletionStage<WSResponse> receive  = WS.url(url).get();
+		//log.info(url);
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).get();
 		CompletionStage<Result> result = receive.thenApply(resp -> {
 			JsonNode jsonNode = resp.asJson();
 			InforPakage pakage = new InforPakage();
@@ -190,7 +199,7 @@ public class AccountController extends Controller {
 		
 		String url = "http://localhost:9001/updateInfor";
 		JsonNode json = Json.toJson(infor);
-		CompletionStage<WSResponse> receive  = WS.url(url).post(json);
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).post(json);
 		
 		CompletionStage<Result> result = receive.thenApply(resp -> {
             
@@ -233,7 +242,7 @@ public class AccountController extends Controller {
 		address.setId(Integer.parseInt(id));
 		String url = "http://localhost:9001/updateAddress";
 		JsonNode json = Json.toJson(address);
-		CompletionStage<WSResponse> receive  = WS.url(url).post(json);
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).post(json);
 		CompletionStage<Result> result = receive.thenApply(resp -> {
             
 			JsonNode jsonNode = resp.asJson();
@@ -274,7 +283,7 @@ public class AccountController extends Controller {
 		changePass.setId(Integer.parseInt(id));
 		String url = "http://localhost:9001/changePass";
 		JsonNode json = Json.toJson(changePass);
-		CompletionStage<WSResponse> receive  = WS.url(url).post(json);
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).post(json);
 		
 		CompletionStage<Result> result = receive.thenApply(resp -> {
             

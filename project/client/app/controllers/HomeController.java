@@ -6,13 +6,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import models.IndexRequest;
 import models.ProductEntity;
+import models.CategoryEntity;
+import models.CategoryProductEntity;
 import PakageResult.IndexPakage;
+import PakageResult.IndexFullPakage;
 import PakageResult.User;
+import play.Logger;
 import play.libs.Json;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 import play.mvc.*;
+import play.mvc.Http.Session;
 import views.html.*;
+
 import java.util.List;
 
 
@@ -24,6 +30,7 @@ import java.util.List;
  */
 public class HomeController extends Controller {
 
+	private final Logger.ALogger log = Logger.of("home");
     /**
      * An action that renders an HTML page with a welcome message.
      * The configuration in the <code>routes</code> file means that
@@ -32,6 +39,17 @@ public class HomeController extends Controller {
      */
     public CompletionStage<Result> index() {
     	User user = new User();
+    	Session session = Http.Context.current().session();
+    	String userS = session("user");
+    	if(userS != null)
+    	{
+	    	log.info("UserS: " + userS);
+	    	JsonNode userJ = Json.parse(userS);
+	    	User user1 = Json.fromJson(userJ, User.class);
+	    	user.setId(user1.getId());
+	    	user.setFirstName(user1.getFirstName());
+    	}
+    	
     	
     	IndexRequest indexR = new IndexRequest();
     	indexR.setCountSmartphone(10);
@@ -42,13 +60,17 @@ public class HomeController extends Controller {
     	JsonNode json = Json.toJson(indexR);
     	String url = "http://localhost:9001/productList";
     	
-    	CompletionStage<WSResponse> receive  = WS.url(url).post(json);
+    	CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).post(json);
     	CompletionStage<Result> result = receive.thenApply(resp -> {
             
     		JsonNode jsonNode = resp.asJson();
-    		IndexPakage pakage = new IndexPakage();
-    		pakage = Json.fromJson(jsonNode, IndexPakage.class);
-            
+    		IndexFullPakage pakageF = new IndexFullPakage();
+    		pakageF = Json.fromJson(jsonNode, IndexFullPakage.class);
+    		
+    		IndexPakage pakage = pakageF.getIndexPakage();
+    		List<CategoryEntity> categories = pakageF.getCategories();
+    		List<List<CategoryProductEntity>> categoryProducts = pakageF.getCategoryProducts();
+    		
             if(resp.getStatus()== 200)
             {	
             	switch(pakage.getType())
@@ -76,6 +98,12 @@ public class HomeController extends Controller {
              }
          });
 		return result;
+    }
+    
+    public Result category()
+    {
+    	User user = new User();
+    	return ok(category.render(user));
     }
 
    

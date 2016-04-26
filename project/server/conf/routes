@@ -26,7 +26,11 @@ POST	/changePass						controllers.AccountController.changePass
 
 POST	/productList					controllers.ProductController.productList
 
-POST	/productListAjax					controllers.ProductController.productListAjax
+POST	/productListAjax				controllers.ProductController.productListAjax
 
-GET		/category						controllers.ProductController.category
+GET		/category/:id					controllers.ProductController.category(id: Integer)
+
+GET		/demoCsrf						controllers.ProductController.demoCsrf
+
+GET		/token							controllers.ProductController.token
 

@@ -1027,6 +1027,36 @@ h2.title {
 	color:#fff;
 }
 
+.product-category-tab {
+  overflow: hidden;
+  margin-left: 0px;
+  margin-right:0px;
+}
+.product-category-tab ul {
+  background: #ffffff;
+  border-bottom: 1px solid #FE980F;
+  list-style: none outside none;
+  margin: 0 0 30px;
+  padding: 0;
+  width: 100%;
+}
+
+.product-category-tab ul li a {
+  border: 0 none;
+  border-radius: 0;
+  color: #B3AFA8;
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.product-category-tab ul  li  a:hover{
+	background:#FE980F;
+	color:#fff;
+}
+
+
 .category-tab {
   overflow: hidden;
   margin-left:-10px;

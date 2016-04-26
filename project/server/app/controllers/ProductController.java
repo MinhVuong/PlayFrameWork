@@ -1,19 +1,27 @@
 package controllers;
 
 import java.util.List;
-
-
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import models.IndexRequest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import entities.CategoryEntity;
+import entities.CategoryProductEntity;
 import entities.ProductEntity;
+import pakageResult.IndexFullPakage;
 import pakageResult.IndexPakage;
+import play.filters.csrf.AddCSRFToken;
+import play.filters.csrf.CSRF;
+import play.filters.csrf.RequireCSRFCheck;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Results;
 import services.ProductService;
 
 
@@ -28,41 +36,60 @@ public class ProductController extends Controller{
 	{
 		JsonNode json = request().body().asJson();
 		IndexRequest indexR = new IndexRequest();
-		
+		CompletionStage<Result> result = null;
 		
 		indexR = Json.fromJson(json, IndexRequest.class);
 		
 		
 		List<ProductEntity> smartphones =  productS.GetProductsByPage(indexR.getPageSmartphone(), indexR.getCountSmartphone(), 1);
 		List<ProductEntity> laptops =  productS.GetProductsByPage(indexR.getPageLaptop(), indexR.getCountLaptop(), 2);
-		IndexPakage pakage = new IndexPakage();
+		IndexPakage indexP = new IndexPakage();
+		IndexFullPakage pakage = new IndexFullPakage();
+		
 		if(smartphones.isEmpty() || laptops.isEmpty())
 		{
+			indexP.setType(0);
 			pakage.setType(0);
-			return ok("null");
 		}
 		else
 		{
+			indexP.setType(1);
 			pakage.setType(1);
 			if(!smartphones.isEmpty())
 			{
-				pakage.setSmartphones(smartphones);
+				indexP.setSmartphones(smartphones);
 				int pageS = productS.PageTotal(1, indexR.getCountSmartphone());
-				pakage.setPageSmartphone(pageS);
+				indexP.setPageSmartphone(pageS);
 			}
 			if(!laptops.isEmpty())
 			{
-				pakage.setLaptop(laptops);
+				indexP.setLaptop(laptops);
 				int pageL = productS.PageTotal(2, indexR.getCountLaptop());
-				pakage.setPagelaptop(pageL);
+				indexP.setPagelaptop(pageL);
 			}
-			return ok(Json.toJson(pakage));
+			pakage.setIndexPakage(indexP);
+			List<CategoryEntity> categories = productS.GetCategory();
+			pakage.setCategories(categories);
+			for(CategoryEntity category : categories){
+				List<CategoryProductEntity> categoryProducts = productS.GetCategoryProductByIdCategory(category.getId());
+				pakage.addCategoryProducts(categoryProducts);
+			}
 		}
+		
+		return ok(Json.toJson(pakage));
 	}
 	
-	public Result category()
+	public Result category(int id)
 	{
-		return ok("vuong");
+		List<CategoryProductEntity> categoryProducts = productS.GetCategoryProductByIdCategory(id);
+		for(CategoryProductEntity categoryProduct : categoryProducts){
+			List<ProductEntity> products = productS.GetProductByCategory(categoryProduct.getId());
+			
+		}
+		
+		
+		
+		return ok("ok");
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -96,5 +123,21 @@ public class ProductController extends Controller{
 		return ok(Json.toJson(pakage));
 	}
 	
+	@AddCSRFToken
+	public Result token()
+	{
+		Optional<CSRF.Token> token = CSRF.getToken(request());
+		String result = token.get().value();
+		response().setCookie("Csrf-Token", result);
+		
+		return ok(result);
+	}
+	
+	@RequireCSRFCheck
+	public Result demoCsrf()
+	{
+		
+		return ok(CSRF.getToken(request()).map(t -> t.value()).orElse("no token"));
+	}
 	
 }
