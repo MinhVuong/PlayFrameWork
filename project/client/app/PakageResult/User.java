@@ -17,6 +17,14 @@ public class User {
 		this.email = email;
 		this.token = token;
 	}
+	public User(User u)
+	{
+		this.id = u.getId();
+		this.email = u.getEmail();
+		this.firstName = u.getFirstName();
+		this.token = u.getToken();
+	}
+	
 	public Integer getId() {
 		return id;
 	}

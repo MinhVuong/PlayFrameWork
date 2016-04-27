@@ -15,6 +15,11 @@ public class Menu {
 		this.categories = categories;
 		this.categoryProducts = categoryProducts;
 	}
+	public Menu(Menu me){
+		this.categories = me.getCategories();
+		this.categoryProducts = me.getCategoryProducts();
+	}
+	
 	public List<CategoryEntity> getCategories() {
 		return categories;
 	}

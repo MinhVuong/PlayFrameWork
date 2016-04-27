@@ -1,12 +1,16 @@
 @import PakageResult.User;
+@import play.mvc.Http.Session;
+@import models.ProductEntity;
 @import java.util.List;
-@import models.CategoryProduct;
+@import models.IndexRequest;
 @import models.CategoryEntity;
 @import models.CategoryProductEntity;
 @import models.ProductEntity;
-@(user: User, categoriesM: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]], name: String, categories: List[CategoryProduct], categoryProducts: List[List[ProductEntity]])
+@(user: User, categories: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]], name: String, products : List[ProductEntity])
 
-@main("Category") {
+@main("Category Products") {
+	
+	<!-- @user = Json.fromJson(Json.parse(session.get("user")), User.class); -->
 	<header id="header"><!--header-->
 		<div class="header_top"><!--header_top-->
 			<div class="container">
@@ -60,6 +64,7 @@
 								@if(user.getId() == 0) {
 								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> Login</a></li>
 								} else {
+								
 								<li><a href="@routes.AccountController.infor()"><i class="fa fa-user"></i> @user.getFirstName()</a></li>
 								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> LogOut</a></li>
 								}
@@ -86,7 +91,8 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="index.html" class="active">Home</a></li>
-								@for(category <- categoriesM){
+								
+									@for(category <- categories){
 									<li class="dropdown"><a href="#">@category.getName()<i class="fa fa-angle-down"></i></a>
 										<ul role="menu" class="sub-menu">
 											@defining(productCategories.get(category.getNumberRow())) { cP =>
@@ -97,6 +103,7 @@
 										</ul>
 										
 									}
+								
 							</ul>
 						</div>
 					</div>
@@ -108,8 +115,7 @@
 				</div>
 			</div>
 		</div><!--/header-bottom-->
-		</header><!--/header-->
-	
+		</header><!--/header-->	
 	<section>
 		<div class="container">
 			<div class="row">
@@ -156,61 +162,48 @@
 				
 				<div class="col-sm-9 padding-right" >
 					<div class="features_items"><!--features_items-->
-						<h2 class="title text-center">@name</h2>
+					<!-- Start show products -->
+						<h2 id = "titleS" class="title text-center">@name</h2>
+						<!-- Start show products -->
+						<div id = "resultS"> 
+						@for(product <- products){
+						<div class="col-sm-4" style="width:210px; margin-left: -10px">
+							<div class="product-image-wrapper">
+								<div class="single-products">
+										<div class="productinfo text-center">
+											<img width="210" height="165" src=@routes.Assets.versioned(product.getImage()) alt="" />
+											
+											<h2>@product.priceToString() <small>vnd</small></h2>
+											<p id = "nameP">@product.getName()</p>
+										</div>
+										<div class="product-overlay">
+											<div class="overlay-content">
+												<h2>@product.priceToString() <small>vnd</small></h2>
+												<p>@product.getName()</p>
+											</div>
+										</div>
+										@if(product.getIsNew() == 1) {
+										<img src=@routes.Assets.versioned("images/home/new.png") class="new" alt="" />
+										} else {}
+								</div>
+								<div class="choose">
+									<ul class="nav nav-pills nav-justified">
+										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+										<li><a href="#"><i class="fa fa-plus-square"></i>Add to cart</a></li>
+									</ul>
+								</div>
+								
+							</div>
+						</div>
+						}
+						</div>
 						
 					</div><!--features_items-->
 					
-					<div class="product-category-tab"><!--category-tab-->
-						<div class="col-sm-12" >
-							<ul class="nav nav-tabs">
-								@for(category <- categories){
-									@if(category.getNumberRow == 0){
-										<li class = "active"><a href="#@category.getNumberRow()" data-toggle="tab">@category.getName()</a></li>
-									} else {
-										<li><a href="#@category.getNumberRow()" data-toggle="tab">@category.getName()</a></li>
-									}
-									
-								}
-								
-								
-							</ul>
-						</div>
-						<div class="tab-content">
-						@for(category <- categories){
-							@defining(categoryProducts.get(category.getNumberRow())) { products =>
-								@if(category.getNumberRow() == 0){
-									<div class="tab-pane fade active in" id="@category.getNumberRow()" >
-								}else{
-									<div class="tab-pane fade" id="@category.getNumberRow()" >
-								}
-								
-								@for(product <- products){
-									<div class="col-sm-3" style="width:210px">
-										<div class="product-image-wrapper">
-											<div class="single-products">
-												<div class="productinfo text-center">
-													<img src=@routes.Assets.versioned(product.getImage()) alt="" />
-													<h2>@product.priceToString() <small>vnd</small></h2>
-													<p>@product.getName()</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-								}									
-								</div>
-							}
-						}
-							
-						</div>
-					</div><!--/category-tab-->
 					
 				</div>
 			</div>
 		</div>
-	</section>
-	
-	
+	</section>	
 	
 }

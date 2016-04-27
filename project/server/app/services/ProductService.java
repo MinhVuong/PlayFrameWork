@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import models.Category;
+import models.CategoryProduct;
 import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 import entities.CustomerEntity;
@@ -159,6 +160,49 @@ public class ProductService {
 		}
 	}
 	
+	public String GetNameFromProductId(int id)
+	{
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			CategoryProductEntity result = (CategoryProductEntity)em.find(CategoryProductEntity.class, id);
+			em.close();
+			if(result != null)
+				return result.getName();
+			else
+				return "";
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("GetNameFromProductId(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return "";
+		}
+	}
+	
+	public String GetNameFromCategoryId(int id)
+	{
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			CategoryEntity result = (CategoryEntity)em.find(CategoryEntity.class, id);
+			em.close();
+			if(result != null)
+				return result.getName();
+			else
+				return "";
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("GetNameFromCategoryId(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return "";
+		}
+	}
+	
+	
 	public List<Category> ChangeCategoryEntityToCategory(List<CategoryEntity> entity)
 	{
 		List<Category> categories = new ArrayList<Category>();
@@ -169,6 +213,22 @@ public class ProductService {
 			category.setId(cate.getId());
 			category.setName(cate.getName());
 			category.setNumberRow(i);
+			i++;
+			categories.add(category);
+		}
+		return categories;
+	}
+	public List<CategoryProduct> ChangeCategoryProductEntityToCategoryProduct(List<CategoryProductEntity> entity)
+	{
+		List<CategoryProduct> categories = new ArrayList<CategoryProduct>();
+		int i=0;
+		for(CategoryProductEntity cate : entity)
+		{
+			CategoryProduct category = new CategoryProduct();
+			category.setId(cate.getId());
+			category.setName(cate.getName());
+			category.setNumberRow(i);
+			category.setIdCategory(cate.getIdCategory());
 			i++;
 			categories.add(category);
 		}

@@ -41,5 +41,4 @@ public class CategoryProduct {
 		this.numberRow = numberRow;
 	}
 	
-	
 }

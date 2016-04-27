@@ -8,7 +8,10 @@ import models.IndexRequest;
 import models.ProductEntity;
 import models.CategoryEntity;
 import models.CategoryProductEntity;
+import models.CategoryProduct;
 import models.Menu;
+import PakageResult.CategoryProductPakage;
+import PakageResult.CategoryProduct2Pakage;
 import PakageResult.IndexPakage;
 import PakageResult.IndexFullPakage;
 import PakageResult.User;
@@ -104,11 +107,115 @@ public class HomeController extends Controller {
 		return result;
     }
     
-    public Result category()
+    public CompletionStage<Result> category(int id)
     {
-    	User user = new User();
-    	return ok(category.render(user));
-    }
+    	log.info("Method category: " + id);
+    	User user1 = GetUserFromSession();
+    	User user = new User(user1);
+    	
+		Menu menu1 = GetMenuFromSession();
+		Menu menu = new Menu(menu1);
+		
+    	String url = "http://localhost:9001/category/" + id;
+    	
+    	CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
+    	CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		CategoryProductPakage pakage = new CategoryProductPakage();
+    		pakage = Json.fromJson(jsonNode, CategoryProductPakage.class);
 
-   
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType())
+            	{
+            	case 1:{
+            		List<CategoryProduct> categories = pakage.getCategoryProducts();
+            		List<List<ProductEntity>> categoryProducts = pakage.getProductss();
+            		String name = pakage.getName();
+            		
+            		return ok(category.render(user, menu.getCategories(), menu.getCategoryProducts(), name, categories, categoryProducts));
+            		}
+            	case 0:{
+            		return ok(errorp.render("Didn't connect server !!!"));
+            		}
+            	}
+            	return ok("ok");            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		return result;
+    }
+    
+    public CompletionStage<Result> categoryProduct(int id, int idp)
+    {
+    	log.info("Method categoryProduct: " + id + " - idp: " + idp);
+    	
+    	User user1 = GetUserFromSession();
+    	User user = new User(user1);
+    	
+		Menu menu1 = GetMenuFromSession();
+		Menu menu = new Menu(menu1);
+		
+    	String url = "http://localhost:9001/categoryProduct/" + id + "/" + idp;
+    	
+    	CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
+    	CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		CategoryProduct2Pakage pakage = new CategoryProduct2Pakage();
+    		pakage = Json.fromJson(jsonNode, CategoryProduct2Pakage.class);
+
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType())
+            	{
+            	case 1:{
+            		
+            		String name = pakage.getName();
+            		List<ProductEntity> products = pakage.getProducts();
+            		
+            		return ok(categoryProduct.render(user, menu.getCategories(), menu.getCategoryProducts(), name, products));
+            		}
+            	case 0:{
+            		return ok(errorp.render("Didn't connect server !!!"));
+            		}
+            	}
+            	return ok("ok");            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		return result;
+    }
+    private Menu GetMenuFromSession()
+	{
+		Menu menu = new Menu();
+		String menuS = session("menu");
+		if(menuS != null)
+		{
+			JsonNode menuN = Json.parse(menuS);
+			menu = (Menu) Json.fromJson(menuN, Menu.class);
+		}
+		return menu;
+	}
+    
+    private User GetUserFromSession()
+	{
+		User user = new User();
+		String userS = session("user");
+		if(userS != null)
+		{
+			JsonNode userN = Json.parse(userS);
+			user = (User) Json.fromJson(userN, User.class);
+		}
+		return user;
+	}
 }

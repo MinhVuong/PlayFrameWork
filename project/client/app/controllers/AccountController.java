@@ -62,9 +62,9 @@ public class AccountController extends Controller {
 	public Result login()
 	{
 		Menu menu = new Menu();
-		
-		session().remove("ID");
 		menu = GetMenuFromSession();
+		session().remove("ID");
+		
 		
 		log.info("Show Login");
 		return ok(login.render("", "", menu.getCategories(), menu.getCategoryProducts()));
@@ -382,11 +382,7 @@ public class AccountController extends Controller {
 		return ok("ok");
 	}
 	
-	public Result category(int id)
-	{
-		
-		return ok(Integer.toString(id));
-	}
+	
 	public Result encrypt()
 	{
 		MyCrypto myCryp = new MyCrypto(this.crypto);

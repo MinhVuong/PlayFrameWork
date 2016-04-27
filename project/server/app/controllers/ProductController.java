@@ -1,18 +1,23 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import models.Category;
+import models.CategoryProduct;
 import models.IndexRequest;
+import models.ListProduct;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 import entities.ProductEntity;
+import pakageResult.CategoryProduct2Pakage;
+import pakageResult.CategoryProductPakage;
 import pakageResult.IndexFullPakage;
 import pakageResult.IndexPakage;
 import play.filters.csrf.AddCSRFToken;
@@ -83,15 +88,44 @@ public class ProductController extends Controller{
 	
 	public Result category(int id)
 	{
+		CategoryProductPakage pakage = new CategoryProductPakage();
+		
 		List<CategoryProductEntity> categoryProducts = productS.GetCategoryProductByIdCategory(id);
-		for(CategoryProductEntity categoryProduct : categoryProducts){
-			List<ProductEntity> products = productS.GetProductByCategory(categoryProduct.getId());
+		if(!categoryProducts.isEmpty())
+		{
+			List<CategoryProduct> categoryProductP = productS.ChangeCategoryProductEntityToCategoryProduct(categoryProducts);
+			List<List<ProductEntity>> productss = new ArrayList<List<ProductEntity>>();
+			for(CategoryProductEntity categoryProduct : categoryProducts){
+				List<ProductEntity> products = productS.GetProductByCategory(categoryProduct.getId());
+				productss.add(products);
+			}
+			
+			pakage.setCategoryProducts(categoryProductP);
+			pakage.setProductss(productss);
+			pakage.setType(1);
+			pakage.setName(productS.GetNameFromCategoryId(id));
 			
 		}
+		else
+		{
+			pakage.setType(0);
+			pakage.setName(productS.GetNameFromCategoryId(id));
+		}
+		return ok(Json.toJson(pakage));
+	}
+	
+	public Result categoryProduct(int id, int idp)
+	{
+		CategoryProduct2Pakage pakage = new CategoryProduct2Pakage();
+		List<ProductEntity> products = productS.GetProductByCategory(idp);
 		
+		pakage.setType(1);
+		pakage.setId(idp);
+		pakage.setName(productS.GetNameFromProductId(idp));
+		pakage.setProducts(products);
+			
 		
-		
-		return ok("ok");
+		return ok(Json.toJson(pakage));
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)

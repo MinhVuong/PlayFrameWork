@@ -22,7 +22,8 @@ POST	/address				controllers.AccountController.address
 POST	/updateInfor			controllers.AccountController.updateInfor
 POST	/changePass				controllers.AccountController.changePass
 
-GET		/category/id			controllers.HomeController.category(id: Integer)
+GET		/category/:id			controllers.HomeController.category(id: Integer)
+GET		/categoryProduct/:id/:idp	controllers.HomeController.categoryProduct(id: Integer, idp: Integer)
 
 GET		/forgot					controllers.AccountController.forgot
 
