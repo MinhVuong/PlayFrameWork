@@ -887,6 +887,7 @@ h2.title {
   font-size: 14px;
   font-weight: 400;
   color: #696763;
+  height: 30px;
 }
 
 .productinfo img{
@@ -957,6 +958,7 @@ h2.title {
   margin-bottom: 25px;
 }
 
+
 .add-to-cart:hover {
   background: #FE980F;
   border: 0 none;
@@ -970,6 +972,7 @@ h2.title {
 
 .add-to-cart i{
 	margin-right:5px;
+	color: #FE980F;
 }
 
 .add-to-cart:hover {
@@ -1031,6 +1034,7 @@ h2.title {
   overflow: hidden;
   margin-left: 0px;
   margin-right:0px;
+  width: 115%;
 }
 .product-category-tab ul {
   background: #ffffff;

@@ -394,6 +394,8 @@ public class CustomerService {
 		}
 	}
 	
+	// Return Infor nếu thành công.
+	// Return null nếu thất bại.	
 	public Infor GetInfor(int id, Crypto crypt)
 	{
 		try{

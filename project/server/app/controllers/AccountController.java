@@ -52,9 +52,11 @@ public class AccountController extends Controller {
 		loger.info("Submit Register");
 		JsonNode json = request().body().asJson();
 		Register register = Json.fromJson(json, Register.class);
-	
+		//Tạo CustomerEntity trong đó password sẽ được mã hóa.
 		CustomerEntity customer = accountHelper.generateCustomerEntityFromRegister(register, this.crypto);
+		// Thêm customer vào database.
 		int result = accounts.AddCustomer(customer, this.mailerClient);
+		// Gói tin pakage trả về cho client.
 		RegisterPakage pakage = new RegisterPakage();
 		pakage.setType(result);
 		switch(result)
@@ -90,20 +92,21 @@ public class AccountController extends Controller {
 			return ok("false");
 	}
 	// Login
-		// Restul 1 if login success
-		// Result 0 if email didn't register.
-		// Result -1 if password dot match.
-		// Result -2 if account didn't active.
+	// Restul 1 if login success.
+	// Result 0 if email didn't register.
+	// Result -1 if password dot match.
+	// Result -2 if account didn't active.
 	public Result login()
 	{
 		loger.info("Client call Login!");
 		Login login = new Login();
 		JsonNode json = request().body().asJson();
 		login = Json.fromJson(json, Login.class);
-
+		
+		// Kiểm tra dữ liệu client login.
 		int result = accounts.Login(login, this.crypto);
 		
-		
+		// Gói tin LoginPakage gửi vể cho Client.
 		LoginPakage pakage = new LoginPakage();
 		pakage.setType(result);
 		if(result == 1)
@@ -118,17 +121,17 @@ public class AccountController extends Controller {
 	}
 
 	// return 1 if change Password success.
-		// return -1 if Password old not match.
-		// return -2 if didn't exist customer from id
-		// return 0 if didn't connect database.
+	// return -1 if Password old not match.
+	// return -2 if didn't exist customer from id
+	// return 0 if didn't connect database.
 	public Result changePass(){
 		ChangePass changePass = new ChangePass();
-		//changePass.setId(1);
-		//changePass.setPassOld("minhvuong");
-		//changePass.setPassNew("minhvuongmoi");
 		JsonNode json = request().body().asJson();
 		changePass = Json.fromJson(json, ChangePass.class);
+		// Thay đổi password dưới CSDL
 		int result = accounts.ChangePassword(changePass, this.crypto);
+		
+		// Gói tin InforPakage gửi về cho client.
 		InforPakage pakage = new InforPakage();
 		pakage.setType(result);
 		if(result != 0)
@@ -145,6 +148,9 @@ public class AccountController extends Controller {
 		return ok(Json.toJson(pakage));
 	}
 	
+	// return 1 nếu Client update infor thành công.
+	// return 0 nếu Client không kết nối được với Server.
+	// return -1 nếu không tồn tại customer
 	public Result updateInfor()
 	{
 		loger.info("Client update Infor!");
@@ -169,8 +175,13 @@ public class AccountController extends Controller {
 		return ok(Json.toJson(pakage));
 		
 	}
+
+	// Return 1 nếu thành công.
+	// Return 0 nếu thất bại.
 	public Result infor (String id)
 	{
+		// Infor lấy và gửi về cho client.
+		// Password sẽ được giải mã lại cho client.
 		Infor infor = accounts.GetInfor(Integer.parseInt(id), this.crypto);
 		InforPakage pakage = new InforPakage();
 		if(infor != null)
@@ -192,6 +203,8 @@ public class AccountController extends Controller {
 		return ok(Json.toJson(pakage));
 	}
 	
+	// Return 1 nếu thành công.
+	// Return 0 nếu thất bại
 	public Result updateAddress()
 	{
 		loger.info("Client update Address!");
@@ -202,8 +215,7 @@ public class AccountController extends Controller {
 		AddressEntity addressE = addressS.ConvertAddressToAddressEntity(address); 
 		boolean result = addressS.UpdateAddress(address.getId(), addressE);
 		InforPakage pakage = new InforPakage();
-		
-		
+			
 		if(result)
 		{
 			pakage.setType(1);

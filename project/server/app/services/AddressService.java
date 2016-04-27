@@ -59,6 +59,8 @@ public class AddressService {
 			return false;
 		}
 	}
+	// Return true nếu update thành công.
+	// Return false nếu thất bại.
 	public boolean UpdateAddress(int id_Customer, AddressEntity entity)
 	{
 		if(CheckExistAddress(id_Customer))

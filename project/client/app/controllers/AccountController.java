@@ -102,8 +102,8 @@ public class AccountController extends Controller {
             		List<ProductEntity> smartphone = new ArrayList<ProductEntity>();
             		List<ProductEntity> laptop = new ArrayList<ProductEntity>();
 
-            		return ok(index.render(user, smartphone, 0, laptop, 0, menu.getCategories(), menu.getCategoryProducts()));
-            		//return redirect(routes.HomeController.index());
+            		//return ok(index.render(user, smartphone, 0, laptop, 0, menu.getCategories(), menu.getCategoryProducts()));
+            		return redirect(routes.HomeController.index());
             		}
             	case 0:{
             		return ok(login.render("Account didn't create!","", menu.getCategories(), menu.getCategoryProducts()));
