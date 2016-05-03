@@ -30,8 +30,11 @@ POST	/productListAjax				controllers.ProductController.productListAjax
 
 GET		/category/:id					controllers.ProductController.category(id: Integer)
 GET		/categoryProduct/:id/:idp		controllers.ProductController.categoryProduct(id: Integer, idp: Integer)
+GET		/product/:id					controllers.ProductController.product(id: Integer)
+
+
+
 
 GET		/demoCsrf						controllers.ProductController.demoCsrf
-
 GET		/token							controllers.ProductController.token
 

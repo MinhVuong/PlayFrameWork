@@ -234,4 +234,25 @@ public class ProductService {
 		}
 		return categories;
 	}
+
+	public ProductEntity GetProductById(int id)
+	{
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			ProductEntity result = (ProductEntity)em.find(ProductEntity.class, id);
+			em.close();
+			if(result != null)
+				return result;
+			else
+				return null;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("ProductEntity GetProductById(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
 }

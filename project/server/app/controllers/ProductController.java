@@ -10,6 +10,7 @@ import models.Category;
 import models.CategoryProduct;
 import models.IndexRequest;
 import models.ListProduct;
+import models.ProductCart;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -20,6 +21,7 @@ import pakageResult.CategoryProduct2Pakage;
 import pakageResult.CategoryProductPakage;
 import pakageResult.IndexFullPakage;
 import pakageResult.IndexPakage;
+import pakageResult.ProductPakage;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
@@ -158,6 +160,38 @@ public class ProductController extends Controller{
 		}
 		return ok(Json.toJson(pakage));
 	}
+	
+	public Result product(int id)
+	{
+		ProductPakage pakage = new ProductPakage();
+		if(id==0)
+		{
+			pakage.setType(0);
+			pakage.setProduct(null);
+			return ok(Json.toJson(pakage));
+		}
+		ProductEntity product = productS.GetProductById(id);
+		ProductCart productC = new ProductCart();
+		productC.ConvertFromProductEntity(product);
+		if(product != null)
+		{
+			pakage.setType(1);
+			pakage.setProduct(productC);
+		}else{
+			pakage.setType(0);
+			pakage.setProduct(productC);
+		}
+		return ok(Json.toJson(pakage));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@AddCSRFToken
 	public Result token()

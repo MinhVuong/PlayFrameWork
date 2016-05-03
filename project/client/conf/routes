@@ -25,7 +25,9 @@ GET		/category/:id			controllers.HomeController.category(id: Integer)
 GET		/categoryProduct/:id/:idp	controllers.HomeController.categoryProduct(id: Integer, idp: Integer)
 
 
-GET		/cart/:id					controllers.ProductController.cart(id: Integer)
+GET		/cart				controllers.ProductController.cart(id: Integer ?= 0)
+POST	/cart/add			controllers.ProductController.cartAdd()
+POST	/cart/sub			controllers.ProductController.cartSub()
 GET		/forgot					controllers.AccountController.forgot
 
 GET	/encrypt				controllers.AccountController.encrypt

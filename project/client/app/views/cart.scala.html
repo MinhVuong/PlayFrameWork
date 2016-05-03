@@ -1,4 +1,7 @@
-@(message: String)
+@import models.ProductCart;
+@import java.util.List;
+@import models.CartProducts;
+@(message: String, cartProducts: CartProducts)
 @main("Product | Cart") {
 <section id="cart_items">
 		<div class="container">
@@ -21,33 +24,33 @@
 						</tr>
 					</thead>
 					<tbody>
-					
-						<tr>
+						@for(product <- cartProducts.getProducts()){
+						<tr id = "@product.getId()">
 							<td class="cart_product">
-								<a href=""><img src=@routes.Assets.versioned("images/cart/three.png") alt=""></a>
+								<a href=""><img src=@routes.Assets.versioned(product.getImage()) alt=""></a>
 							</td>
 							<td class="cart_description">
-								<h4><a href="">Colorblock Scuba</a></h4>
-								<p>Web ID: 1089772</p>
+								<h4><a href="">@product.getName()</a></h4>
+								<p>Product ID: @product.getId()</p>
 							</td>
 							<td class="cart_price">
-								<p>$59</p>
+								<p>@product.PriceToString()</p>
 							</td>
 							<td class="cart_quantity">
 								<div class="cart_quantity_button">
-									<a id="add" class="cart_quantity_up" ONCLICK="add(1)"> + </a>
-									<input id="countP" class="cart_quantity_input"  type="text" name="quantity" value="1" autocomplete="off" size="2" readonly>
-									<a id="sub" class="cart_quantity_down" ONCLICK="sub(1)"> - </a>
+									<a id="add" class="cart_quantity_up" ONCLICK="add(@product.getId())"> + </a>
+									<input id="countP@product.getId()" class="cart_quantity_input"  type="text" name="quantity" value="@product.getCount()" autocomplete="off" size="2" readonly>
+									<a id="sub" class="cart_quantity_down" ONCLICK="sub(@product.getId())"> - </a>
 								</div>
 							</td>
 							<td class="cart_total">
-								<p class="cart_total_price">$59</p>
+								<p class="cart_total_price">@product.PriceToString()</p>
 							</td>
 							<td class="cart_delete">
-								<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
+								<a class="cart_quantity_delete" ONCLICK="deleteP(@product.getId())"><i class="fa fa-times"></i></a>
 							</td>
 						</tr>
-						
+						}
 					</tbody>
 				</table>
 			</div>
@@ -81,19 +84,58 @@
 	<script>
 	function add(id)
 	{
-		var count = parseInt(document.getElementById('countP').value);
+		var name = 'countP' + id;
+		var count = parseInt(document.getElementById(name).value);
 		count = count +1;
-		document.getElementById('countP').value = count;
+		document.getElementById(name).value = count;
 		console.log(count);
+		
+		var d = {'id': id};
+		console.log(JSON.stringify(d));
+		$.ajax({
+	        type : 'POST',
+	        url : 'http://localhost:9000/cart/add',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : JSON.stringify(d),
+	        success : function(data) {
+	           
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
+		
 	}
 	function sub(id)
 	{
-		var count = parseInt(document.getElementById('countP').value);
+		var name = 'countP' + id;
+		var count = parseInt(document.getElementById(name).value);
 		if(count > 1)
 			count = count-1;
-		document.getElementById('countP').value = count;
+		document.getElementById(name).value = count;
 		console.log(count);
-		
+		var d = {'id': id};
+		console.log(JSON.stringify(d));
+		$.ajax({
+	        type : 'POST',
+	        url : 'http://localhost:9000/cart/sub',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : JSON.stringify(d),
+	        success : function(data) {
+	           
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
+	}
+	function deleteP(id)
+	{
+		var name = '#' + id;
+		$(name).remove();
+		alert(name);
 	}
 	</script>
 }
