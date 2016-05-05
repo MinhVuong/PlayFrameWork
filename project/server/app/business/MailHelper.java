@@ -27,7 +27,7 @@ public class MailHelper {
 		     String content = "Chào " + name + "\n";
 		     content += "Bạn đã đăng ký thành công tài khoản online shopping của trang web abcshopping.com\n";
 		     content += "Bạn vui lòng nhấn vào link này để kích hoạt tài khoản đã đăng ký.\n";
-		     content += "http://localhost:9000/activeAccount/" + token +"/"+ id;
+		     content += "http://localhost:9001/activeAccount/" + token +"/"+ id;
 		     content += "\nCảm ơn bạn đã sủ dụng.\n";
 		     content += "abcshopping.com";
 		     email.setBodyText(content);

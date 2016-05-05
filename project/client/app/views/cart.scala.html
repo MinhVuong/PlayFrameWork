@@ -1,8 +1,113 @@
 @import models.ProductCart;
+@import PakageResult.User;
 @import java.util.List;
+@import models.CategoryEntity;
+@import models.CategoryProductEntity;
 @import models.CartProducts;
-@(message: String, cartProducts: CartProducts)
+@(message: String, user: User, categoriesM: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]], cartProducts: CartProducts)
 @main("Product | Cart") {
+<header id="header"><!--header-->
+		<div class="header_top"><!--header_top-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="contactinfo">
+							<ul class="nav nav-pills">
+								<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
+								<li><a href="#"><i class="fa fa-envelope"></i> websmartphone527@@domain.com</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="social-icons pull-right">
+							<ul class="nav navbar-nav">
+								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+								<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header_top-->
+		
+		<div class="header-middle"><!--header-middle-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="logo pull-left">
+							<a href="index.html"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
+						</div>
+						<div  class="btn-group pull-left">
+							<div class="btn-group">
+								<select style="margin-left:10px; margin-top:10px">
+								  <option value="volvo">USD</option>
+								  <option value="saab">VND</option>
+								</select>
+								
+							</div>
+							
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<div class="shop-menu pull-right">
+							<ul class="nav navbar-nav">
+								
+								<li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+								@if(user.getId() == 0) {
+								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> Login</a></li>
+								} else {
+								<li><a href="@routes.AccountController.infor()"><i class="fa fa-user"></i> @user.getFirstName()</a></li>
+								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> LogOut</a></li>
+								}
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header-middle-->
+	
+		<div class="header-bottom"><!--header-bottom-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-9">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+						</div>
+						<div class="mainmenu pull-left">
+							<ul class="nav navbar-nav collapse navbar-collapse">
+								<li><a href="index.html" class="active">Home</a></li>
+								@for(category <- categoriesM){
+									<li class="dropdown"><a href="#">@category.getName()<i class="fa fa-angle-down"></i></a>
+										<ul role="menu" class="sub-menu">
+											@defining(productCategories.get(category.getNumberRow())) { cP =>
+												@for(cp <- cP){
+													<li><a href="#">@cp.getName()</a></li>
+												}
+											}
+										</ul>
+										
+									}
+							</ul>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="search_box pull-right">
+							<input type="text" placeholder="Search"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header-bottom-->
+		</header><!--/header-->
 <section id="cart_items">
 		<div class="container">
 			<div class="breadcrumbs">
@@ -11,6 +116,10 @@
 				  <li class="active">Shopping Cart</li>
 				</ol>
 			</div>
+			@if(message.isEmpty()) {
+			} else {
+				<p style="color: red">@message</p>
+			}
 			<div class="table-responsive cart_info">
 				<table class="table table-condensed">
 					<thead>
@@ -34,7 +143,7 @@
 								<p>Product ID: @product.getId()</p>
 							</td>
 							<td class="cart_price">
-								<p>@product.PriceToString()</p>
+								<p id = "price@product.getId()">@product.PriceToString()</p>
 							</td>
 							<td class="cart_quantity">
 								<div class="cart_quantity_button">
@@ -44,7 +153,7 @@
 								</div>
 							</td>
 							<td class="cart_total">
-								<p class="cart_total_price">@product.PriceToString()</p>
+								<p id = "total@product.getId()" class="cart_total_price">@product.GetTotal()</p>
 							</td>
 							<td class="cart_delete">
 								<a class="cart_quantity_delete" ONCLICK="deleteP(@product.getId())"><i class="fa fa-times"></i></a>
@@ -68,12 +177,12 @@
 				<div class="col-sm-6">
 					<div class="total_area">
 						<ul>
-							<li>Cart Sub Total <span>$59</span></li>
-							<li>Eco Tax <span>$2</span></li>
+							<li>Products Total <span id = "counttotal">@cartProducts.GetProductsTotal()</span></li>
+							<li>Prices Total <span id = "pricetotal">@cartProducts.GetPricesTotal()</span></li>
 							<li>Shipping Cost <span>Free</span></li>
-							<li>Total <span>$61</span></li>
+							<li >Total <span id = "carttotal">@cartProducts.GetPricesTotal()</span></li>
 						</ul>
-							<a class="btn btn-default check_out" href="">Check Out</a>
+							<a class="btn btn-default check_out" href="@routes.ProductController.checkout()">Check Out</a>
 					</div>
 				</div>
 			</div>
@@ -84,6 +193,7 @@
 	<script>
 	function add(id)
 	{
+		var total = '#total' + id;
 		var name = 'countP' + id;
 		var count = parseInt(document.getElementById(name).value);
 		count = count +1;
@@ -99,7 +209,15 @@
 	        contentType: 'application/json; charset=utf-8',
 	        data : JSON.stringify(d),
 	        success : function(data) {
-	           
+	        	console.log(data);
+	        	var price = data['total'];
+	        	var priceName = '#total'+id;
+				$(priceName).html(price);
+				
+				
+				$('#counttotal').html(data['count']);
+				$('#pricetotal').html(data['totalCart']);
+				$('#carttotal').html(data['totalCart']);
 	        },
 	        error: function() { 
 	        	alert('Failed!'); 
@@ -124,7 +242,14 @@
 	        contentType: 'application/json; charset=utf-8',
 	        data : JSON.stringify(d),
 	        success : function(data) {
-	           
+	        	console.log(data);
+	        	var price = data['total'];
+	        	var priceName = '#total'+id;
+				$(priceName).html(price);
+				
+				$('#counttotal').html(data['count']);
+				$('#pricetotal').html(data['totalCart']);
+				$('#carttotal').html(data['totalCart']);
 	        },
 	        error: function() { 
 	        	alert('Failed!'); 
@@ -135,7 +260,24 @@
 	{
 		var name = '#' + id;
 		$(name).remove();
-		alert(name);
+		var d = {'id': id};
+		console.log(JSON.stringify(d));
+		$.ajax({
+	        type : 'POST',
+	        url : 'http://localhost:9000/cart/delete',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : JSON.stringify(d),
+	        success : function(data) {
+	        	$('#counttotal').html(data['count']);
+				$('#pricetotal').html(data['totalCart']);
+				$('#carttotal').html(data['totalCart']);
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
 	}
+	
 	</script>
 }

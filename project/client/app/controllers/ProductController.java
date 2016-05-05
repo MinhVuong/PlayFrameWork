@@ -4,13 +4,16 @@ import java.util.concurrent.CompletionStage;
 
 import models.AddCount;
 import models.CartProducts;
+import models.Menu;
 import models.ProductCart;
 import models.ProductEntity;
+import models.CartEdit;
 import business.SessionManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import PakageResult.ProductPakage;
+import PakageResult.User;
 import play.Logger;
 import play.libs.Json;
 import play.libs.ws.WS;
@@ -28,7 +31,8 @@ public class ProductController extends Controller{
 	{
 		Session session = Http.Context.current().session();
 		CartProducts productsS = sessionM.GetCartProducts();
-		
+		User user1 = sessionM.GetUser();
+		Menu menu1 = sessionM.GetMenu();
 		
 		String url = "http://localhost:9001/product/" + id;
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
@@ -38,6 +42,9 @@ public class ProductController extends Controller{
     		ProductPakage pakage = new ProductPakage();
     		pakage = Json.fromJson(jsonNode, ProductPakage.class);
     		
+    		User user = new User(user1);
+			Menu menu = new Menu(menu1);
+			
             if(resp.getStatus()== 200)
             {	
             	switch(pakage.getType())
@@ -55,10 +62,11 @@ public class ProductController extends Controller{
             			products.AddProduct(product);
             			session.put("products", Json.toJson(products).toString());
             			
-            			return ok(cart.render("", products));
+            			
+            			return ok(cart.render("", user, menu.getCategories(), menu.getCategoryProducts(), products));
             		}
             	case 0:{
-            		return ok(cart.render("", productsS));
+            		return ok(cart.render("", user, menu.getCategories(), menu.getCategoryProducts(), productsS));
             		}
             	}
             	return ok("ok");            	
@@ -83,7 +91,12 @@ public class ProductController extends Controller{
 		{
 			sessionM.AddCountProduct(add.getId());
 			
-			return ok(Json.toJson(add));
+			CartProducts products = sessionM.GetCartProducts();
+			CartEdit edit = new CartEdit();
+			edit.setTotal(products.GetTotalProduct(add.getId()));
+			edit.setTotalCart(products.GetPricesTotal());
+			edit.setCount(products.GetProductsTotal());
+			return ok(Json.toJson(edit));
 		}
 		else
 			return badRequest();
@@ -98,9 +111,47 @@ public class ProductController extends Controller{
 		{
 			sessionM.SubCountProduct(add.getId());
 			
-			return ok(Json.toJson(add));
+			CartProducts products = sessionM.GetCartProducts();
+			CartEdit edit = new CartEdit();
+			edit.setTotal(products.GetTotalProduct(add.getId()));
+			edit.setTotalCart(products.GetPricesTotal());
+			edit.setCount(products.GetProductsTotal());
+			return ok(Json.toJson(edit));
 		}
 		else
 			return badRequest();
+	}
+	public Result cartDelete()
+	{
+		JsonNode json = request().body().asJson();
+		AddCount add = new AddCount();
+		add = Json.fromJson(json, AddCount.class);
+		log.info("id: " + add.getId());
+		if(add.getId() != 0)
+		{
+			sessionM.DeleteCountProduct(add.getId());
+			CartProducts products = sessionM.GetCartProducts();
+			CartEdit edit = new CartEdit();
+			edit.setTotal(products.GetTotalProduct(add.getId()));
+			edit.setTotalCart(products.GetPricesTotal());
+			edit.setCount(products.GetProductsTotal());
+			return ok(Json.toJson(edit));
+		}
+		else
+			return badRequest();
+	}
+
+	public Result checkout()
+	{
+		CartProducts productsS = sessionM.GetCartProducts();
+		User user1 = sessionM.GetUser();
+		Menu menu1 = sessionM.GetMenu();
+		if(productsS.getProducts().size() == 0)
+		{
+			String message = "Cart empty!";
+			return ok(cart.render(message, user1, menu1.getCategories(), menu1.getCategoryProducts(), productsS));
+		}
+		else
+			return ok(checkout.render(user1, menu1.getCategories(), menu1.getCategoryProducts(), productsS));
 	}
 }

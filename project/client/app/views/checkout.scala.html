@@ -1,4 +1,11 @@
-@(message: String)
+@import models.ProductCart;
+@import PakageResult.User;
+@import java.util.List;
+@import models.CategoryEntity;
+@import models.CategoryProductEntity;
+@import models.CartProducts;
+
+@(user: User, categoriesM: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]], cartProducts: CartProducts)
 @main("Product | Cart") {
 <section id="cart_items">
 		<div class="container">
@@ -26,10 +33,10 @@
 								<input type="text" placeholder="Address">
 								<select>
 										<option>-- City --</option>
-										<option>Hồ Chí Minh</option>
-										<option>Đà Nẵng</option>
-										<option>Hà Nội</option>
-										<option>Khác</option>
+										<option>Há»“ ChÃ­ Minh</option>
+										<option>Ä�Ã  Náºµng</option>
+										<option>HÃ  Ná»™i</option>
+										<option>KhÃ¡c</option>
 								</select>
 							</form>
 						</div>
@@ -45,10 +52,10 @@
 								<input type="text" placeholder="Address">
 								<select>
 										<option>-- City --</option>
-										<option>Hồ Chí Minh</option>
-										<option>Đà Nẵng</option>
-										<option>Hà Nội</option>
-										<option>Khác</option>
+										<option>Ho Chi Minh</option>
+										<option>Da Nang</option>
+										<option>Ha Noi</option>
+										<option>Khac</option>
 								</select>
 								</form>
 							</div>
@@ -85,101 +92,52 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
+						@for(product <- cartProducts.getProducts()){
+						<tr id = "@product.getId()">
 							<td class="cart_product">
-								<a href=""><img src="images/cart/one.png" alt=""></a>
+								<a href=""><img src=@routes.Assets.versioned(product.getImage()) alt=""></a>
 							</td>
 							<td class="cart_description">
-								<h4><a href="">Colorblock Scuba</a></h4>
-								<p>Web ID: 1089772</p>
+								<h4><a href="">@product.getName()</a></h4>
+								<p>Product ID: @product.getId()</p>
 							</td>
 							<td class="cart_price">
-								<p>$59</p>
+								<p id = "price@product.getId()">@product.PriceToString()</p>
 							</td>
 							<td class="cart_quantity">
 								<div class="cart_quantity_button">
-									<a class="cart_quantity_up" href=""> + </a>
-									<input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-									<a class="cart_quantity_down" href=""> - </a>
+									<a id="add" class="cart_quantity_up" ONCLICK="add(@product.getId())"> + </a>
+									<input id="countP@product.getId()" class="cart_quantity_input"  type="text" name="quantity" value="@product.getCount()" autocomplete="off" size="2" readonly>
+									<a id="sub" class="cart_quantity_down" ONCLICK="sub(@product.getId())"> - </a>
 								</div>
 							</td>
 							<td class="cart_total">
-								<p class="cart_total_price">$59</p>
+								<p id = "total@product.getId()" class="cart_total_price">@product.GetTotal()</p>
 							</td>
 							<td class="cart_delete">
-								<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
+								<a class="cart_quantity_delete" ONCLICK="deleteP(@product.getId())"><i class="fa fa-times"></i></a>
 							</td>
 						</tr>
-
-						<tr>
-							<td class="cart_product">
-								<a href=""><img src="images/cart/two.png" alt=""></a>
-							</td>
-							<td class="cart_description">
-								<h4><a href="">Colorblock Scuba</a></h4>
-								<p>Web ID: 1089772</p>
-							</td>
-							<td class="cart_price">
-								<p>$59</p>
-							</td>
-							<td class="cart_quantity">
-								<div class="cart_quantity_button">
-									<a class="cart_quantity_up" href=""> + </a>
-									<input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-									<a class="cart_quantity_down" href=""> - </a>
-								</div>
-							</td>
-							<td class="cart_total">
-								<p class="cart_total_price">$59</p>
-							</td>
-							<td class="cart_delete">
-								<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-							</td>
-						</tr>
-						<tr>
-							<td class="cart_product">
-								<a href=""><img src="images/cart/three.png" alt=""></a>
-							</td>
-							<td class="cart_description">
-								<h4><a href="">Colorblock Scuba</a></h4>
-								<p>Web ID: 1089772</p>
-							</td>
-							<td class="cart_price">
-								<p>$59</p>
-							</td>
-							<td class="cart_quantity">
-								<div class="cart_quantity_button">
-									<a class="cart_quantity_up" href=""> + </a>
-									<input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-									<a class="cart_quantity_down" href=""> - </a>
-								</div>
-							</td>
-							<td class="cart_total">
-								<p class="cart_total_price">$59</p>
-							</td>
-							<td class="cart_delete">
-								<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-							</td>
-						</tr>
+						}
 						<tr>
 							<td colspan="4">&nbsp;</td>
 							<td colspan="2">
 								<table class="table table-condensed total-result">
 									<tr>
-										<td>Cart Sub Total</td>
-										<td>$59</td>
+										<td>Count Products</td>
+										<td id="counttotal">@cartProducts.GetProductsTotal()</td>
 									</tr>
 									<tr>
-										<td>Exo Tax</td>
-										<td>$2</td>
+										<td>Total </td>
+										<td id = "pricetotal">@cartProducts.GetPricesTotal()</td>
 									</tr>
 									<tr class="shipping-cost">
 										<td>Shipping Cost</td>
 										<td>Free</td>										
 									</tr>
 									<tr>
-										<td>Total</td>
-										<td><span>$61</span></td>
+										<td>Total Cart</td>
+										<td><span id ="carttotal">@cartProducts.GetPricesTotal()</span></td>
 									</tr>
 								</table>
 								<a class="btn btn-primary" href="">Payment</a>
@@ -189,4 +147,94 @@
 				</table>
 			</div>
 	</section> <!--/#cart_items-->
+	
+	<script>
+	function add(id)
+	{
+		var total = '#total' + id;
+		var name = 'countP' + id;
+		var count = parseInt(document.getElementById(name).value);
+		count = count +1;
+		document.getElementById(name).value = count;
+		console.log(count);
+		
+		var d = {'id': id};
+		console.log(JSON.stringify(d));
+		$.ajax({
+	        type : 'POST',
+	        url : 'http://localhost:9000/cart/add',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : JSON.stringify(d),
+	        success : function(data) {
+	        	console.log(data);
+	        	var price = data['total'];
+	        	var priceName = '#total'+id;
+				$(priceName).html(price);
+				
+				
+				$('#counttotal').html(data['count']);
+				$('#pricetotal').html(data['totalCart']);
+				$('#carttotal').html(data['totalCart']);
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
+		
+	}
+	function sub(id)
+	{
+		var name = 'countP' + id;
+		var count = parseInt(document.getElementById(name).value);
+		if(count > 1)
+			count = count-1;
+		document.getElementById(name).value = count;
+		console.log(count);
+		var d = {'id': id};
+		console.log(JSON.stringify(d));
+		$.ajax({
+	        type : 'POST',
+	        url : 'http://localhost:9000/cart/sub',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : JSON.stringify(d),
+	        success : function(data) {
+	        	console.log(data);
+	        	var price = data['total'];
+	        	var priceName = '#total'+id;
+				$(priceName).html(price);
+				
+				$('#counttotal').html(data['count']);
+				$('#pricetotal').html(data['totalCart']);
+				$('#carttotal').html(data['totalCart']);
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
+	}
+	function deleteP(id)
+	{
+		var name = '#' + id;
+		$(name).remove();
+		var d = {'id': id};
+		console.log(JSON.stringify(d));
+		$.ajax({
+	        type : 'POST',
+	        url : 'http://localhost:9000/cart/delete',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : JSON.stringify(d),
+	        success : function(data) {
+	        	$('#counttotal').html(data['count']);
+				$('#pricetotal').html(data['totalCart']);
+				$('#carttotal').html(data['totalCart']);
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
+	}
+	</script>
 }

@@ -1,5 +1,6 @@
 package models;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +26,13 @@ public class CartProducts {
 	
 	public List<ProductCart> getProducts() {
 		return products;
+		
 	}
 
 	public void setProducts(List<ProductCart> products) {
 		this.products = products;
 	}
+	
 	
 	public void AddProduct(ProductCart product)
 	{
@@ -102,7 +105,7 @@ public class CartProducts {
 			if(pro.getId() == id)
 			{
 				int count = pro.getCount();
-				if(count > 0)
+				if(count > 1)
 					count = count - 1;
 				temp.get(i).setCount(count);
 			}
@@ -110,6 +113,61 @@ public class CartProducts {
 		}
 		this.products = temp;
 	}
+	public void DeleteCountProduct(int id)
+	{
+		List<ProductCart> temp = new ArrayList<ProductCart>();
+		for(ProductCart pro : this.products)
+		{
+			if(pro.getId() != id)
+			{
+				temp.add(pro);
+			}
+		}
+		this.products = new ArrayList<ProductCart>();
+		this.products = temp;
+	}
 	
+	public String GetProductsTotal()
+	{
+		int sum=0;
+		for(ProductCart pro : this.products){
+			sum += pro.getCount();
+		}
+		return Integer.toString(sum);
+	}
 	
+	public static String priceWithDecimal (float price) {
+	    DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+	    return formatter.format(price);
+	}
+
+	public static String priceWithoutDecimal (float price) {
+	    DecimalFormat formatter = new DecimalFormat("###,###,###.##");
+	    return formatter.format(price);
+	}
+	
+	public String GetPricesTotal()
+	{
+		float sum=0;
+		for(ProductCart pro : this.products){
+			sum += pro.getCount() * pro.getPrice();
+		}
+		String toShow = priceWithoutDecimal(sum);
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(sum);
+	    } else {
+	        return priceWithoutDecimal(sum);
+	    }
+		
+	}
+	
+	public String GetTotalProduct(int id)
+	{
+		String total = "";
+		for(ProductCart pro : this.products){
+			if(pro.getId() == id)
+				total = pro.GetTotal();
+		}
+		return total;
+	}
 }

@@ -80,4 +80,16 @@ public class ProductCart {
 		else
 			this.price = product.getPrice();
 	}
+
+	public String GetTotal()
+	{
+		float total = this.price * this.count;
+		String toShow = priceWithoutDecimal(total);
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(total);
+	    } else {
+	        return priceWithoutDecimal(total);
+	    }
+	}
+	
 }
