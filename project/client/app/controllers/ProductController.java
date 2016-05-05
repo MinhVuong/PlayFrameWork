@@ -154,4 +154,13 @@ public class ProductController extends Controller{
 		else
 			return ok(checkout.render(user1, menu1.getCategories(), menu1.getCategoryProducts(), productsS));
 	}
+	
+	public Result checkoutSuccess()
+	{
+		return ok("checkout success");
+	}
+	public Result checkoutFail()
+	{
+		return ok("checkout fail");
+	}
 }

@@ -232,4 +232,11 @@ public class AccountController extends Controller {
 		pakage.setAddress(addressP);
 		return ok(Json.toJson(pakage));
 	}
+	
+	public Result address(int id)
+	{
+		AddressEntity entity = new AddressEntity();
+		entity = addressS.GetAddress(id);
+		return ok(Json.toJson(entity));
+	}
 }

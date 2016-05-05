@@ -92,4 +92,13 @@ public class ProductCart {
 	    }
 	}
 	
+	public float GetPriceUS()
+	{
+		float result = 30.5f;
+		int us = 22325;
+		result = (price*count)/us;
+		result = (float)Math.round(result*10)/10; 
+		return result;
+	}
+	
 }

@@ -170,4 +170,17 @@ public class CartProducts {
 		}
 		return total;
 	}
+
+	public int GetRowProduct(ProductCart item)
+	{
+		int row=1;
+		for(ProductCart pro : this.products){
+			if(pro.getId() == item.getId())
+			{
+				return row;
+			}
+			row++;
+		}
+		return row;
+	}
 }

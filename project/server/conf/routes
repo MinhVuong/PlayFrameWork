@@ -22,6 +22,7 @@ GET		/infor/:id						controllers.AccountController.infor(id: String)
 POST	/updateInfor					controllers.AccountController.updateInfor
 POST	/updateAddress					controllers.AccountController.updateAddress
 POST	/changePass						controllers.AccountController.changePass
+GET		/address/:id					controllers.AccountController.address(id: Integer)
 
 
 POST	/productList					controllers.ProductController.productList
@@ -31,6 +32,7 @@ POST	/productListAjax				controllers.ProductController.productListAjax
 GET		/category/:id					controllers.ProductController.category(id: Integer)
 GET		/categoryProduct/:id/:idp		controllers.ProductController.categoryProduct(id: Integer, idp: Integer)
 GET		/product/:id					controllers.ProductController.product(id: Integer)
+
 
 
 

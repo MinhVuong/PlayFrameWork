@@ -6,7 +6,7 @@
 @import models.CartProducts;
 
 @(user: User, categoriesM: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]], cartProducts: CartProducts)
-@main("Product | Cart") {
+@main("Product | Checkout") {
 <section id="cart_items">
 		<div class="container">
 			<div class="breadcrumbs">
@@ -23,40 +23,21 @@
 
 			<div class="shopper-informations">
 				<div class="row">
-					<div class="col-sm-3">
-						<div class="shopper-info">
-							<p>Address Billing</p>
-							<form>
-								<input type="text" placeholder="First Name">
-								<input type="text" placeholder="Last Name">
-								<input type="text" placeholder="Phone">
-								<input type="text" placeholder="Address">
-								<select>
-										<option>-- City --</option>
-										<option>Há»“ ChÃ­ Minh</option>
-										<option>Ä�Ã  Náºµng</option>
-										<option>HÃ  Ná»™i</option>
-										<option>KhÃ¡c</option>
-								</select>
-							</form>
-						</div>
-					</div>
 					<div class="col-sm-5 clearfix">
 						<div class="bill-to">
 							<p>Address Shipping To</p>
 							<div class="form-one">
 								<form>
-								<input type="text" placeholder="First Name">
-								<input type="text" placeholder="Last Name">
-								<input type="text" placeholder="Phone">
-								<input type="text" placeholder="Address">
-								<select>
-										<option>-- City --</option>
-										<option>Ho Chi Minh</option>
-										<option>Da Nang</option>
-										<option>Ha Noi</option>
-										<option>Khac</option>
-								</select>
+								<input id="first" type="text" placeholder="First Name" required>
+								<input id="last" type="text" placeholder="Last Name" required>
+								<input id="phone" type="text" placeholder="Phone" required>
+								<input id="street" type="text" placeholder="Address" required>
+								<input id="city" type="text" placeholder="City" required>
+								
+								<span>
+										<input id="edit" type="checkbox" onchange="Edit(@user.getId())" >
+										Use Address of User<br>
+										</span>
 								</form>
 							</div>
 							
@@ -140,7 +121,22 @@
 										<td><span id ="carttotal">@cartProducts.GetPricesTotal()</span></td>
 									</tr>
 								</table>
-								<a class="btn btn-primary" href="">Payment</a>
+								<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="POST">
+								
+								  @for(product <- cartProducts.getProducts()){
+								  <input type="hidden" name="item_number_@cartProducts.GetRowProduct(product)" value="@product.getId()" />
+								  <input type="hidden" name="item_name_@cartProducts.GetRowProduct(product)" value="@product.getName()" />
+								  <input type="hidden" name="quantity_@cartProducts.GetRowProduct(product)" value="@product.getCount()" />
+								  <input type="hidden" name="amount_@cartProducts.GetRowProduct(product)" value="@product.GetPriceUS()" />
+								  
+								  }
+								  <input type="hidden" name="cmd" value="_cart" />
+								  <input type="hidden" name="business" value="shoper_@@gmail.com" />
+								  <input type="hidden" name="return" value="http://localhost:9000/checkout/success" />
+								  <input type="hidden" name="cancel" value="http://localhost:9000/checkout/fail" />
+								  <input type="hidden" name="upload" value="1" />
+								  <input type="image" src="http://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" />
+								</form>
 							</td>
 						</tr>
 					</tbody>
@@ -235,6 +231,39 @@
 	        	alert('Failed!'); 
 	        }
 	    });
+	}
+	
+	function Edit(id)
+	{
+		if(edit.checked){
+			
+			$.ajax({
+		        type : 'GET',
+		        url : 'http://localhost:9001/address/'+ id,
+		        dataType: 'json',
+		        contentType: 'application/json; charset=utf-8',
+		        data : '',
+		        success : function(data) {
+		        	
+		        	$('#first').val(data['firstName']);
+		        	$('#last').val(data['lastName']);
+		        	$('#phone').val(data['phone']);
+		        	$('#street').val(data['street']);
+		        	$('#city').val(data['city']);
+		        },
+		        error: function() { 
+		        	alert('Failed!'); 
+		        }
+		    });
+			
+		}else{
+			
+			$('#first').val("");
+        	$('#last').val("");
+        	$('#phone').val("");
+        	$('#street').val("");
+        	$('#city').val("");
+		}
 	}
 	</script>
 }

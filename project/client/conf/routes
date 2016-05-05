@@ -30,6 +30,8 @@ POST	/cart/add			controllers.ProductController.cartAdd()
 POST	/cart/sub			controllers.ProductController.cartSub()
 POST	/cart/delete		controllers.ProductController.cartDelete()
 GET		/checkout			controllers.ProductController.checkout()
+GET		/checkout/success	controllers.ProductController.checkoutSuccess()
+GET		/checkout/fail		controllers.ProductController.checkoutFail()
 
 GET		/forgot					controllers.AccountController.forgot
 
