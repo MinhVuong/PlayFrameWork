@@ -1,6 +1,9 @@
 package models;
 
 import java.text.DecimalFormat;
+import java.util.List;
+
+import entities.ProductCountEntity;
 
 public class ProductCart {
 	private int id;
@@ -8,17 +11,22 @@ public class ProductCart {
 	private float price;
 	private String image;
 	private int count;
+	private String color;
+	List<ProductCountEntity> counts;
+	
 	public ProductCart() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public ProductCart(int id, String name, float price, String image, int count) {
+	public ProductCart(int id, String name, float price, String image, int count, List<ProductCountEntity> counts, String color) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.image = image;
 		this.count = count;
+		this.counts = counts;
+		this.color = color;
 	}
 	public int getId() {
 		return id;
@@ -34,6 +42,21 @@ public class ProductCart {
 	}
 	public float getPrice() {
 		return price;
+	}
+	
+	
+	
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
+	public List<ProductCountEntity> getCounts() {
+		return counts;
+	}
+	public void setCounts(List<ProductCountEntity> counts) {
+		this.counts = counts;
 	}
 	public static String priceWithDecimal (float price) {
 	    DecimalFormat formatter = new DecimalFormat("###,###,###.00");
@@ -68,13 +91,44 @@ public class ProductCart {
 		this.count = count;
 	}
 	
+	public String GetPriceByColor(String color)
+	{
+		float money = 0f;
+		for(ProductCountEntity pro : this.counts)
+		{
+			if(pro.getKey().equals(color))
+			{
+				money = pro.getPrice();
+				this.color = color;
+			}
+		}
+		String toShow = priceWithoutDecimal(money);
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(money);
+	    } else {
+	        return priceWithoutDecimal(money);
+	    }
+	}
+	public String GetPriceByDefault()
+	{
+		
+		ProductCountEntity pro = this.counts.get(0);
+		
+		String toShow = priceWithoutDecimal(pro.getPrice());
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(pro.getPrice());
+	    } else {
+	        return priceWithoutDecimal(pro.getPrice());
+	    }
+	}
 	
-	public void ConvertFromProductEntity(ProductEntity product)
+	public void ConvertFromProductEntity(ProductEntity product, List<ProductCountEntity> counts)
 	{
 		this.id = product.getId();
 		this.name = product.getName();
 		this.count = 1;
 		this.image = product.getImage();
+		this.counts = counts;
 		if(product.getIsSale() ==  1)
 			this.price = product.getPriceSale();
 		else
@@ -83,7 +137,27 @@ public class ProductCart {
 
 	public String GetTotal()
 	{
-		float total = this.price * this.count;
+		float total = 0f;
+		ProductCountEntity pro = this.counts.get(0);
+		total = pro.getPrice() * this.count;
+		
+		String toShow = priceWithoutDecimal(total);
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(total);
+	    } else {
+	        return priceWithoutDecimal(total);
+	    }
+	}
+	
+	public String GetTotal(String color)
+	{
+		float total = 0f;
+		for(ProductCountEntity pro: this.counts){
+			if(pro.getKey().equals(color))
+				total = pro.getPrice();
+		}
+		total = total * this.count;
+		
 		String toShow = priceWithoutDecimal(total);
 	    if (toShow.indexOf(".") > 0) {
 	        return priceWithDecimal(total);

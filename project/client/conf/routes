@@ -26,8 +26,9 @@ GET		/categoryProduct/:id/:idp	controllers.HomeController.categoryProduct(id: In
 
 
 GET		/cart				controllers.ProductController.cart(id: Integer ?= 0)
-POST	/cart/add			controllers.ProductController.cartAdd()
-POST	/cart/sub			controllers.ProductController.cartSub()
+GET		/getPriceByColor/:color/:id	controllers.ProductController.getPriceByColor(color: String, id: Integer)
+POST	/cart/add/:key		controllers.ProductController.cartAdd(key: String)
+POST	/cart/sub/:key		controllers.ProductController.cartSub(key: String)
 POST	/cart/delete		controllers.ProductController.cartDelete()
 GET		/checkout			controllers.ProductController.checkout()
 GET		/checkout/success	controllers.ProductController.checkoutSuccess()

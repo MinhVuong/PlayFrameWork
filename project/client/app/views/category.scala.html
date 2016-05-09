@@ -39,7 +39,7 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="logo pull-left">
-							<a href="index.html"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
+							<a href="@routes.HomeController.index()"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
 						</div>
 						<div  class="btn-group pull-left">
 							<div class="btn-group">
@@ -56,7 +56,7 @@
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
 								
-								<li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+								<li><a href="@routes.ProductController.cart()"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 								@if(user.getId() == 0) {
 								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> Login</a></li>
 								} else {
@@ -85,13 +85,13 @@
 						</div>
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a href="index.html" class="active">Home</a></li>
+								<li><a href="@routes.HomeController.index()" class="active">Home</a></li>
 								@for(category <- categoriesM){
-									<li class="dropdown"><a href="#">@category.getName()<i class="fa fa-angle-down"></i></a>
+									<li class="dropdown"><a href="@routes.HomeController.category(category.getId())">@category.getName()<i class="fa fa-angle-down"></i></a>
 										<ul role="menu" class="sub-menu">
 											@defining(productCategories.get(category.getNumberRow())) { cP =>
 												@for(cp <- cP){
-													<li><a href="#">@cp.getName()</a></li>
+													<li><a href="@routes.HomeController.categoryProduct(category.getId(), cp.getId())">@cp.getName()</a></li>
 												}
 											}
 										</ul>
@@ -192,7 +192,7 @@
 													<img src=@routes.Assets.versioned(product.getImage()) alt="" />
 													<h2>@product.priceToString() <small>vnd</small></h2>
 													<p>@product.getName()</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+													<a href="@routes.ProductController.cart(product.getId())" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 												</div>
 												
 											</div>

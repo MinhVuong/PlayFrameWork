@@ -38,7 +38,7 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="logo pull-left">
-							<a href="index.html"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
+							<a href="@routes.HomeController.index()"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
 						</div>
 						<div  class="btn-group pull-left">
 							<div class="btn-group">
@@ -55,7 +55,7 @@
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
 								
-								<li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+								<li><a href="@routes.ProductController.cart()"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 								@if(user.getId() == 0) {
 								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> Login</a></li>
 								} else {
@@ -84,13 +84,13 @@
 						</div>
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a href="index.html" class="active">Home</a></li>
+								<li><a href="@routes.HomeController.index()" class="active">Home</a></li>
 								@for(category <- categoriesM){
-									<li class="dropdown"><a href="#">@category.getName()<i class="fa fa-angle-down"></i></a>
+									<li class="dropdown"><a href="@routes.HomeController.category(category.getId())">@category.getName()<i class="fa fa-angle-down"></i></a>
 										<ul role="menu" class="sub-menu">
 											@defining(productCategories.get(category.getNumberRow())) { cP =>
 												@for(cp <- cP){
-													<li><a href="#">@cp.getName()</a></li>
+													<li><a href="@routes.HomeController.categoryProduct(category.getId(), cp.getId())">@cp.getName()</a></li>
 												}
 											}
 										</ul>
@@ -125,7 +125,8 @@
 					<thead>
 						<tr class="cart_menu">
 							<td class="image">Item</td>
-							<td class="description"></td>
+							<td class="description">Desciption</td>
+							<td class="color">Color</td>
 							<td class="price">Price</td>
 							<td class="quantity">Quantity</td>
 							<td class="total">Total</td>
@@ -142,8 +143,17 @@
 								<h4><a href="">@product.getName()</a></h4>
 								<p>Product ID: @product.getId()</p>
 							</td>
+							<td class="cart_color">
+								
+								<select id = "color@product.getId()" onchange="getval(this, @product.getId())">
+									@for(colors <- product.getCounts()){
+										<option value="@colors.getKey()">@colors.getValue()</option>
+									}							  
+								  
+								</select>
+							</td>
 							<td class="cart_price">
-								<p id = "price@product.getId()">@product.PriceToString()</p>
+								<p id = "price@product.getId()">@product.GetPriceByDefault()</p>
 							</td>
 							<td class="cart_quantity">
 								<div class="cart_quantity_button">
@@ -193,6 +203,11 @@
 	<script>
 	function add(id)
 	{
+		var color = "color"+id;
+		var e = document.getElementById(color);
+		var key = e.options[e.selectedIndex].value;
+		
+		
 		var total = '#total' + id;
 		var name = 'countP' + id;
 		var count = parseInt(document.getElementById(name).value);
@@ -204,7 +219,7 @@
 		console.log(JSON.stringify(d));
 		$.ajax({
 	        type : 'POST',
-	        url : 'http://localhost:9000/cart/add',
+	        url : 'http://localhost:9000/cart/add/'+key,
 	        dataType: 'json',
 	        contentType: 'application/json; charset=utf-8',
 	        data : JSON.stringify(d),
@@ -227,6 +242,10 @@
 	}
 	function sub(id)
 	{
+		var color = "color"+id;
+		var e = document.getElementById(color);
+		var key = e.options[e.selectedIndex].value;
+		
 		var name = 'countP' + id;
 		var count = parseInt(document.getElementById(name).value);
 		if(count > 1)
@@ -237,7 +256,7 @@
 		console.log(JSON.stringify(d));
 		$.ajax({
 	        type : 'POST',
-	        url : 'http://localhost:9000/cart/sub',
+	        url : 'http://localhost:9000/cart/sub/' + key,
 	        dataType: 'json',
 	        contentType: 'application/json; charset=utf-8',
 	        data : JSON.stringify(d),
@@ -277,6 +296,28 @@
 	        	alert('Failed!'); 
 	        }
 	    });
+	}
+	
+	function getval(sel, id) {
+	    var price = '#price'+id;   
+		$.ajax({
+		        type : 'GET',
+		        url : 'http://localhost:9000/getPriceByColor/'+sel.value + '/' + id,
+		        dataType: 'json',
+		        contentType: 'application/json; charset=utf-8',
+		        data : {},
+		        success : function(data) {
+		        	console.log(data);
+		        	$(price).html(data['price']);
+		        	var priceName = '#total'+id;
+					$(priceName).html(data['total']);
+		        	$('#pricetotal').html(data['totalCart']);
+					$('#carttotal').html(data['totalCart']);
+		        },
+		        error: function() { 
+		        	alert('Failed!'); 
+		        }
+		    });
 	}
 	
 	</script>

@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import entities.CategoryEntity;
 import entities.CategoryProductEntity;
+import entities.ProductCountEntity;
 import entities.ProductEntity;
 import pakageResult.CategoryProduct2Pakage;
 import pakageResult.CategoryProductPakage;
@@ -30,6 +31,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
+import services.ProductCountService;
 import services.ProductService;
 
 
@@ -37,7 +39,7 @@ import services.ProductService;
 public class ProductController extends Controller{
 
 	private ProductService productS = new ProductService();
-	
+	private ProductCountService productCountS = new ProductCountService();
 	
 	
 	public Result productList()
@@ -171,8 +173,11 @@ public class ProductController extends Controller{
 			return ok(Json.toJson(pakage));
 		}
 		ProductEntity product = productS.GetProductById(id);
+		
 		ProductCart productC = new ProductCart();
-		productC.ConvertFromProductEntity(product);
+		List<ProductCountEntity> counts = productCountS.GetListCountsProductById(id);
+		
+		productC.ConvertFromProductEntity(product, counts);
 		if(product != null)
 		{
 			pakage.setType(1);

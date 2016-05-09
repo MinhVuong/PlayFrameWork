@@ -237,6 +237,8 @@ public class AccountController extends Controller {
 	{
 		AddressEntity entity = new AddressEntity();
 		entity = addressS.GetAddress(id);
+		if(entity == null)
+			entity = new AddressEntity();
 		return ok(Json.toJson(entity));
 	}
 }

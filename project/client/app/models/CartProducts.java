@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.ProductCountEntity;
+
 public class CartProducts {
 	private List<ProductCart> products;
 
@@ -146,11 +148,31 @@ public class CartProducts {
 	    return formatter.format(price);
 	}
 	
+	public String GetPricesTotal(String color)
+	{
+		float sum=0;
+		for(ProductCart pro : this.products){
+			for(ProductCountEntity colors : pro.getCounts()){
+				if(colors.getKey().equals(color)){
+					sum += pro.getCount() * colors.getPrice();break;
+				}
+			}
+			
+		}
+		String toShow = priceWithoutDecimal(sum);
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(sum);
+	    } else {
+	        return priceWithoutDecimal(sum);
+	    }
+		
+	}
 	public String GetPricesTotal()
 	{
 		float sum=0;
 		for(ProductCart pro : this.products){
-			sum += pro.getCount() * pro.getPrice();
+			ProductCountEntity price = pro.counts.get(0);
+			sum += pro.getCount() * price.getPrice();
 		}
 		String toShow = priceWithoutDecimal(sum);
 	    if (toShow.indexOf(".") > 0) {
@@ -161,12 +183,13 @@ public class CartProducts {
 		
 	}
 	
-	public String GetTotalProduct(int id)
+	
+	public String GetTotalProduct(int id, String color)
 	{
 		String total = "";
 		for(ProductCart pro : this.products){
 			if(pro.getId() == id)
-				total = pro.GetTotal();
+				total = pro.GetTotal(color);
 		}
 		return total;
 	}
@@ -182,5 +205,15 @@ public class CartProducts {
 			row++;
 		}
 		return row;
+	}
+	public String getPriceByColor(String color, int id)
+	{
+		for(ProductCart pro : this.products){
+			if(pro.getId() == id)
+			{
+				return pro.GetPriceByColor(color);
+			}
+		}
+		return "";
 	}
 }

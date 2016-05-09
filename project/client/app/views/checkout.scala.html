@@ -7,6 +7,112 @@
 
 @(user: User, categoriesM: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]], cartProducts: CartProducts)
 @main("Product | Checkout") {
+<header id="header"><!--header-->
+		<div class="header_top"><!--header_top-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="contactinfo">
+							<ul class="nav nav-pills">
+								<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
+								<li><a href="#"><i class="fa fa-envelope"></i> websmartphone527@@domain.com</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="social-icons pull-right">
+							<ul class="nav navbar-nav">
+								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+								<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header_top-->
+		
+		<div class="header-middle"><!--header-middle-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="logo pull-left">
+							<a href="@routes.HomeController.index()"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
+						</div>
+						<div  class="btn-group pull-left">
+							<div class="btn-group">
+								<select style="margin-left:10px; margin-top:10px">
+								  <option value="volvo">USD</option>
+								  <option value="saab">VND</option>
+								</select>
+								
+							</div>
+							
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<div class="shop-menu pull-right">
+							<ul class="nav navbar-nav">
+								
+								<li><a href="@routes.ProductController.cart()"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+								@if(user.getId() == 0) {
+								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> Login</a></li>
+								} else {
+								
+								<li><a href="@routes.AccountController.infor()"><i class="fa fa-user"></i> @user.getFirstName()</a></li>
+								<li><a href="@routes.AccountController.login()"><i class="fa fa-lock"></i> LogOut</a></li>
+								}
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header-middle-->
+	
+		<div class="header-bottom"><!--header-bottom-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-9">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+						</div>
+						<div class="mainmenu pull-left">
+							<ul class="nav navbar-nav collapse navbar-collapse">
+								<li><a href="@routes.HomeController.index()" class="active">Home</a></li>
+								
+									@for(category <- categoriesM){
+									<li class="dropdown"><a href="@routes.HomeController.category(category.getId())">@category.getName()<i class="fa fa-angle-down"></i></a>
+										<ul role="menu" class="sub-menu">
+											@defining(productCategories.get(category.getNumberRow())) { cP =>
+												@for(cp <- cP){
+													<li><a href="@routes.HomeController.categoryProduct(category.getId(), cp.getId())">@cp.getName()</a></li>
+												}
+											}
+										</ul>
+										
+									}
+								
+							</ul>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="search_box pull-right">
+							<input type="text" placeholder="Search"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/header-bottom-->
+		</header><!--/header-->
+
 <section id="cart_items">
 		<div class="container">
 			<div class="breadcrumbs">
@@ -16,11 +122,6 @@
 				</ol>
 			</div><!--/breadcrums-->
 
-			<div class="step-one">
-				<h2 class="heading">Step</h2>
-			</div>
-
-
 			<div class="shopper-informations">
 				<div class="row">
 					<div class="col-sm-5 clearfix">
@@ -28,7 +129,7 @@
 							<p>Address Shipping To</p>
 							<div class="form-one">
 								<form>
-								<input id="first" type="text" placeholder="First Name" required>
+								<input id="first" name="first" type="text" placeholder="First Name" required>
 								<input id="last" type="text" placeholder="Last Name" required>
 								<input id="phone" type="text" placeholder="Phone" required>
 								<input id="street" type="text" placeholder="Address" required>
@@ -37,8 +138,10 @@
 								<span>
 										<input id="edit" type="checkbox" onchange="Edit(@user.getId())" >
 										Use Address of User<br>
-										</span>
+								</span>
+								
 								</form>
+								
 							</div>
 							
 						</div>
@@ -47,11 +150,13 @@
 						<div class="order-message">
 							<p>Payment Method</p>
 								<form>
-									<select>
+									<select id="methodpay">
 										<option selected>PayPal</option>
 										<option>Credit Card</option>
 									</select>
+									
 								</form>
+								<button id="continue"  type="submit" ONCLICK="continueP()" class="btn btn-default" >Continue</button>
 						</div>		
 					</div>					
 				</div>
@@ -121,6 +226,7 @@
 										<td><span id ="carttotal">@cartProducts.GetPricesTotal()</span></td>
 									</tr>
 								</table>
+								<div id = "paypal" style="display:none;">
 								<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="POST">
 								
 								  @for(product <- cartProducts.getProducts()){
@@ -137,6 +243,7 @@
 								  <input type="hidden" name="upload" value="1" />
 								  <input type="image" src="http://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" />
 								</form>
+								</div>
 							</td>
 						</tr>
 					</tbody>
@@ -252,7 +359,7 @@
 		        	$('#city').val(data['city']);
 		        },
 		        error: function() { 
-		        	alert('Failed!'); 
+		        	alert('Did not connect to Server!'); 
 		        }
 		    });
 			
@@ -264,6 +371,52 @@
         	$('#street').val("");
         	$('#city').val("");
 		}
+	}
+	function continueP()
+	{
+		var message = "";
+		var tag = 1;
+		if(document.getElementById('first').value == "")
+		{
+			tag = 0;
+			message = "Please input FistName!";
+		}else{
+			if(document.getElementById('last').value == ""){
+				tag = 0;
+				message = "Please input LastName!";
+			}else{
+				if(document.getElementById('phone').value == ""){
+					tag = 0;
+					message = "Please input Phone!";
+				}else{
+					if(document.getElementById('street').value == ""){
+						tag = 0;
+						message = "Please input Address!";
+					}else{
+						if(document.getElementById('city').value == ""){
+							tag = 0;
+							message = "Please input City!";
+						}else{
+							$('#first').prop('disabled', 'disabled');
+							$('#last').prop('disabled', 'disabled');
+							$('#phone').prop('disabled', 'disabled');
+							$('#street').prop('disabled', 'disabled');
+							$('#city').prop('disabled', 'disabled');
+							$('#methodpay').prop('disabled', 'disabled');
+							document.getElementById('continue').style.display = 'none';
+						}
+					}
+				}
+			}
+		}
+		if(tag==0)
+		{
+			alert(message);
+		}else{
+			document.getElementById('paypal').style.display = 'block';
+		}
+		
+		
 	}
 	</script>
 }

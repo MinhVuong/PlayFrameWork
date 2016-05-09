@@ -1,6 +1,7 @@
 package models;
 
 public class CartEdit {
+	private String price;
 	private String total;
 	private String count;
 	private String totalCart;
@@ -10,11 +11,12 @@ public class CartEdit {
 		// TODO Auto-generated constructor stub
 	}
 
-	public CartEdit(String total, String count, String totalCart) {
+	public CartEdit(String total, String count, String totalCart, String price) {
 		super();
 		this.total = total;
 		this.count = count;
 		this.totalCart = totalCart;
+		this.price = price;
 	}
 
 	public String getTotal() {
@@ -39,6 +41,14 @@ public class CartEdit {
 
 	public void setTotalCart(String totalCart) {
 		this.totalCart = totalCart;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
 	}
 	
 }

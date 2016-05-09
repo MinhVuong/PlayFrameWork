@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import models.CartProducts;
 import models.Category;
 import models.CategoryProduct;
 import entities.CategoryEntity;
@@ -255,4 +256,8 @@ public class ProductService {
 			return null;
 		}
 	}
+	
+	
+	
+	
 }

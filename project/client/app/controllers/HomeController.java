@@ -111,10 +111,8 @@ public class HomeController extends Controller {
     {
     	log.info("Method category: " + id);
     	User user1 = GetUserFromSession();
-    	User user = new User(user1);
     	
 		Menu menu1 = GetMenuFromSession();
-		Menu menu = new Menu(menu1);
 		
     	String url = "http://localhost:9001/category/" + id;
     	
@@ -130,6 +128,9 @@ public class HomeController extends Controller {
             	switch(pakage.getType())
             	{
             	case 1:{
+            		User user = new User(user1);
+            		Menu menu = new Menu(menu1);
+            		
             		List<CategoryProduct> categories = pakage.getCategoryProducts();
             		List<List<ProductEntity>> categoryProducts = pakage.getProductss();
             		String name = pakage.getName();

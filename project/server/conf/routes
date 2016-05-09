@@ -33,6 +33,8 @@ GET		/category/:id					controllers.ProductController.category(id: Integer)
 GET		/categoryProduct/:id/:idp		controllers.ProductController.categoryProduct(id: Integer, idp: Integer)
 GET		/product/:id					controllers.ProductController.product(id: Integer)
 
+POST	/cart							controllers.CartController.cart
+GET		/count							controllers.CartController.count
 
 
 
