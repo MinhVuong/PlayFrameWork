@@ -238,7 +238,7 @@
 											<img width="210" height="165" src=@routes.Assets.versioned(product.getImage()) alt="" />
 											
 											<h2>@product.priceToString() <small>vnd</small></h2>
-											<p id = "nameP">@product.getName()</p>
+											<p>@product.getName()</p>
 										</div>
 										<div class="product-overlay">
 											<div class="overlay-content">
@@ -262,15 +262,20 @@
 						}
 						</div>
 						<div class="pagination">
-					        <a onclick="pageSmart('-1')" class="page">Prev</a>
+					        <li onclick="pageSmartPr(@pageS)" class="page">Prev</li>
 					        @for(page <- 1 until pageS+1){
-					         <a onclick="pageSmart('@page')" class="page">@page</a>
+					         @if(page == 1){
+					         	<li id="pageS@page" onclick="pageSmart(@page, @pageS)" class="page active">@page</li>
+					         }else{
+					         	<li id="pageS@page" onclick="pageSmart(@page, @pageS)" class="page">@page</li>
+					         }
 					        }
-					        <a onclick="pageSmart('0')" class="page">Next</a>
+					        <li onclick="pageSmartNetx(@pageS)" class="page">Next</li>
 					    </div>
 					</div><!--features_items-->
 					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Laptop</h2>
+						<div id="resultL">
 						@for(laptop <- laptops){
 						<div class="col-sm-4" style="width:210px; margin-left: -10px">
 							<div class="product-image-wrapper">
@@ -296,12 +301,17 @@
 							</div>
 						</div>
 						}
+						</div>
 						<div class="pagination">
-					        <a href="#" class="page">Prev</a>
+					        <a onclick="pageLapPre(@pageL)" class="page">Prev</a>
 					        @for(page <- 1 until pageL+1){
-					         <a onclick="pageSmart('@page')" class="page">@page</a>
+					         	@if(page == 1){
+						         	<li id="pageL@page" onclick="pageLap(@page, @pageL)" class="page active">@page</li>
+						         }else{
+						         	<li id="pageL@page" onclick="pageLap(@page, @pageL)" class="page">@page</li>
+						         }
 					        }
-					        <a href="#" class="page">Next</a>
+					        <a onclick="pageLapNext(@pageL)" class="page">Next</a>
 					    </div>
 					</div><!--features_items-->
 					
@@ -311,32 +321,181 @@
 		</div>
 	</section>
 	<script type="text/javascript">
-	var page1 = document.getElementById("page1");
-	var name = document.getElementById("name");
-	function pageSmart(count)
+
+	function pageSmart(count, max)
 	{
-		console.log(JSON.stringify('@user'));
-		
-		var d = {'countSmartphone': "10", 'pageSmartphone': count, 'countLaptop': "10", 'pageLaptop': "1"};
 		$.ajax({
-	        type : 'POST',
-	        url : 'http://localhost:9001/productListAjax',
+	        type : 'GET',
+	        url : 'http://localhost:9001/productListAjax/10/'+count+'/1',
 	        dataType: 'json',
 	        contentType: 'application/json; charset=utf-8',
-	        data : JSON.stringify(d),
+	        data : {},
 	        success : function(data) {
-	            $.each(data, function(index, element) {
-	                console.log(element.name);
+	        	$('#resultS').html('');
+	        	console.log(data);
+	            var products = data['products'];
+	            var html = '';
+	            $.each(products, function(key, item){
+	            	html += '<div class="col-sm-4" style="width:210px; margin-left: -10px">';
+	            	html += '<div class="product-image-wrapper">';
+					html += '<div class="single-products">';
+							html += '<div class="productinfo text-center">';
+							html += '<img width="210" height="165" src=/assets/' +item['image'] + ' alt="" />';
+							html += '<h2>'+ item['price'] +'<small>vnd</small></h2>';
+							html += '<p>'+item['name']+'</p>';
+						html += '</div>';
+						html += '<div class="product-overlay">';
+						html += '<div class="overlay-content">';
+						html += '<h2>'+ item['price'] +'<small>vnd</small></h2>';
+						html += '<p>'+ item['name'] +'</p>';
+						html += '</div>';
+						html += '</div>';
+						if(item['isNew'] == 1){
+							html += '<img src="/assets/images/home/new.png" class="new" alt="" />';
+						}else{}
+						
+					html += '</div>';
+					html += '<div class="choose">';
+						html += '<ul class="nav nav-pills nav-justified">';
+							html += '<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>';
+								html += '<li><a href="cart?id='+ item['id']+'"><i class="fa fa-plus-square"></i>Add to cart</a></li>';
+									html += '</ul>';
+										html += '</div>';
+					
+											html += '</div>';
+												html += '</div>';
+	            	console.log(item['name']);
 	            });
-	            
-	           
+	            $('#resultS').html(html);
+	            for (var i = 1; i <= max; i++) {
+	            	var pagea = '#pageS'+i;
+		           	$(pagea).removeAttr("class");
+		           	$(pagea).prop('class','page');
+	            }
+	           	var pagec = '#pageS'+count;
+	            $(pagec).prop('class','page active');
 	        },
 	        error: function() { 
 	        	alert('Failed!'); 
 	        }
 	    });
-		alert(count);
+		//alert(count);
 		//return false;
+	}
+	function pageSmartPr(max){
+		var current = 0;
+		for (var i = 1; i <= max; i++) {
+        	var pagea = '#pageS'+i;
+           	if($(pagea).hasClass('page active'))
+           	{
+           		current = i;
+           	}
+        }
+		if(current > 1){
+			current  = current - 1;
+			pageSmart(current, max);
+		}
+	}
+	function pageSmartNetx(max){
+		
+		var current = 0;
+		for (var i = 1; i <= max; i++) {
+        	var pagea = '#pageS'+i;
+           	if($(pagea).hasClass('page active'))
+           	{
+           		current = i;
+           	}
+        }
+		if(current < max){
+			current  = current + 1;
+			pageSmart(current, max);
+		}
+	}
+	function pageLap(count, max){
+		$.ajax({
+	        type : 'GET',
+	        url : 'http://localhost:9001/productListAjax/10/'+count+'/2',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : {},
+	        success : function(data) {
+	        	$('#resultL').html('');
+	        	console.log(data);
+	            var products = data['products'];
+	            var html = '';
+	            $.each(products, function(key, item){
+	            	html += '<div class="col-sm-4" style="width:210px; margin-left: -10px">';
+	            	html += '<div class="product-image-wrapper">';
+					html += '<div class="single-products">';
+							html += '<div class="productinfo text-center">';
+							html += '<img width="210" height="165" src=/assets/' +item['image'] + ' alt="" />';
+							html += '<h2>'+ item['price'] +'<small>vnd</small></h2>';
+							html += '<p>'+item['name']+'</p>';
+						html += '</div>';
+						html += '<div class="product-overlay">';
+						html += '<div class="overlay-content">';
+						html += '<h2>'+ item['price'] +'<small>vnd</small></h2>';
+						html += '<p>'+ item['name'] +'</p>';
+						html += '</div>';
+						html += '</div>';
+						if(item['isNew'] == 1){
+							html += '<img src="/assets/images/home/new.png" class="new" alt="" />';
+						}else{}
+						
+					html += '</div>';
+					html += '<div class="choose">';
+						html += '<ul class="nav nav-pills nav-justified">';
+							html += '<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>';
+								html += '<li><a href="cart?id='+ item['id']+'"><i class="fa fa-plus-square"></i>Add to cart</a></li>';
+									html += '</ul>';
+										html += '</div>';
+					
+											html += '</div>';
+												html += '</div>';
+	            	console.log(item['name']);
+	            });
+	            $('#resultL').html(html);
+	            for (var i = 1; i <= max; i++) {
+	            	var pagea = '#pageL'+i;
+		           	$(pagea).removeAttr("class");
+		           	$(pagea).prop('class','page');
+	            }
+	           	var pagec = '#pageL'+count;
+	            $(pagec).prop('class','page active');
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
+	}
+	function pageLapPre(max){
+		var current = 0;
+		for (var i = 1; i <= max; i++) {
+        	var pagea = '#pageL'+i;
+           	if($(pagea).hasClass('page active'))
+           	{
+           		current = i;
+           	}
+        }
+		if(current > 1){
+			current  = current - 1;
+			pageLap(current, max);
+		}
+	}
+	function pageLapNext(max){
+		
+		var current = 0;
+		for (var i = 1; i <= max; i++) {
+        	var pagea = '#pageL'+i;
+           	if($(pagea).hasClass('page active'))
+           	{
+           		current = i;
+           	}
+        }
+		if(current < max){
+			current  = current + 1;
+			pageLap(current, max);
+		}
 	}
 	</script>
 	

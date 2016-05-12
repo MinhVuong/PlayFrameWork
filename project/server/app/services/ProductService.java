@@ -9,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import models.CartProducts;
 import models.Category;
 import models.CategoryProduct;
+
 import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 import entities.CustomerEntity;
@@ -72,7 +73,8 @@ public class ProductService {
 			ArrayList<ProductEntity> result1 = new ArrayList<ProductEntity>();
 			for(int i = start; i< end; i++)
 			{
-				result1.add(result.get(i));
+				if(result.size() > i)
+					result1.add(result.get(i));
 			}
 			return result1;
 			

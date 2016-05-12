@@ -1,5 +1,6 @@
 package models;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import entities.ProductCountEntity;
@@ -66,6 +67,14 @@ public class ProductCart {
 	public void setCounts(List<ProductCountEntity> counts) {
 		this.counts = counts;
 	}
+	
+	
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
 	public void ConvertFromProductEntity(ProductEntity product, List<ProductCountEntity> counts)
 	{
 		this.id = product.getId();
@@ -80,5 +89,33 @@ public class ProductCart {
 			this.price = product.getPriceSale();
 		else
 			this.price = product.getPrice();
+	}
+	
+	public static String priceWithDecimal (float price) {
+	    DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+	    return formatter.format(price);
+	}
+
+	public static String priceWithoutDecimal (float price) {
+	    DecimalFormat formatter = new DecimalFormat("###,###,###.##");
+	    return formatter.format(price);
+	}
+	
+	public String priceToString() {
+	    String toShow = priceWithoutDecimal(this.price);
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(price);
+	    } else {
+	        return priceWithoutDecimal(price);
+	    }
+	}
+	
+	public String priceToString(float money) {
+	    String toShow = priceWithoutDecimal(money);
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(money);
+	    } else {
+	        return priceWithoutDecimal(money);
+	    }
 	}
 }

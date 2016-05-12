@@ -27,14 +27,14 @@ GET		/address/:id					controllers.AccountController.address(id: Integer)
 
 POST	/productList					controllers.ProductController.productList
 
-POST	/productListAjax				controllers.ProductController.productListAjax
+GET	/productListAjax/:count/:page/:cate			controllers.ProductController.productListAjax(count: Integer, page: Integer, cate:Integer)
 
 GET		/category/:id					controllers.ProductController.category(id: Integer)
 GET		/categoryProduct/:id/:idp		controllers.ProductController.categoryProduct(id: Integer, idp: Integer)
 GET		/product/:id					controllers.ProductController.product(id: Integer)
 
 POST	/cart							controllers.CartController.cart
-GET		/count							controllers.CartController.count
+GET		/color							controllers.CartController.count
 
 
 

@@ -192,16 +192,16 @@
 							</td>
 							<td class="cart_quantity">
 								<div class="cart_quantity_button">
-									<a id="add" class="cart_quantity_up" ONCLICK="add(@product.getId())"> + </a>
+									
 									<input id="countP@product.getId()" class="cart_quantity_input"  type="text" name="quantity" value="@product.getCount()" autocomplete="off" size="2" readonly>
-									<a id="sub" class="cart_quantity_down" ONCLICK="sub(@product.getId())"> - </a>
+									
 								</div>
 							</td>
 							<td class="cart_total">
 								<p id = "total@product.getId()" class="cart_total_price">@product.GetTotal()</p>
 							</td>
 							<td class="cart_delete">
-								<a class="cart_quantity_delete" ONCLICK="deleteP(@product.getId())"><i class="fa fa-times"></i></a>
+								
 							</td>
 						</tr>
 						}
@@ -252,93 +252,6 @@
 	</section> <!--/#cart_items-->
 	
 	<script>
-	function add(id)
-	{
-		var total = '#total' + id;
-		var name = 'countP' + id;
-		var count = parseInt(document.getElementById(name).value);
-		count = count +1;
-		document.getElementById(name).value = count;
-		console.log(count);
-		
-		var d = {'id': id};
-		console.log(JSON.stringify(d));
-		$.ajax({
-	        type : 'POST',
-	        url : 'http://localhost:9000/cart/add',
-	        dataType: 'json',
-	        contentType: 'application/json; charset=utf-8',
-	        data : JSON.stringify(d),
-	        success : function(data) {
-	        	console.log(data);
-	        	var price = data['total'];
-	        	var priceName = '#total'+id;
-				$(priceName).html(price);
-				
-				
-				$('#counttotal').html(data['count']);
-				$('#pricetotal').html(data['totalCart']);
-				$('#carttotal').html(data['totalCart']);
-	        },
-	        error: function() { 
-	        	alert('Failed!'); 
-	        }
-	    });
-		
-	}
-	function sub(id)
-	{
-		var name = 'countP' + id;
-		var count = parseInt(document.getElementById(name).value);
-		if(count > 1)
-			count = count-1;
-		document.getElementById(name).value = count;
-		console.log(count);
-		var d = {'id': id};
-		console.log(JSON.stringify(d));
-		$.ajax({
-	        type : 'POST',
-	        url : 'http://localhost:9000/cart/sub',
-	        dataType: 'json',
-	        contentType: 'application/json; charset=utf-8',
-	        data : JSON.stringify(d),
-	        success : function(data) {
-	        	console.log(data);
-	        	var price = data['total'];
-	        	var priceName = '#total'+id;
-				$(priceName).html(price);
-				
-				$('#counttotal').html(data['count']);
-				$('#pricetotal').html(data['totalCart']);
-				$('#carttotal').html(data['totalCart']);
-	        },
-	        error: function() { 
-	        	alert('Failed!'); 
-	        }
-	    });
-	}
-	function deleteP(id)
-	{
-		var name = '#' + id;
-		$(name).remove();
-		var d = {'id': id};
-		console.log(JSON.stringify(d));
-		$.ajax({
-	        type : 'POST',
-	        url : 'http://localhost:9000/cart/delete',
-	        dataType: 'json',
-	        contentType: 'application/json; charset=utf-8',
-	        data : JSON.stringify(d),
-	        success : function(data) {
-	        	$('#counttotal').html(data['count']);
-				$('#pricetotal').html(data['totalCart']);
-				$('#carttotal').html(data['totalCart']);
-	        },
-	        error: function() { 
-	        	alert('Failed!'); 
-	        }
-	    });
-	}
 	
 	function Edit(id)
 	{

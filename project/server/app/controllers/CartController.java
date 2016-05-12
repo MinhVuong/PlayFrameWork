@@ -53,7 +53,7 @@ public class CartController extends Controller{
 	
 	public Result count()
 	{
-		int count = productCountS.GetCountProductById(1);
+		int count = productCountS.GetCountProductById(1, "B");
 		return ok(Integer.toString(count));
 	}
 }

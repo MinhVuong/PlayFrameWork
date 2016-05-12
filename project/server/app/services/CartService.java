@@ -1,5 +1,6 @@
 package services;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -42,7 +43,7 @@ public class CartService {
 	public CartEntity CreateCartEntity(CartProducts products, int id)
 	{
 		CartEntity cart = new CartEntity();
-		cart.setId(id);
+		cart.setCustomerId(id);
 		
 		String ids = "";
 		String names = "";
@@ -61,14 +62,14 @@ public class CartService {
 			counts += Integer.toString(pro.getCount());
 			counts += ";";
 			
-			prices += Float.toString(pro.getPrice());
+			prices += pro.priceToString();
 			prices += ";";
 			
 			count_Total += pro.getCount();
 			price_Total += pro.getPrice();
 		}
 		cart.setCountTotal(count_Total);
-		cart.setPriceTotal(price_Total);
+		cart.setPriceTotal(priceToString(price_Total));
 		cart.setProductId(ids);
 		cart.setProductName(names);
 		cart.setProductCount(counts);
@@ -77,5 +78,24 @@ public class CartService {
 		cart.setCreateAt(date.getDateTimeCurrent());
 		
 		return cart;
+	}
+	
+	public static String priceWithDecimal (float price) {
+	    DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+	    return formatter.format(price);
+	}
+
+	public static String priceWithoutDecimal (float price) {
+	    DecimalFormat formatter = new DecimalFormat("###,###,###.##");
+	    return formatter.format(price);
+	}	
+	
+	public String priceToString(float money) {
+	    String toShow = priceWithoutDecimal(money);
+	    if (toShow.indexOf(".") > 0) {
+	        return priceWithDecimal(money);
+	    } else {
+	        return priceWithoutDecimal(money);
+	    }
 	}
 }

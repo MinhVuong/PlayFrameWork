@@ -11,6 +11,7 @@ import models.CategoryProduct;
 import models.IndexRequest;
 import models.ListProduct;
 import models.ProductCart;
+import models.IndexPage;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -23,6 +24,7 @@ import pakageResult.CategoryProductPakage;
 import pakageResult.IndexFullPakage;
 import pakageResult.IndexPakage;
 import pakageResult.ProductPakage;
+import pakageResult.IndexPagePakage;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
@@ -132,32 +134,22 @@ public class ProductController extends Controller{
 		return ok(Json.toJson(pakage));
 	}
 	
-	@BodyParser.Of(BodyParser.Json.class)
-	public Result productListAjax()
+	
+	public Result productListAjax(int count, int page, int cate)
 	{
-		JsonNode json = request().body().asJson();
-		IndexRequest indexR = new IndexRequest();
-		if(json == null)
-			return ok("null");
-		
-		String count = json.findPath("countSmartphone").textValue();
-		String page = json.findPath("pageSmartphone").textValue();
-		if(count.equals(null))
-			return ok("null");
-		indexR.setCountSmartphone(Integer.parseInt(count));
-		indexR.setPageSmartphone(Integer.parseInt(page));
 			
-		List<ProductEntity> products =  productS.GetProductsByPage(indexR.getPageSmartphone(), indexR.getCountSmartphone());
-		IndexPakage pakage = new IndexPakage();
+		
+		List<ProductEntity> products =  productS.GetProductsByPage(page, count, cate);
+		IndexPagePakage pakage = new IndexPagePakage();
 		if(products.isEmpty())
 		{
-			pakage.setType(0);
+			pakage.setProducts(null);;
 			
 		}
 		else
 		{
-			pakage.setType(1);
-			pakage.setSmartphones(products);
+			
+			pakage.setProducts(products);
 			
 		}
 		return ok(Json.toJson(pakage));

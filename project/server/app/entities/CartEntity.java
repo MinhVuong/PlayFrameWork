@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "cart")
+@Table(name = "carts")
 public class CartEntity {
 
 	@Id
@@ -21,12 +21,12 @@ public class CartEntity {
 	@Column(name = "count_total_products")
 	private int countTotal;
 	@Column(name = "price_total_products")
-	private float priceTotal;
+	private String priceTotal;
 	@Column(name = "product_ids")
 	private String productId;
 	@Column(name = "product_names")
 	private String productName;
-	@Column(name = "product_coutns")
+	@Column(name = "product_counts")
 	private String productCount;
 	@Column(name = "product_prices")
 	private String productPrice;
@@ -35,7 +35,7 @@ public class CartEntity {
 		// TODO Auto-generated constructor stub
 	}
 	public CartEntity(int id, int customerId, String createAt, String updateAt,
-			int countTotal, float priceTotal, String productId,
+			int countTotal, String priceTotal, String productId,
 			String productName, String productCount, String productPrice) {
 		super();
 		this.id = id;
@@ -79,10 +79,10 @@ public class CartEntity {
 	public void setCountTotal(int countTotal) {
 		this.countTotal = countTotal;
 	}
-	public float getPriceTotal() {
+	public String getPriceTotal() {
 		return priceTotal;
 	}
-	public void setPriceTotal(float priceTotal) {
+	public void setPriceTotal(String priceTotal) {
 		this.priceTotal = priceTotal;
 	}
 	public String getProductId() {
