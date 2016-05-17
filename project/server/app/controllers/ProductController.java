@@ -3,15 +3,29 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import models.Category;
 import models.CategoryProduct;
 import models.IndexRequest;
-import models.ListProduct;
 import models.ProductCart;
-import models.IndexPage;
+import pakageResult.CategoryProduct2Pakage;
+import pakageResult.CategoryProductPakage;
+import pakageResult.IndexFullPakage;
+import pakageResult.IndexPagePakage;
+import pakageResult.IndexPakage;
+import pakageResult.ProductPakage;
+import pakageResultAdmin.ProductAdminPakage;
+import pakageResultAdmin.ProductCountAdminPakage;
+import play.filters.csrf.AddCSRFToken;
+import play.filters.csrf.CSRF;
+import play.filters.csrf.RequireCSRFCheck;
+import play.libs.Json;
+import play.mvc.Controller;
+import play.mvc.Result;
+import services.CategoryProductService;
+import services.ProductCountService;
+import services.ProductService;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -19,22 +33,6 @@ import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 import entities.ProductCountEntity;
 import entities.ProductEntity;
-import pakageResult.CategoryProduct2Pakage;
-import pakageResult.CategoryProductPakage;
-import pakageResult.IndexFullPakage;
-import pakageResult.IndexPakage;
-import pakageResult.ProductPakage;
-import pakageResult.IndexPagePakage;
-import play.filters.csrf.AddCSRFToken;
-import play.filters.csrf.CSRF;
-import play.filters.csrf.RequireCSRFCheck;
-import play.libs.Json;
-import play.mvc.BodyParser;
-import play.mvc.Controller;
-import play.mvc.Result;
-import play.mvc.Results;
-import services.ProductCountService;
-import services.ProductService;
 
 
 
@@ -42,7 +40,7 @@ public class ProductController extends Controller{
 
 	private ProductService productS = new ProductService();
 	private ProductCountService productCountS = new ProductCountService();
-	
+	private CategoryProductService categoryProductS = new CategoryProductService();
 	
 	public Result productList()
 	{
@@ -182,8 +180,66 @@ public class ProductController extends Controller{
 	}
 	
 	
+	/////////////////////////		ADMIN		/////////////
 	
+	public Result products(){
+		
+		ProductAdminPakage pakage = new ProductAdminPakage();
+		pakage.setType(1);
+		pakage.setProducts(productS.GetProducts());
+		pakage.setCategories(categoryProductS.GetCategoryProductList());
+		return ok(Json.toJson(pakage));
+	}
 	
+	public Result productAdd(){
+		JsonNode json = request().body().asJson();
+		ProductEntity entity = Json.fromJson(json, ProductEntity.class);
+		//String name = entity.getName().replace(';', ' ');
+		//entity.setName(name);
+		int result = productS.AddProduct(entity);
+		
+		ProductAdminPakage pakage = new ProductAdminPakage();
+		pakage.setType(result);
+		if(result != 0){
+			pakage.setProducts(productS.GetProducts());
+			pakage.setCategories(categoryProductS.GetCategoryProductList());
+		}
+		return ok(Json.toJson(pakage));
+	}
+	
+	public Result productDel(int id){
+		
+		int result = productS.DeleteProductById(id);
+		
+		ProductAdminPakage pakage = new ProductAdminPakage();
+		pakage.setType(result);
+		if(result != 0){
+			pakage.setProducts(productS.GetProducts());
+			pakage.setCategories(categoryProductS.GetCategoryProductList());
+		}
+		return ok(Json.toJson(pakage));
+	}
+	
+	public Result productEdit(){
+		JsonNode json = request().body().asJson();
+		ProductEntity entity = Json.fromJson(json, ProductEntity.class);
+		int result = productS.EditProduct(entity);
+		ProductAdminPakage pakage = new ProductAdminPakage();
+		pakage.setType(result);
+		if(result != 0){
+			pakage.setProducts(productS.GetProducts());
+			pakage.setCategories(categoryProductS.GetCategoryProductList());
+		}
+		return ok(Json.toJson(pakage));
+	}
+	
+	public Result cacs(){
+		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
+		pakage.setType(1);
+		pakage.setColors(productCountS.GetListShow());
+		pakage.setCates(productS.GetCateProductToColorAndCount());
+		return ok(Json.toJson(pakage));
+	}
 	
 	
 	

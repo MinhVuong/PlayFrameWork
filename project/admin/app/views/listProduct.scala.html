@@ -1,0 +1,724 @@
+@import models.User;
+@import java.util.List;
+@import entities.CategoryProductEntity;
+@import entities.ProductEntity;
+@(message: String, user: User, products: List[ProductEntityShow], categories: List[CategoryProductEntity])
+@main("Admin | List Product") {
+<html lang="en">
+
+<head>
+  <link href="@routes.Assets.versioned("javascripts/datatables/jquery.dataTables.min.css")" rel="stylesheet" type="text/css" />
+  <link href="@routes.Assets.versioned("javascripts/datatables/buttons.bootstrap.min.css")" rel="stylesheet" type="text/css" />
+  <link href="@routes.Assets.versioned("javascripts/datatables/fixedHeader.bootstrap.min.css")" rel="stylesheet" type="text/css" />
+  <link href="@routes.Assets.versioned("javascripts/datatables/responsive.bootstrap.min.css")" rel="stylesheet" type="text/css" />
+  <link href="@routes.Assets.versioned("javascripts/datatables/scroller.bootstrap.min.css")" rel="stylesheet" type="text/css" />
+</head>
+
+
+<body class="nav-md">
+
+  <div class="container body">
+
+
+    <div class="main_container">
+
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentellela Alela!</span></a>
+          </div>
+          <div class="clearfix"></div>
+
+          <!-- menu prile quick info -->
+          <div class="profile">
+            <div class="profile_pic">
+              <img src="@routes.Assets.versioned("images/img.jpg")" alt="..." class="img-circle profile_img">
+            </div>
+            <div class="profile_info">
+              <span>Welcome,</span>
+              <h2>@user.getFirstName()</h2>
+            </div>
+          </div>
+          <!-- /menu prile quick info -->
+
+          <br />
+
+          <!-- sidebar menu -->
+          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+
+            <div class="menu_section">
+              <h3>General</h3>
+              <ul class="nav side-menu">
+                <li><a href="@routes.HomeController.index()"><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                </li>
+                <li><a><i class="fa fa-home"></i> Category <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="@routes.CategoryController.category()">Category</a></li>
+                    <li><a href="@routes.CategoryController.categoryProduct()">Category Product</a></li>
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-home"></i> Product <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="@routes.ProductController.products()">Products</a></li>
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="form.html">General Form</a>
+                    </li>
+                    <li><a href="form_advanced.html">Advanced Components</a>
+                    </li>
+                    <li><a href="form_validation.html">Form Validation</a>
+                    </li>
+                    <li><a href="form_wizards.html">Form Wizard</a>
+                    </li>
+                    <li><a href="form_upload.html">Form Upload</a>
+                    </li>
+                    <li><a href="form_buttons.html">Form Buttons</a>
+                    </li>
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="general_elements.html">General Elements</a>
+                    </li>
+                    <li><a href="media_gallery.html">Media Gallery</a>
+                    </li>
+                    <li><a href="typography.html">Typography</a>
+                    </li>
+                    <li><a href="icons.html">Icons</a>
+                    </li>
+                    <li><a href="glyphicons.html">Glyphicons</a>
+                    </li>
+                    <li><a href="widgets.html">Widgets</a>
+                    </li>
+                    <li><a href="invoice.html">Invoice</a>
+                    </li>
+                    <li><a href="inbox.html">Inbox</a>
+                    </li>
+                    <li><a href="calender.html">Calender</a>
+                    </li>
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="tables.html">Tables</a>
+                    </li>
+                    <li><a href="tables_dynamic.html">Table Dynamic</a>
+                    </li>
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="chartjs.html">Chart JS</a>
+                    </li>
+                    <li><a href="chartjs2.html">Chart JS2</a>
+                    </li>
+                    <li><a href="morisjs.html">Moris JS</a>
+                    </li>
+                    <li><a href="echarts.html">ECharts </a>
+                    </li>
+                    <li><a href="other_charts.html">Other Charts </a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="menu_section">
+              <h3>Live On</h3>
+              <ul class="nav side-menu">
+                <li><a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="e_commerce.html">E-commerce</a>
+                    </li>
+                    <li><a href="projects.html">Projects</a>
+                    </li>
+                    <li><a href="project_detail.html">Project Detail</a>
+                    </li>
+                    <li><a href="contacts.html">Contacts</a>
+                    </li>
+                    <li><a href="profile.html">Profile</a>
+                    </li>
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-windows"></i> Extras <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="page_404.html">404 Error</a>
+                    </li>
+                    <li><a href="page_500.html">500 Error</a>
+                    </li>
+                    <li><a href="plain_page.html">Plain Page</a>
+                    </li>
+                    <li><a href="login.html">Login Page</a>
+                    </li>
+                    <li><a href="pricing_tables.html">Pricing Tables</a>
+                    </li>
+
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+          <!-- /sidebar menu -->
+
+          <!-- /menu footer buttons -->
+          <div class="sidebar-footer hidden-small">
+            <a data-toggle="tooltip" data-placement="top" title="Settings">
+              <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+              <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="Lock">
+              <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="Logout">
+              <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+            </a>
+          </div>
+          <!-- /menu footer buttons -->
+        </div>
+      </div>
+
+      <!-- top navigation -->
+      <div class="top_nav">
+
+        <div class="nav_menu">
+          <nav class="" role="navigation">
+            <div class="nav toggle">
+              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+              <li class="">
+                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                  <img src="@routes.Assets.versioned("images/img.jpg")" alt="">@user.getFirstName()
+                  <span class=" fa fa-angle-down"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
+                  <li><a href="javascript:;">  Profile</a>
+                  </li>
+                  <li>
+                    <a href="javascript:;">
+                      <span class="badge bg-red pull-right">50%</span>
+                      <span>Settings</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="javascript:;">Help</a>
+                  </li>
+                  <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                  </li>
+                </ul>
+              </li>
+
+              <li role="presentation" class="dropdown">
+                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                  <i class="fa fa-envelope-o"></i>
+                  <span class="badge bg-green">6</span>
+                </a>
+                <ul id="menu1" class="dropdown-menu list-unstyled msg_list animated fadeInDown" role="menu">
+                  <li>
+                    <a>
+                      <span class="image">
+                                        <img src="images/img.jpg" alt="Profile Image" />
+                                    </span>
+                      <span>
+                                        <span>John Smith</span>
+                      <span class="time">3 mins ago</span>
+                      </span>
+                      <span class="message">
+                                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                                    </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a>
+                      <span class="image">
+                                        <img src="images/img.jpg" alt="Profile Image" />
+                                    </span>
+                      <span>
+                                        <span>John Smith</span>
+                      <span class="time">3 mins ago</span>
+                      </span>
+                      <span class="message">
+                                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                                    </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a>
+                      <span class="image">
+                                        <img src="images/img.jpg" alt="Profile Image" />
+                                    </span>
+                      <span>
+                                        <span>John Smith</span>
+                      <span class="time">3 mins ago</span>
+                      </span>
+                      <span class="message">
+                                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                                    </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a>
+                      <span class="image">
+                                        <img src="images/img.jpg" alt="Profile Image" />
+                                    </span>
+                      <span>
+                                        <span>John Smith</span>
+                      <span class="time">3 mins ago</span>
+                      </span>
+                      <span class="message">
+                                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                                    </span>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="text-center">
+                      <a>
+                        <strong>See All Alerts</strong>
+                        <i class="fa fa-angle-right"></i>
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+
+            </ul>
+          </nav>
+        </div>
+
+      </div>
+      <!-- /top navigation -->
+
+      <!-- page content -->
+      <div class="right_col" role="main">
+        <div class="">
+         
+          <div class="clearfix"></div>
+
+          <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>List Product</h2><br>
+                  
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a href="#"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li><a href="#"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  
+                  <table id="datatable" class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>New</th>
+                        <th>Active</th>
+                        <th>Sale Price</th>
+                        <th>Wishlist</th>
+                        <th>Category</th>
+                        <th>Edit</th>
+                        <th>Delete</th>                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                    @for(p <- products){
+                    	<tr>
+                    		<td>@p.getId()</td>
+                    		<td id="name@p.getId()">@p.getName()</td>
+                    		<td id="image@p.getId()">@p.getImage()</td>
+                    		<td id="new@p.getId()">@p.getIsNew()</td>
+                    		<td id="active@p.getId()">@p.getIsActive()</td>
+                    		<td id="sale@p.getId()">@p.getSalePrice()</td>
+                    		<td id="wish@p.getId()">@p.getIsWishList()</td>
+                    		<td id="cate@p.getId()">@p.getCategoryP()</td>
+                    		<td><a onclick="edit(@p.getId(), @p.getIdCate())" style="color:blue; cursor:pointer">Edit</a></td>
+		                 	<td><a href="@routes.ProductController.productDel(p.getId())" style="color:blue">Delete</a></td>
+                    	</tr>
+                    }
+                    	
+	                    
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2> Edit Product</h2><br>
+                  
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <form class="form-horizontal form-label-left" novalidate action="@routes.ProductController.productEdit()" method="post">
+                    <div class="item form-group">
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="idP" type="hidden" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="id" required="required" type="text">
+                      </div>
+                    </div>
+                    
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="categoryP">Category
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                      		<select class="form-control col-md-7 col-xs-12" name="categoryP">
+                      		@for(c <- categories){
+                      			@if(c.getId() == 1){
+                      			<option id="catec@c.getId()" value="@c.getId()" selected=true>@c.getName()</option>
+                      			}else{
+                      			<option id="catec@c.getId()" value="@c.getId()">@c.getName()</option>
+                      			}
+                      			
+                      		} 
+							</select>
+                      </div>
+                    </div>
+                    
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name Product<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="nameP" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="name" placeholder="Smartphone" required="required" type="text">
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Price Sale</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="saleP"  class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="salePrice" placeholder="0.0"  type="text">
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="newP" type="checkbox" name="isNew" value="1"> Is New
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="activeP" type="checkbox" name="isActive" value="1"> Is Active
+                      </div>
+                    </div>
+                    
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="wishP" type="checkbox" name="isWishList" value="1"> Is WishList
+                      </div>
+                    </div>
+                    
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Path Image<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="imageP" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="image" placeholder="images/samsung/s6/index.jpg" required="required" type="text">
+                      </div>
+                    </div>
+                    
+                    
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-md-offset-3">
+                        <button id="send" type="submit" class="btn btn-success">Submit</button>
+                      </div>
+                    </div>
+                  </form>
+                 
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Create New Product</h2><br>
+                  
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <form class="form-horizontal form-label-left" novalidate action="@routes.ProductController.productAdd()" method="post">
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="categoryP">Category
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                      		<select class="form-control col-md-7 col-xs-12" name="categoryP">
+                      		@for(c <- categories){
+                      			<option value="@c.getId()">@c.getName()</option>
+                      		} 
+							</select>
+                      </div>
+                    </div>
+                    
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name Product<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="name" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="name" placeholder="Smartphone" required="required" type="text">
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Price Sale</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input  class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="salePrice" placeholder="0.0"  type="text">
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="checkbox" name="isNew" value="1"> Is New
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="checkbox" name="isActive" value="1"> Is Active
+                      </div>
+                    </div>
+                    
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="checkbox" name="isWishList" value="1"> Is WishList
+                      </div>
+                    </div>
+                    
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Path Image<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="image" placeholder="images/samsung/s6/index.jpg" required="required" type="text">
+                      </div>
+                    </div>
+                    
+                    
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-md-offset-3">
+                        <button id="send" type="submit" class="btn btn-success">Submit</button>
+                      </div>
+                    </div>
+                  </form>
+                 
+                </div>
+              </div>
+            </div>
+
+                  
+                </div>
+              </div>
+              <!-- footer content -->
+              <footer>
+                <div class="copyright-info">
+                  <p class="pull-right">Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                  </p>
+                </div>
+                <div class="clearfix"></div>
+              </footer>
+              <!-- /footer content -->
+
+            </div>
+            <!-- /page content -->
+          </div>
+
+        </div>
+
+        <div id="custom_notifications" class="custom-notifications dsp_none">
+          <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
+          </ul>
+          <div class="clearfix"></div>
+          <div id="notif-group" class="tabbed_notifications"></div>
+        </div>
+
+        <script src="@routes.Assets.versioned("javascripts/bootstrap.min.js")"></script>
+
+        <!-- bootstrap progress js -->
+        <script src="@routes.Assets.versioned("javascripts/progressbar/bootstrap-progressbar.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/nicescroll/jquery.nicescroll.min.js")"></script>
+        <!-- icheck -->
+        <script src="@routes.Assets.versioned("javascripts/icheck/icheck.min.js")"></script>
+
+        <script src="@routes.Assets.versioned("javascripts/custom.js")"></script>
+
+
+        <!-- Datatables -->
+        <!-- <script src="js/datatables/js/jquery.dataTables.js"></script>
+  <script src="js/datatables/tools/js/dataTables.tableTools.js"></script> -->
+
+        <!-- Datatables-->
+        <script src="@routes.Assets.versioned("javascripts/datatables/jquery.dataTables.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/dataTables.bootstrap.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/dataTables.buttons.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/buttons.bootstrap.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/jszip.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/pdfmake.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/vfs_fonts.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/buttons.html5.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/buttons.print.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/dataTables.fixedHeader.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/dataTables.keyTable.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/dataTables.responsive.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/responsive.bootstrap.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/datatables/dataTables.scroller.min.js")"></script>
+		
+
+        <!-- pace -->
+        <script src="@routes.Assets.versioned("javascripts/pace/pace.min.js")"></script>
+        <script>
+          var handleDataTableButtons = function() {
+              "use strict";
+              0 !== $("#datatable-buttons").length && $("#datatable-buttons").DataTable({
+                dom: "Bfrtip",
+                buttons: [{
+                  extend: "copy",
+                  className: "btn-sm"
+                }, {
+                  extend: "csv",
+                  className: "btn-sm"
+                }, {
+                  extend: "excel",
+                  className: "btn-sm"
+                }, {
+                  extend: "pdf",
+                  className: "btn-sm"
+                }, {
+                  extend: "print",
+                  className: "btn-sm"
+                }],
+                responsive: !0
+              })
+            },
+            TableManageButtons = function() {
+              "use strict";
+              return {
+                init: function() {
+                  handleDataTableButtons()
+                }
+              }
+            }();
+        </script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            $('#datatable').dataTable();
+            $('#datatable-keytable').DataTable({
+              keys: true
+            });
+            $('#datatable-responsive').DataTable();
+            $('#datatable-scroller').DataTable({
+              ajax: "js/datatables/json/scroller-demo.json",
+              deferRender: true,
+              scrollY: 380,
+              scrollCollapse: true,
+              scroller: true
+            });
+            var table = $('#datatable-fixed-header').DataTable({
+              fixedHeader: true
+            });
+          });
+          TableManageButtons.init();
+        </script>
+   //--------------------------------------Validation Form
+        <script src="@routes.Assets.versioned("javascripts/validator/validator.js")"></script>
+        <script>
+    // initialize the validator function
+    validator.message['date'] = 'not a real date';
+
+    // validate a field on "blur" event, a 'select' on 'change' event & a '.reuired' classed multifield on 'keyup':
+    $('form')
+      .on('blur', 'input[required], input.optional, select.required', validator.checkField)
+      .on('change', 'select.required', validator.checkField)
+      .on('keypress', 'input[required][pattern]', validator.keypress);
+
+    $('.multi.required')
+      .on('keyup blur', 'input', function() {
+        validator.checkField.apply($(this).siblings().last()[0]);
+      });
+
+    // bind the validation to the form submit event
+    //$('#send').click('submit');//.prop('disabled', true);
+
+    $('form').submit(function(e) {
+      e.preventDefault();
+      var submit = true;
+      // evaluate the form using generic validaing
+      if (!validator.checkAll($(this))) {
+        submit = false;
+      }
+
+      if (submit)
+        this.submit();
+      return false;
+    });
+
+    /* FOR DEMO ONLY */
+    $('#vfields').change(function() {
+      $('form').toggleClass('mode2');
+    }).prop('checked', false);
+
+    $('#alerts').change(function() {
+      validator.defaults.alerts = (this.checked) ? false : true;
+      if (this.checked)
+        $('form .alert').remove();
+    }).prop('checked', false);
+  
+  	function edit(id, idC){
+  		$('#idP').val(id);
+  		var name='name'+id;
+    	var td1 = (document.getElementById(name)).innerHTML;
+  		$('#nameP').val(td1);
+  		
+  		var cate='catec'+idC;
+  		console.log(cate);
+    	document.getElementById(cate).selected = "true";
+    	
+    	var sale='sale'+id;
+    	var td2 = (document.getElementById(sale)).innerHTML;
+  		$('#saleP').val(td2);
+  		var image='image'+id;
+    	var td3 = (document.getElementById(image)).innerHTML;
+  		$('#imageP').val(td3);
+  		
+  		var neww='new'+id;
+    	var td4 = (document.getElementById(neww)).innerHTML;
+    	if(td4 == "1")
+  			document.getElementById("newP").checked = true;
+    	var active='active'+id;
+    	var td5 = (document.getElementById(active)).innerHTML;
+    	if(td5 == "1")
+  			document.getElementById("activeP").checked = true;
+    	
+    	var wish='wish'+id;
+    	var td6 = (document.getElementById(wish)).innerHTML;
+    	if(td6 == "1")
+  			document.getElementById("wishP").checked = true;
+  		
+  	}  
+  </script>
+  
+</body>
+
+</html>
+
+}

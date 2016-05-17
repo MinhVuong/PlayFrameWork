@@ -9,7 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import models.CartProducts;
 import models.Category;
 import models.CategoryProduct;
-
+import models.ProductCountCate;
 import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 import entities.CustomerEntity;
@@ -258,8 +258,150 @@ public class ProductService {
 			return null;
 		}
 	}
+	//////////////////////////////  ADMIN  //////////////////
 	
+	public List<ProductEntity> GetProducts()
+	{
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			List<ProductEntity> result = (List<ProductEntity>) em.createNativeQuery("Select * From product", ProductEntity.class).getResultList();
+			em.close();
+			return result;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductEntity> GetAllProducts()", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
 	
+	public boolean CheckExistProductById(int id){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			
+			ProductEntity result = em.find(ProductEntity.class, id);
+			em.close();
+			if(result != null)
+				return true;
+			else
+				return false;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("CheckExistProductById(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return false;
+		}
+	}
 	
+	public boolean CheckExistProductByName(String name){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			
+			ProductEntity result = (ProductEntity)em.createNativeQuery("Select * From product where name=?", ProductEntity.class).setParameter(1, name).getSingleResult();
+			if(result != null)
+				return true;
+			else
+				return false;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("CheckExistProductById(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return false;
+		}
+	}
+	
+	public int AddProduct(ProductEntity entity){
+		if(CheckExistProductByName(entity.getName()))
+			return -1;
+		else{
+			try{
+				EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+				EntityManager em = emf.createEntityManager();
+				em.getTransaction().begin();
+				em.persist(entity);
+				em.getTransaction().commit();
+				em.close();
+				return 1;
+				
+			}catch(Exception e)
+			{
+				ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("AddProduct(ProductEntity entity)", e.getMessage());
+				exceptionService.AddException(exceptionEntity);
+				return 0;
+			}
+		}
+	}
+	
+	public int DeleteProductById(int id){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			ProductEntity result = em.find(ProductEntity.class, id);
+			em.remove(result);
+			em.getTransaction().commit();
+			em.close();
+			return 1;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("DeleteProductById(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return 0;
+		}
+	}
+	
+	public int EditProduct(ProductEntity entity){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			ProductEntity result = em.find(ProductEntity.class, entity.getId());
+			result.setCategoryId(entity.getCategoryId());
+			result.setImage(entity.getImage());
+			result.setIsActive(entity.getIsActive());
+			result.setIsNew(entity.getIsNew());
+			result.setIsWishlist(entity.getIsWishlist());
+			result.setPriceSale(entity.getPriceSale());
+			result.setName(entity.getName());
+			
+			
+			em.getTransaction().commit();
+			em.close();
+			return 1;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("AddProduct(ProductEntity entity)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return 0;
+		}
+	}
+	
+	public List<ProductCountCate> GetCateProductToColorAndCount(){
+		try{
+			List<ProductEntity> products = GetProducts();
+			List<ProductCountCate> cates = new ArrayList<ProductCountCate>();
+			for(ProductEntity p : products){
+				ProductCountCate cate = new ProductCountCate(p.getId(), p.getName());
+				cates.add(cate);
+			}
+			return cates;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductCountCate> GetCateProductToColorAndCount()", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
 	
 }

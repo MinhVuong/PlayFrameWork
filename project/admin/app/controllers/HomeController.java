@@ -1,7 +1,8 @@
 package controllers;
 
+import helper.SessionHelper;
+import models.User;
 import play.mvc.*;
-
 import views.html.*;
 
 /**
@@ -10,14 +11,15 @@ import views.html.*;
  */
 public class HomeController extends Controller {
 
-    /**
-     * An action that renders an HTML page with a welcome message.
-     * The configuration in the <code>routes</code> file means that
-     * this method will be called when the application receives a
-     * <code>GET</code> request with a path of <code>/</code>.
-     */
+	private SessionHelper sessionH = new SessionHelper();
     public Result index() {
-        return ok(index.render("Your new application is ready."));
+    	User user = new User();
+    	user = sessionH.GetUser("user");
+    	if(user.getId() == 0){
+    		return ok(login.render("",user));
+    	}else{
+    		return ok(index.render(user));
+        }
     }
 
 }

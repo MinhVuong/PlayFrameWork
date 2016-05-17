@@ -27,7 +27,7 @@ GET		/address/:id					controllers.AccountController.address(id: Integer)
 
 POST	/productList					controllers.ProductController.productList
 
-GET	/productListAjax/:count/:page/:cate			controllers.ProductController.productListAjax(count: Integer, page: Integer, cate:Integer)
+GET	/productListAjax/:count/:page/:cate	controllers.ProductController.productListAjax(count: Integer, page: Integer, cate:Integer)
 
 GET		/category/:id					controllers.ProductController.category(id: Integer)
 GET		/categoryProduct/:id/:idp		controllers.ProductController.categoryProduct(id: Integer, idp: Integer)
@@ -35,10 +35,47 @@ GET		/product/:id					controllers.ProductController.product(id: Integer)
 
 POST	/cart							controllers.CartController.cart
 GET		/color							controllers.CartController.count
-
-
-
-
 GET		/demoCsrf						controllers.ProductController.demoCsrf
 GET		/token							controllers.ProductController.token
+
+
+###############################################
+##############Admin router#####################
+###############################################
+
+POST	/admin/login					controllers.AAccountController.login
+
+
+GET		/admin/categories				controllers.CategoryController.categories
+GET		/admin/category/add/:name		controllers.CategoryController.categoryAdd(name: String)
+GET		/admin/category/delete/:id		controllers.CategoryController.categoryDelete(id: Integer)
+POST	/admin/category/edit			controllers.CategoryController.categoriesEdit()
+
+GET		/admin/categoryProduct			controllers.CategoryController.categoryProduct
+POST	/admin/cateP/add				controllers.CategoryController.catePAdd
+POST	/admin/cateP/edit				controllers.CategoryController.catePEdit
+GET		/admin/cateP/delete/:id			controllers.CategoryController.catePDel(id: Integer)
+
+GET		/admin/pro/all					controllers.ProductController.products
+POST	/admin/pro/add					controllers.ProductController.productAdd
+GET		/admin/pro/del/:id				controllers.ProductController.productDel(id: Integer)
+POST	/admin/pro/edit					controllers.ProductController.productEdit
+
+GET		/admin/pro/cac/list				controllers.ProductController.cacs
+
+
+GET		/admin/demo						controllers.CategoryController.demo
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -45,6 +45,7 @@ public class AccountController extends Controller {
 		this.mailerClient = client;
 		this.crypto = cryp;
 	}
+	
 
 	// submit Register
 	public Result register()

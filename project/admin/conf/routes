@@ -11,3 +11,33 @@ GET     /message                    controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+##############	Account
+GET		/admin/login				controllers.AccountController.login
+GET		/admin						controllers.AccountController.index
+POST	/admin/submitlogin			controllers.AccountController.submitLogin
+GET		/admin/logout				controllers.AccountController.logout
+
+
+############### Category
+GET		/admin/category				controllers.CategoryController.category
+POST	/admin/category/add		controllers.CategoryController.categoryAdd
+GET		/admin/category/delete/:id	controllers.CategoryController.categoryDel(id: Integer)
+POST	/admin/category/edit		controllers.CategoryController.categoryEdit
+
+GET		/admin/categoryProduct		controllers.CategoryController.categoryProduct
+POST	/admin/catePAdd				controllers.CategoryController.catePAdd
+POST	/admin/catePEdit			controllers.CategoryController.catePEdit
+GET		/admin/cateP/delete/:id		controllers.CategoryController.catePDel(id: Integer)
+
+
+############### Product
+
+GET		/admin/product/list			controllers.ProductController.products
+POST	/admin/product/add			controllers.ProductController.productAdd
+GET		/admin/product/del/:id		controllers.ProductController.productDel(id: Integer)
+GET		/admin/product/showedit/:id		controllers.ProductController.productShowEdit(id: Integer)
+POST	/admin/product/edit			controllers.ProductController.productEdit
+
+############### Colora and Count
+GET		/admin/product/cac/list		controllers.ProductController.cacs		

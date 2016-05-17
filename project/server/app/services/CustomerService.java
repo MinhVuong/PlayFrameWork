@@ -88,7 +88,7 @@ public class CustomerService {
 			EntityManager em = emf.createEntityManager();
 			em.getTransaction().begin();
 			
-			CustomerEntity result = (CustomerEntity) em.createNativeQuery("Select * From customer  Where email=?", CustomerEntity.class).setParameter(1, customer.getEmail()).getSingleResult();
+			CustomerEntity result = (CustomerEntity) em.createNativeQuery("Select * From customer  Where email=? and group_id=1", CustomerEntity.class).setParameter(1, customer.getEmail()).getSingleResult();
 			em.close();
 			
 			if(result != null)
