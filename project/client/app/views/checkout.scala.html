@@ -287,6 +287,7 @@
 	}
 	function continueP()
 	{
+		
 		var message = "";
 		var tag = 1;
 		if(document.getElementById('first').value == "")
@@ -310,13 +311,42 @@
 							tag = 0;
 							message = "Please input City!";
 						}else{
-							$('#first').prop('disabled', 'disabled');
-							$('#last').prop('disabled', 'disabled');
-							$('#phone').prop('disabled', 'disabled');
-							$('#street').prop('disabled', 'disabled');
-							$('#city').prop('disabled', 'disabled');
-							$('#methodpay').prop('disabled', 'disabled');
-							document.getElementById('continue').style.display = 'none';
+							var check=0;
+							if(edit.checked)
+							{
+								check=1;
+							}
+							var first = document.getElementById('first').value;
+							var lasts = document.getElementById('last').value;
+							var phone = document.getElementById('phone').value;
+							//var street = $('#street').val();
+							var street = document.getElementById('street').value;
+							//street = street.replace("/", "-");
+							var city = document.getElementById('city').value;
+							var json = {'first': first, 'last': lasts, 'phone': phone, 'street': street, 'city': city};
+							//console.log(json);
+							$.ajax({
+						        type : 'GET',
+						        url : 'http://localhost:9000/cart/infor/'+first+'/'+lasts+'/'+phone+'/'+street+'/'+city+'/'+check,
+						        dataType: 'json',
+						        contentType: 'application/json; charset=utf-8',
+						        data : {},
+						        success : function(res) {
+						        	console.log(res);
+						        	$('#first').prop('disabled', 'disabled');
+									$('#last').prop('disabled', 'disabled');
+									$('#phone').prop('disabled', 'disabled');
+									$('#street').prop('disabled', 'disabled');
+									$('#city').prop('disabled', 'disabled');
+									$('#methodpay').prop('disabled', 'disabled');
+									document.getElementById('continue').style.display = 'none';
+						        },
+						        error: function() { 
+						        	alert('Failed!'); 
+						        }
+						    });
+							
+							
 						}
 					}
 				}

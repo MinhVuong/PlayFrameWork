@@ -1,35 +1,42 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import models.AddCount;
+import models.Address;
+import models.CartEdit;
 import models.CartProducts;
+import models.CheckOut;
+import models.InforCompare;
+import models.InforConpareShow;
 import models.Menu;
 import models.PreCheckout;
 import models.ProductCart;
 import models.ProductEntity;
-import models.CartEdit;
-import models.CartEntity;
-import business.SessionManager;
-import business.CartService;
-
-
-
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import PakageResult.CartPakage;
-import PakageResult.ProductPakage;
-import PakageResult.User;
+import models.ProductImageShow;
+import models.ProductRelateShow;
 import play.Logger;
 import play.libs.Json;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
-import play.mvc.Result;
 import play.mvc.Http.Session;
+import play.mvc.Result;
+import PakageResult.CartPakage;
+import PakageResult.ComparePakage;
+import PakageResult.OrderPakage;
+import PakageResult.ProductDetailPakage;
+import PakageResult.ProductPakage;
+import PakageResult.User;
+import business.CartService;
+import business.SessionManager;
 import views.html.*;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import entities.ProductImageEntity;
 
 public class ProductController extends Controller{
 	SessionManager sessionM = new SessionManager();
@@ -162,11 +169,12 @@ public class ProductController extends Controller{
 
 	public CompletionStage<Result> checkout()
 	{
+		Session session = Http.Context.current().session();
 		CartProducts productsS = sessionM.GetCartProducts();
 		User user1 = sessionM.GetUser();
 		Menu menu1 = sessionM.GetMenu();
 		
-		log.info("user id name: " + user1.getId());
+		log.info("size product: " + productsS.getProducts().size());
 		int id = 0;
 		if(user1.getId() != null)
 			id = user1.getId();
@@ -191,6 +199,9 @@ public class ProductController extends Controller{
             	switch(pakage.getType())
             	{
             	case 1:{
+            		int idc = pakage.getIdC();
+            		log.info("idC: "+idc);
+            		session.put("idc", Integer.toString(idc));
             		return ok(checkout.render(user, menu.getCategories(), menu.getCategoryProducts(), productsS));
             		}
             	case 0:{
@@ -218,28 +229,243 @@ public class ProductController extends Controller{
              }
          });
 		
-		return result;
-		/*String first = user1.getFirstName();
-		if(first != null)
-		{
-			if(productsS.getProducts().size() == 0)
-			{
-				String message = "Cart empty!";
-				return ok(cart.render(message, user1, menu1.getCategories(), menu1.getCategoryProducts(), productsS));
-			}
-			else
-				return ok(checkout.render(user1, menu1.getCategories(), menu1.getCategoryProducts(), productsS));
+		return result;		
+	}
+	public Result cartInfor(String first, String last, String phone, String street, String city, int check)
+	{
+		Session session = Http.Context.current().session();
+		Address address = new Address();
+		address.setCity(city);
+		address.setFirstName(first);
+		address.setLastName(last);
+		address.setPhone(phone);
+		address.setStreet(street);
+		log.info("" +check);
+		if(check == 1){
+			session.put("idA", Integer.toString(check));
 		}else{
-			return ok(login.render("", "", menu1.getCategories(), menu1.getCategoryProducts()));
-		}*/
+			session.put("idA", "0");
+			session.put("addressc", Json.toJson(address).toString());
+		}
+		return ok(Json.toJson(address));
 	}
 	
-	public Result checkoutSuccess()
+	
+	public CompletionStage<Result> checkoutSuccess()
 	{
-		return ok("checkout success");
+		Session session = Http.Context.current().session();
+		CheckOut checkp = new CheckOut();
+		User user1 = sessionM.GetUser();
+		int id = 0;
+		if(user1.getId() != null){
+			id = user1.getId();
+			checkp.setCustomerId(id);
+		}
+		int idc = sessionM.GetIdAddress();
+		if(idc != 0){
+			checkp.setAddressId(idc);
+		}else{
+			checkp.setAddressId(0);
+			checkp.setAddress(sessionM.GetAddress());
+		}
+		checkp.setCartId(sessionM.GetIdCart());
+		JsonNode json = Json.toJson(checkp);
+		
+		String url = "http://localhost:9001/cart/checkoutS";
+		CompletionStage<WSResponse> receive  = WS.url(url).post(json);
+    	CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		OrderPakage pakage = new OrderPakage();
+    		pakage = Json.fromJson(jsonNode, OrderPakage.class);
+    		
+    		//User user = new User(user1);
+			//Menu menu = new Menu(menu1);
+			
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType())
+            	{
+            	case 1:{
+            		session.remove("idc");
+            		session.remove("idA");
+            		session.remove("addressc");
+            		session.remove("products");
+            		return redirect(routes.HomeController.index());
+            		}
+            	case 0:{
+            			return ok("Didn't connect to Server!");
+            		}
+            	}
+            	return ok("ok");            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		
+		return result;	
+	}
+	
+	public CompletionStage<Result> productDetail(int id){
+		User user1 = sessionM.GetUser();
+		Menu menu1 = sessionM.GetMenu();
+		String url = "http://localhost:9001/product/detail/"+id;
+		CompletionStage<WSResponse> receive  = WS.url(url).get();
+    	CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		ProductDetailPakage pakage = new ProductDetailPakage();
+    		pakage = Json.fromJson(jsonNode, ProductDetailPakage.class);
+			
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType())
+            	{
+            	case 1:{
+            		List<ProductImageShow> shows = new ArrayList<ProductImageShow>();
+            		List<ProductImageEntity> images = pakage.getImages();
+            		for(int i=0; i<images.size(); i++){
+            			ProductImageShow show = new ProductImageShow();
+            			show.ConvertFromProductImageEntity(images.get(i));
+            			show.setTag(i+1);
+            			shows.add(show);
+            		}
+            		List<ProductRelateShow> reShow = new ArrayList<ProductRelateShow>();
+            		List<ProductEntity> relateP = pakage.getRelates();
+            		int size = relateP.size();
+            		for(int i=0; i<size; i= i+3){
+            			ProductRelateShow sh = new ProductRelateShow();
+            			sh.setProduct1(relateP.get(i));
+            			if(i+1 < size)
+            				sh.setProduct2(relateP.get(i+1));
+            			if(i+2 < size)
+            				sh.setProduct3(relateP.get(i+2));
+            			sh.setTag(i+1);
+            			reShow.add(sh);
+            		}
+            		log.info("size: " + reShow.size());
+            		return ok(detail.render("", user1, menu1.getCategories(), menu1.getCategoryProducts(), pakage.getProduct(), pakage.getInfors(), shows, reShow));
+            		}
+            	case 0:{
+            			return ok("Didn't connect to Server!");
+            		}
+            	}
+            	return ok("ok");            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		
+		return result;
+	}
+	public CompletionStage<Result> compare(int id){
+		Session session = Http.Context.current().session();
+		User user1 = sessionM.GetUser();
+		Menu menu1 = sessionM.GetMenu();
+		ProductEntity product1 = sessionM.getProductCompare1();
+		InforCompare inforC1 = sessionM.getInforCompare1();
+		String comS = session.get("productCompare1");
+		if(comS != null){
+			//inforC1 = sessionM.getInforCompare1();
+			
+		}
+		
+		
+		String url = "http://localhost:9001/product/compare/"+id;
+		CompletionStage<WSResponse> receive  = WS.url(url).get();
+		CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		ComparePakage pakage = new ComparePakage();
+    		pakage = Json.fromJson(jsonNode, ComparePakage.class);
+    		
+			//ComparePakage pakage1 = new ComparePakage(pakageT);
+			
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType())
+            	{
+            	case 1:{
+            		//return ok(compare1.render(user1, menu1.getCategories(), menu1.getCategoryProducts(), pakage.getProduct()));
+         
+            		if(null == comS){
+            			session.put("productCompare1", Json.toJson(pakage.getProduct()).toString());
+            			InforCompare inforC = new InforCompare();
+            			inforC.setInfor(pakage.getInfor());
+            			session.put("inforCompare1", Json.toJson(inforC).toString());
+            			List<InforConpareShow> infors = inforC.convertToListFromInforList(pakage.getInfor());
+            			
+            			return ok(compare1.render(user1, menu1.getCategories(), menu1.getCategoryProducts(), pakage.getProduct(), infors));
+            		}else{
+            			//log.info("not null");
+            			session.put("productCompare2", Json.toJson(pakage.getProduct()).toString());
+            			InforCompare inforC = new InforCompare();
+            			inforC.setInfor(pakage.getInfor());
+            			session.put("inforCompare2", Json.toJson(inforC).toString());            			
+            			
+            			List<InforConpareShow> infors = inforC.convertToListFrom2InforList(inforC1.getInfor(), pakage.getInfor());
+            			
+            			return ok(compare.render(user1, menu1.getCategories(), menu1.getCategoryProducts(), product1, infors, pakage.getProduct()));
+            		}
+            		}
+            	case 0:{
+            			return ok("Didn't connect to Server!");
+            		}
+            	}
+            	return ok("ok");            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		
+		return result;
+		
+	}
+	
+	public Result compareDel(int id){
+		Session session = Http.Context.current().session();
+		User user1 = sessionM.GetUser();
+		Menu menu1 = sessionM.GetMenu();
+		String nameDel = "productCompare"+id;
+		session.remove(nameDel);
+		session.remove("inforCompare"+id);
+		ProductEntity product = new ProductEntity();
+		List<InforConpareShow> infors = new ArrayList<InforConpareShow>();;
+		InforCompare inforC = new InforCompare();
+		String temp;
+		if(id==1){
+			temp = session.get("productCompare2");
+			if(temp != null){
+				product = sessionM.getProductCompare2();
+				inforC = sessionM.getInforCompare2();
+				infors = inforC.convertToListFromInforList(inforC.getInfor());
+			
+			}
+		}else{
+			temp = session.get("productCompare1");
+			if(temp != null){
+				product = sessionM.getProductCompare1();
+				inforC = sessionM.getInforCompare1();
+				infors = inforC.convertToListFromInforList(inforC.getInfor());
+			}
+		}
+		if(temp == null)
+			return redirect(routes.HomeController.index());
+		else
+			return ok(compare1.render(user1, menu1.getCategories(), menu1.getCategoryProducts(), product, infors));
 	}
 	public Result checkoutFail()
 	{
 		return ok("checkout fail");
+		
 	}
 }

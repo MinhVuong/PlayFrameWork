@@ -40,4 +40,17 @@ GET		/admin/product/showedit/:id		controllers.ProductController.productShowEdit(
 POST	/admin/product/edit			controllers.ProductController.productEdit
 
 ############### Colora and Count
-GET		/admin/product/cac/list		controllers.ProductController.cacs		
+GET		/admin/product/cac/list		controllers.ProductController.cacs
+POST	/admin/product/cac/add		controllers.ProductController.cacAdd
+GET		/admin/product/cac/del/:id	controllers.ProductController.cacDel(id: Integer)
+POST	/admin/product/cac/edit		controllers.ProductController.cacEdit
+
+GET		/admin/order/list			controllers.OrderController.orders
+POST	/admin/order/update			controllers.OrderController.orderUpdate
+
+GET     /twitter/auth         		controllers.Twitter.auth()
+GET     /twitter/authentication     controllers.Twitter.authentication()
+
+GET     /twitter/homeTimeline/:a/:b 		controllers.Twitter.homeTimeline(a: String, b: String)
+
+

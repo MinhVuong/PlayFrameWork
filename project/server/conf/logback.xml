@@ -27,6 +27,10 @@
   <logger name="play" level="INFO" />
   <logger name="application" level="DEBUG" />
   <logger name="customerController" level="DEBUG" />
+  <logger name="oauth" level="DEBUG" />
+  
+  <logger name="accountController" level="INFO" />
+  
  <logger name="email" level="DEBUG" />
  
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
@@ -34,6 +38,11 @@
   <logger name="com.avaje.ebeaninternal.server.core.XmlConfigLoader" level="OFF" />
   <logger name="com.avaje.ebeaninternal.server.lib.BackgroundThread" level="OFF" />
   <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF" />
+  
+  <logger name="com.jolbox.bonecp"  level="DEBUG" >
+  	<appender-ref ref="STDOUT"></appender-ref>
+  </logger>
+  	
 
   <root level="WARN">
     <appender-ref ref="ASYNCFILE" />

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import entities.AddressEntity;
 import entities.CustomerEntity;
+import pakageResult.ActiveAccountPakage;
 import pakageResult.InforPakage;
 import pakageResult.LoginPakage;
 import pakageResult.RegisterPakage;
@@ -87,10 +88,15 @@ public class AccountController extends Controller {
 	// Client active account
 	public Result activeAccount(String token, Integer id)
 	{
-		if(accounts.ActiveAccount(token, id) == 1)
-			return ok("true");
+		if(accounts.ActiveAccount(token, id) == 1){
+			ActiveAccountPakage pakage = new ActiveAccountPakage();
+			CustomerEntity entity = accounts.GetCustomerFromID(id);
+			User user = new User(entity.getId(), entity.getFirstName(), entity.getEmail(), "");
+			pakage.setUser(user);
+			return ok(Json.toJson(pakage));
+		}
 		else
-			return ok("false");
+			return status(500, "Strange response type");
 	}
 	// Login
 	// Restul 1 if login success.

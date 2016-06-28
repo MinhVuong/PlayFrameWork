@@ -1,8 +1,8 @@
 @import models.User;
+@import models.ProductCountShow;
+@import models.ProductCountCate;
 @import java.util.List;
-@import entities.CategoryProductEntity;
-@import entities.ProductEntity;
-@(message: String)
+@(message: String, user: User, cacs: List[ProductCountShow], cates: List[ProductCountCate])
 @main("Admin | Colors Product") {
 <html lang="en">
 
@@ -37,7 +37,7 @@
             </div>
             <div class="profile_info">
               <span>Welcome,</span>
-              <h2>user.getFirstName()</h2>
+              <h2>@user.getFirstName()</h2>
             </div>
           </div>
           <!-- /menu prile quick info -->
@@ -61,6 +61,12 @@
                 <li><a><i class="fa fa-home"></i> Product <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
                     <li><a href="@routes.ProductController.products()">Products</a></li>
+                    <li><a href="@routes.ProductController.cacs()">Colors</a></li>
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-home"></i> Orders <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="@routes.OrderController.orders()">Orders</a></li>
                   </ul>
                 </li>
                 <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
@@ -196,7 +202,7 @@
             <ul class="nav navbar-nav navbar-right">
               <li class="">
                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                  <img src="@routes.Assets.versioned("images/img.jpg")" alt="">user.getFirstName()
+                  <img src="@routes.Assets.versioned("images/img.jpg")" alt="">@user.getFirstName()
                   <span class=" fa fa-angle-down"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
@@ -307,7 +313,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>List Product</h2><br>
+                  <h2>List Colors Counts Product</h2><br>
                   
                   <ul class="nav navbar-right panel_toolbox">
                     <li><a href="#"><i class="fa fa-chevron-up"></i></a>
@@ -333,33 +339,28 @@
                       <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Image</th>
-                        <th>New</th>
-                        <th>Active</th>
-                        <th>Sale Price</th>
-                        <th>Wishlist</th>
-                        <th>Category</th>
+                        <th>Key</th>
+                        <th>Value</th>
+                        <th>Price</th>
+                        <th>Count</th>
                         <th>Edit</th>
                         <th>Delete</th>                        
                       </tr>
                     </thead>
                     <tbody>
-                   
-                    	<tr>
-                    		<td>p.getId()</td>
-                    		<td id="name@p.getId()">p.getName()</td>
-                    		<td id="image@p.getId()">p.getImage()</td>
-                    		<td id="new@p.getId()">p.getIsNew()</td>
-                    		<td id="active@p.getId()">p.getIsActive()</td>
-                    		<td id="sale@p.getId()">p.getSalePrice()</td>
-                    		<td id="wish@p.getId()">p.getIsWishList()</td>
-                    		<td id="cate@p.getId()">p.getCategoryP()</td>
-                    		<td><a onclick="edit(@p.getId(), @p.getIdCate())" style="color:blue; cursor:pointer">Edit</a></td>
-		                 	<td><a href="@routes.ProductController.productDel(p.getId())" style="color:blue">Delete</a></td>
+	                   @for(cac <- cacs){
+	                   	<tr>
+                    		<td id="id@cac.getId()">@cac.getId()</td>
+                    		<td id="name@cac.getId()">@cac.getName()</td>
+                    		<td id="key@cac.getId()">@cac.getKey()</td>
+                    		<td id="value@cac.getId()">@cac.getValue()</td>
+                    		<td id="price@cac.getId()">@cac.priceToString()</td>
+                    		<td id="count@cac.getId()">@cac.getCount()</td>
+                    		<td><a onclick="edit(@cac.getId(), @cac.getId_cate(), @cac.PriceEdit())" style="color:blue; cursor:pointer">Edit</a></td>
+		                 	<td><a href="@routes.ProductController.cacDel(cac.getId())" style="color:blue">Delete</a></td>
                     	</tr>
-                    
+	                   }
                     	
-	                    
                     </tbody>
                   </table>
                 </div>
@@ -368,76 +369,59 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2> Edit Product</h2><br>
+                  <h2> Edit Colors Counts Product</h2><br>
                   
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                  <form class="form-horizontal form-label-left" novalidate action="@routes.ProductController.productEdit()" method="post">
+                  <form class="form-horizontal form-label-left" novalidate action="@routes.ProductController.cacEdit()" method="post">
                     <div class="item form-group">
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="idP" type="hidden" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="id" required="required" type="text">
+                        <input id="idP" type="hidden" class="form-control col-md-7 col-xs-12"  name="id" required="required" type="text">
                       </div>
                     </div>
-                    
                     <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="categoryP">Category
-                      </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                      		<select class="form-control col-md-7 col-xs-12" name="categoryP">
-                      		@for(c <- categories){
-                      			@if(c.getId() == 1){
-                      			<option id="catec@c.getId()" value="@c.getId()" selected=true>@c.getName()</option>
-                      			}else{
-                      			<option id="catec@c.getId()" value="@c.getId()">@c.getName()</option>
-                      			}
-                      			
-                      		} 
-							</select>
+                        <input id="id_cateP" type="hidden" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="id_cate" required="required" type="text">
                       </div>
                     </div>
-                    
                     <div class="item form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name Product<span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="nameP" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="name" placeholder="Smartphone" required="required" type="text">
-                      </div>
-                    </div>
-                    <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Price Sale</label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="saleP"  class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="salePrice" placeholder="0.0"  type="text">
-                      </div>
-                    </div>
-                    <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="newP" type="checkbox" name="isNew" value="1"> Is New
-                      </div>
-                    </div>
-                    <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="activeP" type="checkbox" name="isActive" value="1"> Is Active
+                        <input id="nameP" class="form-control col-md-7 col-xs-12"  name="name" placeholder="Smartphone" required="required" type="text">
                       </div>
                     </div>
                     
                     <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="wishP" type="checkbox" name="isWishList" value="1"> Is WishList
-                      </div>
-                    </div>
-                    
-                    <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Path Image<span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Key<span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="imageP" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="image" placeholder="images/samsung/s6/index.jpg" required="required" type="text">
+                        <input id="keyP" class="form-control col-md-7 col-xs-12" name="key" placeholder="W" required="required" type="text">
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Value<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="valueP" class="form-control col-md-7 col-xs-12"  name="value" placeholder="Trắng" required="required" type="text">
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Price<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="priceP" class="form-control col-md-7 col-xs-12"  name="price" placeholder="24,790,000" required="required" type="text">
                       </div>
                     </div>
                     
+                     <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Count<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="countP" class="form-control col-md-7 col-xs-12"  name="count" placeholder="10" required="required" type="text">
+                      </div>
+                    </div>
                     
                     <div class="ln_solid"></div>
                     <div class="form-group">
@@ -454,65 +438,59 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>Create New Product</h2><br>
+                  <h2>Create New Color Count Product</h2><br>
                   
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                  <form class="form-horizontal form-label-left" novalidate action="@routes.ProductController.productAdd()" method="post">
+                  <form class="form-horizontal form-label-left" novalidate action="@routes.ProductController.cacAdd()" method="post">
+                   
                     <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="categoryP">Category
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name Product<span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                      		<select class="form-control col-md-7 col-xs-12" name="categoryP">
-                      		@for(c <- categories){
-                      			<option value="@c.getId()">@c.getName()</option>
+                        <select class="form-control col-md-7 col-xs-12" name="id_cate">
+                      		@for(c <- cates){
+                      			@if(c.getId() == 1){
+                      			<option id="catec@c.getId()" value="@c.getId()" selected=true>@c.getName()</option>
+                      			}else{
+                      			<option id="catec@c.getId()" value="@c.getId()">@c.getName()</option>
+                      			}
+                      			
                       		} 
 							</select>
                       </div>
                     </div>
                     
                     <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name Product<span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Key<span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="name" class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="name" placeholder="Smartphone" required="required" type="text">
+                        <input  class="form-control col-md-7 col-xs-12" name="key" placeholder="W" required="required" type="text">
                       </div>
                     </div>
                     <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Price Sale</label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input  class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="salePrice" placeholder="0.0"  type="text">
-                      </div>
-                    </div>
-                    <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="checkbox" name="isNew" value="1"> Is New
-                      </div>
-                    </div>
-                    <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="checkbox" name="isActive" value="1"> Is Active
-                      </div>
-                    </div>
-                    
-                    <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name"></label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="checkbox" name="isWishList" value="1"> Is WishList
-                      </div>
-                    </div>
-                    
-                    <div class="item form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Path Image<span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Value<span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="image" placeholder="images/samsung/s6/index.jpg" required="required" type="text">
+                        <input  class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="value" placeholder="Trắng" required="required" type="text">
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Price<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input  class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="price" placeholder="24790000" required="required" type="text">
                       </div>
                     </div>
                     
+                     <div class="item form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Color<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input  class="form-control col-md-7 col-xs-12"  data-validate-words="1" name="count" placeholder="10" required="required" type="text">
+                      </div>
+                    </div>
                     
                     <div class="ln_solid"></div>
                     <div class="form-group">
@@ -683,36 +661,27 @@
         $('form .alert').remove();
     }).prop('checked', false);
   
-  	function edit(id, idC){
+  	function edit(id, idC, pr){
+  		
   		$('#idP').val(id);
+  		$('#id_cateP').val(idC);
   		var name='name'+id;
     	var td1 = (document.getElementById(name)).innerHTML;
   		$('#nameP').val(td1);
-  		
-  		var cate='catec'+idC;
-  		console.log(cate);
-    	document.getElementById(cate).selected = "true";
     	
-    	var sale='sale'+id;
+    	var sale='key'+id;
     	var td2 = (document.getElementById(sale)).innerHTML;
-  		$('#saleP').val(td2);
-  		var image='image'+id;
+  		$('#keyP').val(td2);
+  		var image='value'+id;
     	var td3 = (document.getElementById(image)).innerHTML;
-  		$('#imageP').val(td3);
+  		$('#valueP').val(td3);
   		
-  		var neww='new'+id;
-    	var td4 = (document.getElementById(neww)).innerHTML;
-    	if(td4 == "1")
-  			document.getElementById("newP").checked = true;
-    	var active='active'+id;
-    	var td5 = (document.getElementById(active)).innerHTML;
-    	if(td5 == "1")
-  			document.getElementById("activeP").checked = true;
-    	
-    	var wish='wish'+id;
-    	var td6 = (document.getElementById(wish)).innerHTML;
-    	if(td6 == "1")
-  			document.getElementById("wishP").checked = true;
+  		
+  		$('#priceP').val(pr);
+  		var count='count'+id;
+    	var td5 = (document.getElementById(count)).innerHTML;
+  		$('#countP').val(td5);
+  		
   		
   	}  
   </script>

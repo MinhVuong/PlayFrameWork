@@ -1,12 +1,13 @@
 package pakageResultAdmin;
 import java.util.List;
 
+import entities.ProductCountEntity;
 import models.ProductCountCate;
 import models.ProductCountShow;
 import pakageResult.AbstractPakage;
 
 public class ProductCountAdminPakage extends AbstractPakage{
-	private List<ProductCountShow> colors;
+	private List<ProductCountEntity> colors;
 	private List<ProductCountCate> cates;
 	public ProductCountAdminPakage() {
 		super();
@@ -20,18 +21,18 @@ public class ProductCountAdminPakage extends AbstractPakage{
 
 	
 
-	public ProductCountAdminPakage(List<ProductCountShow> colors,
+	public ProductCountAdminPakage(List<ProductCountEntity> colors,
 			List<ProductCountCate> cates) {
 		super();
 		this.colors = colors;
 		this.cates = cates;
 	}
 
-	public List<ProductCountShow> getColors() {
+	public List<ProductCountEntity> getColors() {
 		return colors;
 	}
 
-	public void setColors(List<ProductCountShow> colors) {
+	public void setColors(List<ProductCountEntity> colors) {
 		this.colors = colors;
 	}
 

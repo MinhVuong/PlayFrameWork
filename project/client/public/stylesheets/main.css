@@ -840,6 +840,12 @@ h2.title:before{
 	margin-right: -150px;
 }
 
+.features_items_compare{
+	overflow:hidden;
+	margin-left: -300px;
+	margin-right: -150px;
+}
+
 
 h2.title {
   color: #FE980F;

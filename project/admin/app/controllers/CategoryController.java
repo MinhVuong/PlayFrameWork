@@ -35,7 +35,12 @@ public class CategoryController extends Controller{
 	public CompletionStage<Result> category() {
 		User user = sessionH.GetUser("user");
 		String url = "http://localhost:9001/admin/categories";
+		
+		
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
+		
+		
+		
     	CompletionStage<Result> result = receive.thenApply(resp -> {
             
     		JsonNode jsonNode = resp.asJson();

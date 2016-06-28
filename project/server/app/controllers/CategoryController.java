@@ -1,10 +1,12 @@
 package controllers;
 
+import play.Logger;
 import play.mvc.Controller;
 import services.CategoryProductService;
 import services.CategoryService;
 
 import java.util.List;
+
 
 
 
@@ -33,6 +35,10 @@ import views.html.*;
 public class CategoryController extends Controller{
 	private CategoryService categoryS = new CategoryService();
 	private CategoryProductService categoryProductS = new CategoryProductService();
+	
+	private Logger.ALogger loger = Logger.of(CategoryController.class);
+	
+	
 	
 	public Result categories(){
 		CategoryAdminPakage pakage = new CategoryAdminPakage();

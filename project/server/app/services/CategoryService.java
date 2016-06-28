@@ -40,6 +40,7 @@ public class CategoryService {
 			return null;
 		}
 	}
+	
 	public boolean CheckExists(CategoryEntity entity){
 		
 		try {
@@ -112,9 +113,7 @@ public class CategoryService {
 			if(result != null)
 				return result;
 			else
-				return null;
-			
-						
+				return null;						
 		}catch(Exception e){
 			ExceptionEntity exceptionEntity = exceptionHelper
 					.createExceptionEntityFromException("CategoryEntity GetCategoryById(int id){",e.getMessage());

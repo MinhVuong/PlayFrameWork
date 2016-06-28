@@ -1,7 +1,131 @@
-
-@(message: String)
+@import PakageResult.User; 
+@import models.CategoryEntity; 
+@import models.CategoryProductEntity; 
+@import java.util.List;
+@import models.ProductEntity;
+@import entities.ProductInforEntity;
+@import models.ProductImageShow;
+@import entities.ProductRelateEntity;
+@import models.ProductRelateShow;
+@(message: String, user: User, categories: List[CategoryEntity], productCategories:List[List[CategoryProductEntity]], product: ProductEntity, infors: List[ProductInforEntity], images: List[ProductImageShow], shows: List[ProductRelateShow])
 
 @main("Product | Detail") {
+<header id="header">
+	<!--header-->
+	<link rel="stylesheet" href="http://www.compareninja.com/template/skins/Sky/skin.css" type="text/css">
+	<div class="header_top">
+		<!--header_top-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="contactinfo">
+						<ul class="nav nav-pills">
+							<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88
+									821</a></li>
+							<li><a href="#"><i class="fa fa-envelope"></i>
+									websmartphone527@@domain.com</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="social-icons pull-right">
+						<ul class="nav navbar-nav">
+							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+							<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/header_top-->
+
+	<div class="header-middle">
+		<!--header-middle-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="logo pull-left">
+						<a href="@routes.HomeController.index()"><img
+							src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
+					</div>
+					<div class="btn-group pull-left">
+						<div class="btn-group">
+							<select style="margin-left: 10px; margin-top: 10px">
+								<option value="volvo">USD</option>
+								<option value="saab">VND</option>
+							</select>
+
+						</div>
+
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<div class="shop-menu pull-right">
+						<ul class="nav navbar-nav">
+
+							<li><a href="@routes.ProductController.cart()"><i
+									class="fa fa-shopping-cart"></i> Cart</a></li> @if(user.getId() == 0) {
+							<li><a href="@routes.AccountController.login()"><i
+									class="fa fa-lock"></i> Login</a></li> } else {
+
+							<li><a href="@routes.AccountController.infor()"><i
+									class="fa fa-user"></i> @user.getFirstName()</a></li>
+							<li><a href="@routes.AccountController.login()"><i
+									class="fa fa-lock"></i> LogOut</a></li> }
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/header-middle-->
+
+	<div class="header-bottom">
+		<!--header-bottom-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-9">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target=".navbar-collapse">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="mainmenu pull-left">
+						<ul class="nav navbar-nav collapse navbar-collapse">
+							<li><a href="@routes.HomeController.index()" class="active">Home</a></li>
+
+							@for(category <- categories){
+							<li class="dropdown"><a
+								href="@routes.HomeController.category(category.getId())">@category.getName()<i
+									class="fa fa-angle-down"></i></a>
+								<ul role="menu" class="sub-menu">
+									@defining(productCategories.get(category.getNumberRow())) { cP=> 
+									@for(cp <- cP){
+									<li><a
+										href="@routes.HomeController.categoryProduct(category.getId(), cp.getId())">@cp.getName()</a></li>
+									} }
+								</ul> }
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="search_box pull-right">
+						<input type="text" placeholder="Search" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/header-bottom-->
+</header>
 <section>
 		<div class="container">
 			<div class="row">
@@ -50,7 +174,7 @@
 					<div class="product-details"><!--product-details-->
 						<div class="col-sm-5">
 							<div class="view-product">
-								<img src=@routes.Assets.versioned("images/product-details/1.jpg") alt="" />
+								<img src=@routes.Assets.versioned(product.getImage()) alt="" />
 							</div>
 							<div id="similar-product" class="carousel slide" data-ride="carousel">
 								
@@ -87,15 +211,16 @@
 						<div class="col-sm-7">
 							<div class="product-information"><!--/product-information-->
 								<img src=@routes.Assets.versioned("images/product-details/new.jpg") class="newarrival" alt="" />
-								<h2>Iphone 6s 16GB</h2>
-								<p>Web ID: 1089772</p>
+								<h2>@product.getName()</h2>
+								<p>Web ID: @product.getId()</p>
 								<img src=@routes.Assets.versioned("images/product-details/rating.png") alt="" />
 								<span>
-									<span>US $59</span>
-									<button type="button" class="btn btn-fefault cart">
+									<span>@product.priceToString() vnd</span>
+									<a href="@routes.ProductController.cart(product.getId())"><button type="button" class="btn btn-fefault cart" >
 										<i class="fa fa-shopping-cart"></i>
 										Add to cart
-									</button>
+									</button></a>
+									
 								</span>
 								<p><b>Availability:</b> In Stock</p>
 								<p><b>Condition:</b> New</p>
@@ -108,39 +233,22 @@
 					<div class="category-tab shop-details-tab"><!--category-tab-->
 						<div class="col-sm-12">
 							<ul class="nav nav-tabs">
-								<li><a href="#details" data-toggle="tab">Cấu Hình</a></li>
-								<li><a href="#companyprofile" data-toggle="tab">Điểm Nổi Bật</a></li>
-								<li class="active"><a href="#reviews" data-toggle="tab">Quà Tặng (5)</a></li>
+								<li class="active"><a href="#details" data-toggle="tab">Cau Hinh</a></li>
+								<li><a href="#companyprofile" data-toggle="tab">Hinh Anh</a></li>
+								<li ><a href="#reviews" data-toggle="tab">Qua Tang</a></li>
 							</ul>
 						</div>
 						<div class="tab-content">
-							<div class="tab-pane fade" id="details" >
+							<div class="tab-pane fade active in" id="details" >
 								<table>
 								    <tbody>
-								      <tr>
-								      	<td width="200px" margin-top="10px"> <b>Màn hình</b>:</td>
-								      	<td>LED-backlit IPS LCD, 4.7", Retina HD</td>
-								      </tr>
-								      <tr >
-								      	<td margin-top="10px"><b>Hệ điều hành:</b></td>
-								      	<td>iOS 9</td>
-								      </tr>
-								      <tr>
-								      	<td><b>Camera sau:</b></td>
-								      	<td>12MP</td>
-								      </tr>
-								      <tr>
-								      	<td><b>Camera trước</b></td>
-								      	<td>5MP</td>
-								      </tr>
-								      <tr>
-								      	<td><b>CPU:</b></td>
-								      	<td>Apple A9 2 nhân 64-bit, 1.8 GHz</td>
-								      </tr>
-								      <tr>
-								      	<td><b>RAM:</b></td>
-								      	<td>2GB</td>
-								      </tr>
+								    @for(infor <- infors){
+								    	<tr>
+									      	<td width="200px" style="margin-top:10px"> <b>@infor.getName()</b></td>
+									      	<td>@infor.getValue()</td>
+								      	</tr>
+								    }
+								      
 								    </tbody>
 								  </table>
 							</div>
@@ -158,44 +266,23 @@
 												</ol>
 												
 												<div class="carousel-inner" style={margin-left:100px}>
+												@for(image <- images){
+													@if(image.getTag() == 1){
 													<div class="item active">
-														<div class="col-sm-6" >
-															<h1><span>E</span>-SHOPPER</h1>
-															<h2>Free E-Commerce Template</h2>
-															<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+														<div class="col-sm-6">
+															<img src=@routes.Assets.versioned(image.getPath()) class="girl img-responsive" alt="" />
 															
 														</div>
-														<div class="col-sm-6">
-															<img src=@routes.Assets.versioned("images/home/girl1.jpg") class="girl img-responsive" alt="" />
-															<img src=@routes.Assets.versioned("images/home/pricing.png")  class="pricing" alt="" />
-														</div>
 													</div>
+													}else{
 													<div class="item">
-														<div class="col-sm-6" >
-															<h1><span>E</span>-SHOPPER</h1>
-															<h2>100% Responsive Design</h2>
-															<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+														<div class="col-sm-6">
+															<img src=@routes.Assets.versioned(image.getPath()) class="girl img-responsive" alt="" />
 															
 														</div>
-														<div class="col-sm-6">
-															<img src=@routes.Assets.versioned("images/home/girl2.jpg") class="girl img-responsive" alt="" />
-															<img src=@routes.Assets.versioned("images/home/pricing.png")  class="pricing" alt="" />
-														</div>
 													</div>
-													
-													<div class="item">
-														<div class="col-sm-6" >
-															<h1><span>E</span>-SHOPPER</h1>
-															<h2>Free Ecommerce Template</h2>
-															<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-															
-														</div>
-														<div class="col-sm-6">
-															<img src=@routes.Assets.versioned("images/home/girl3.jpg") class="girl img-responsive" alt="" />
-															<img src=@routes.Assets.versioned("images/home/pricing.png") class="pricing" alt="" />
-														</div>
-													</div>
-													
+													}
+												}
 												</div>
 												
 												<a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
@@ -223,14 +310,16 @@
 						
 						<div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
 							<div class="carousel-inner">
+							@for(show <- shows){
+								@if(show.getTag() == 1){
 								<div class="item active">	
 									<div class="col-sm-4">
 										<div class="product-image-wrapper">
 											<div class="single-products">
 												<div class="productinfo text-center">
-													<img src=@routes.Assets.versioned("images/home/recommend1.jpg") alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
+													<img src=@routes.Assets.versioned(show.getProduct1().getImage()) alt="" />
+													<h2>@show.getProduct1().priceToString() vnd</h2>
+													<p>@show.getProduct1().getName()</p>
 													<button type="button" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
 												</div>
 											</div>
@@ -240,9 +329,9 @@
 										<div class="product-image-wrapper">
 											<div class="single-products">
 												<div class="productinfo text-center">
-													<img src=@routes.Assets.versioned("images/home/recommend2.jpg") alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
+													<img src=@routes.Assets.versioned(show.getProduct2().getImage()) alt="" />
+													<h2>@show.getProduct2().priceToString() vnd</h2>
+													<p>@show.getProduct2().getName()</p>
 													<button type="button" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
 												</div>
 											</div>
@@ -252,23 +341,24 @@
 										<div class="product-image-wrapper">
 											<div class="single-products">
 												<div class="productinfo text-center">
-													<img src=@routes.Assets.versioned("images/home/recommend3.jpg") alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
+													<img src=@routes.Assets.versioned(show.getProduct3().getImage()) alt="" />
+													<h2>@show.getProduct3().priceToString() vnd</h2>
+													<p>@show.getProduct3().getName()</p>
 													<button type="button" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
+								}else{
 								<div class="item">	
 									<div class="col-sm-4">
 										<div class="product-image-wrapper">
 											<div class="single-products">
 												<div class="productinfo text-center">
-													<img src=@routes.Assets.versioned("images/home/recommend1.jpg") alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
+													<img src=@routes.Assets.versioned(show.getProduct1().getImage()) alt="" />
+													<h2>@show.getProduct1().priceToString() vnd</h2>
+													<p>@show.getProduct1().getName()</p>
 													<button type="button" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
 												</div>
 											</div>
@@ -278,9 +368,9 @@
 										<div class="product-image-wrapper">
 											<div class="single-products">
 												<div class="productinfo text-center">
-													<img src=@routes.Assets.versioned("images/home/recommend2.jpg") alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
+													<img src=@routes.Assets.versioned(show.getProduct2().getImage()) alt="" />
+													<h2>@show.getProduct2().priceToString() vnd</h2>
+													<p>@show.getProduct2().getName()</p>
 													<button type="button" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
 												</div>
 											</div>
@@ -290,15 +380,22 @@
 										<div class="product-image-wrapper">
 											<div class="single-products">
 												<div class="productinfo text-center">
-													<img src=@routes.Assets.versioned("images/home/recommend3.jpg") alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
+													<img src=@routes.Assets.versioned(show.getProduct3().getImage()) alt="" />
+													<h2>@show.getProduct3().priceToString() vnd</h2>
+													<p>@show.getProduct3().getName()</p>
 													<button type="button" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
+								}
+								
+								
+								
+								
+							}
+								
 							</div>
 							 <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
 								<i class="fa fa-angle-left"></i>

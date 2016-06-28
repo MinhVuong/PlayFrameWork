@@ -17,7 +17,10 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 # Account Controller
 POST	/register						controllers.AccountController.register
 GET		/activeAccount/:token/:id		controllers.AccountController.activeAccount(token: String, id: Integer)
+
 POST	/login							controllers.AccountController.login
+
+
 GET		/infor/:id						controllers.AccountController.infor(id: String)
 POST	/updateInfor					controllers.AccountController.updateInfor
 POST	/updateAddress					controllers.AccountController.updateAddress
@@ -32,9 +35,18 @@ GET	/productListAjax/:count/:page/:cate	controllers.ProductController.productLis
 GET		/category/:id					controllers.ProductController.category(id: Integer)
 GET		/categoryProduct/:id/:idp		controllers.ProductController.categoryProduct(id: Integer, idp: Integer)
 GET		/product/:id					controllers.ProductController.product(id: Integer)
+GET		/product/detail/:id				controllers.ProductController.productDetail(id: Integer)
+GET		/product/compare/:id			controllers.ProductController.compare(id: Integer)
 
 POST	/cart							controllers.CartController.cart
 GET		/color							controllers.CartController.count
+POST	/cart/checkoutS					controllers.CartController.checkoutS
+GET		/cart/productGood				controllers.CartController.productGood
+GET		/order/list						controllers.CartController.orders()
+
+
+
+
 GET		/demoCsrf						controllers.ProductController.demoCsrf
 GET		/token							controllers.ProductController.token
 
@@ -62,10 +74,23 @@ GET		/admin/pro/del/:id				controllers.ProductController.productDel(id: Integer)
 POST	/admin/pro/edit					controllers.ProductController.productEdit
 
 GET		/admin/pro/cac/list				controllers.ProductController.cacs
+POST	/admin/pro/cac/add				controllers.ProductController.cacAdd
+POST	/admin/pro/cac/edit				controllers.ProductController.cacEdit
+GET		/admin/pro/cac/del/:id			controllers.ProductController.cacDel(id: Integer)
+
+POST	/admin/order/update				controllers.OrderController.orderUpdate
 
 
 GET		/admin/demo						controllers.CategoryController.demo
 
+
+
+## OAuth 1
+GET    /twitter/homeTimeline/:a/:b		controllers.Twitter.homeTimeline(a: String, b: String)
+
+
+
+GET     /twitter/auth         			controllers.Twitter.auth()
 
 
 

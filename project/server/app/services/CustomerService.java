@@ -1,8 +1,13 @@
 package services;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import models.ChangePass;
+import models.Infor;
+import models.Login;
 import pakageResult.User;
 import play.api.libs.Crypto;
 import play.libs.mailer.MailerClient;
@@ -15,9 +20,6 @@ import business.TokenHelper;
 import entities.CustomerEntity;
 import entities.ExceptionEntity;
 import entities.TokenEntity;
-import models.ChangePass;
-import models.Infor;
-import models.Login;
 
 
 public class CustomerService {
@@ -144,6 +146,10 @@ public class CustomerService {
 		case 1:	// verify success
 			{
 				try{
+					// Delete Token
+					
+					tokenService.DeleteToken(token);
+					
 					// Edit account active = 1
 					EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
 					EntityManager em = emf.createEntityManager();
@@ -423,6 +429,25 @@ public class CustomerService {
 		}catch(Exception e)
 		{
 			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("GetInfor(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+	
+	public List<CustomerEntity> GetListCustomer(){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			List<CustomerEntity> result = (List<CustomerEntity>)em.createNativeQuery("select * from customer where group_id=1 and is_active=1", CustomerEntity.class).getResultList();
+			em.close();
+			if(result != null)
+				return result;
+			else
+				return null;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<CustomerEntity> GetListCustomer()", e.getMessage());
 			exceptionService.AddException(exceptionEntity);
 			return null;
 		}

@@ -1,17 +1,22 @@
 package controllers;
 import helper.SessionHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import models.ProductCountCate;
+import models.ProductCountShow;
 import models.ProductEntityShow;
 import models.ProductShow;
 import models.User;
 import entities.CategoryProductEntity;
+import entities.ProductCountEntity;
 import entities.ProductEntity;
 import pakageResult.ProductAdminPakage;
+import pakageResult.ProductCountAdminPakage;
 import play.Logger;
 import play.data.Form;
 import play.libs.Json;
@@ -195,9 +200,224 @@ public class ProductController extends Controller{
 		return result;
 	}
 	
-	public Result cacs(){
-		return ok("hehe");
+	public CompletionStage<Result> cacs(){
+		User user = sessionH.GetUser("user");
+		
+		String url = "http://localhost:9001/admin/pro/cac/list";
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
+    	CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
+    		pakage = Json.fromJson(jsonNode, ProductCountAdminPakage.class);
+    		
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType()){
+            	case 1:{
+            		List<ProductCountEntity> cacs = pakage.getColors();
+            		List<ProductCountShow> shows = new ArrayList<ProductCountShow>();
+            		List<ProductCountCate> categorys = pakage.getCates();
+            		for(ProductCountEntity p : cacs){
+            			ProductCountShow show = new ProductCountShow();
+            			for(ProductCountCate cate : categorys){
+                			if(cate.getId() == p.getProductId())
+                			{
+                				show.ConvertFromProductCountEntity(p,cate.getId(), cate.getName());
+                			}
+                		}
+            			shows.add(show);
+            		}
+            		
+            		
+            		return ok(colors.render("", user, shows, categorys));
+            	}
+            	case 0:{
+            		return ok("Server fail!");
+            	}
+            	
+            	}
+            	return ok("ok");
+            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		return result;
 	}
+	
+	public CompletionStage<Result> cacAdd(){
+		User user = sessionH.GetUser("user");
+		ProductCountShow s = Form.form(ProductCountShow.class).bindFromRequest().get();
+		log.info("price " + s.getPrice_S());
+		ProductCountEntity entity = new ProductCountEntity();
+		entity.ConvertFromProductCountShow(s);
+		JsonNode json = Json.toJson(entity);
+		
+		log.info(" " +entity.getPrice());
+		String url = "http://localhost:9001/admin/pro/cac/add";
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).post(json);
+    	CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
+    		pakage = Json.fromJson(jsonNode, ProductCountAdminPakage.class);
+    		
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType()){
+            	case 1:{
+            		List<ProductCountEntity> cacs = pakage.getColors();
+            		List<ProductCountShow> shows = new ArrayList<ProductCountShow>();
+            		List<ProductCountCate> categorys = pakage.getCates();
+            		for(ProductCountEntity p : cacs){
+            			ProductCountShow show = new ProductCountShow();
+            			for(ProductCountCate cate : categorys){
+                			if(cate.getId() == p.getProductId())
+                			{
+                				show.ConvertFromProductCountEntity(p,cate.getId(), cate.getName());
+                			}
+                		}
+            			shows.add(show);
+            		}
+            		return ok(colors.render("", user, shows, categorys));
+            	}
+            	case 0:{
+            		return ok("Server fail!");
+            	}
+            	case -1:{
+            		List<ProductCountEntity> cacs = pakage.getColors();
+            		List<ProductCountShow> shows = new ArrayList<ProductCountShow>();
+            		List<ProductCountCate> categorys = pakage.getCates();
+            		for(ProductCountEntity p : cacs){
+            			ProductCountShow show = new ProductCountShow();
+            			for(ProductCountCate cate : categorys){
+                			if(cate.getId() == p.getProductId())
+                			{
+                				show.ConvertFromProductCountEntity(p,cate.getId(), cate.getName());
+                			}
+                		}
+            			shows.add(show);
+            		}
+            		return ok(colors.render("", user, shows, categorys));
+            	}
+            	}
+            	return ok("ok");
+            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		return result;
+	}
+	
+	public CompletionStage<Result> cacDel(int id){
+		User user = sessionH.GetUser("user");
+		
+		String url = "http://localhost:9001/admin/pro/cac/del/" + id;
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
+    	CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
+    		pakage = Json.fromJson(jsonNode, ProductCountAdminPakage.class);
+    		
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType()){
+            	case 1:{
+            		List<ProductCountEntity> cacs = pakage.getColors();
+            		List<ProductCountShow> shows = new ArrayList<ProductCountShow>();
+            		List<ProductCountCate> categorys = pakage.getCates();
+            		for(ProductCountEntity p : cacs){
+            			ProductCountShow show = new ProductCountShow();
+            			for(ProductCountCate cate : categorys){
+                			if(cate.getId() == p.getProductId())
+                			{
+                				show.ConvertFromProductCountEntity(p,cate.getId(), cate.getName());
+                			}
+                		}
+            			shows.add(show);
+            		}
+            		return ok(colors.render("", user, shows, categorys));
+            	}
+            	case 0:{
+            		return ok("Server fail!");
+            	}
+            	}
+            	return ok("ok");
+            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		return result;
+	}
+	
+	public CompletionStage<Result> cacEdit(){
+		User user = sessionH.GetUser("user");
+		ProductCountShow s = Form.form(ProductCountShow.class).bindFromRequest().get();
+		log.info("price " + s.getPrice_S());
+		ProductCountEntity entity = new ProductCountEntity();
+		entity.ConvertFromProductCountShow(s);
+		entity.setId(s.getId());
+		entity.setProductId(s.getId_cate());
+		JsonNode json = Json.toJson(entity);
+		
+		log.info(" " +entity.getPrice());
+		String url = "http://localhost:9001/admin/pro/cac/edit";
+		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).post(json);
+    	CompletionStage<Result> result = receive.thenApply(resp -> {
+            
+    		JsonNode jsonNode = resp.asJson();
+    		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
+    		pakage = Json.fromJson(jsonNode, ProductCountAdminPakage.class);
+    		
+            if(resp.getStatus()== 200)
+            {	
+            	switch(pakage.getType()){
+            	case 1:{
+            		List<ProductCountEntity> cacs = pakage.getColors();
+            		List<ProductCountShow> shows = new ArrayList<ProductCountShow>();
+            		List<ProductCountCate> categorys = pakage.getCates();
+            		for(ProductCountEntity p : cacs){
+            			ProductCountShow show = new ProductCountShow();
+            			for(ProductCountCate cate : categorys){
+                			if(cate.getId() == p.getProductId())
+                			{
+                				show.ConvertFromProductCountEntity(p,cate.getId(), cate.getName());
+                			}
+                		}
+            			shows.add(show);
+            		}
+            		return ok(colors.render("", user, shows, categorys));
+            	}
+            	case 0:{
+            		return ok("Server fail!");
+            	}
+            	
+            	}
+            	return ok("ok");
+            	
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		return result;
+	}
+	
 	
 	public Result productShowEdit(int id){
 		return ok(" " +id);

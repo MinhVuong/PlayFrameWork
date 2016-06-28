@@ -21,7 +21,7 @@ public class CartEntity {
 	@Column(name = "count_total_products")
 	private int countTotal;
 	@Column(name = "price_total_products")
-	private String priceTotal;
+	private float priceTotal;
 	@Column(name = "product_ids")
 	private String productId;
 	@Column(name = "product_names")
@@ -35,7 +35,7 @@ public class CartEntity {
 		// TODO Auto-generated constructor stub
 	}
 	public CartEntity(int id, int customerId, String createAt, String updateAt,
-			int countTotal, String priceTotal, String productId,
+			int countTotal, float priceTotal, String productId,
 			String productName, String productCount, String productPrice) {
 		super();
 		this.id = id;
@@ -79,10 +79,10 @@ public class CartEntity {
 	public void setCountTotal(int countTotal) {
 		this.countTotal = countTotal;
 	}
-	public String getPriceTotal() {
+	public float getPriceTotal() {
 		return priceTotal;
 	}
-	public void setPriceTotal(String priceTotal) {
+	public void setPriceTotal(float priceTotal) {
 		this.priceTotal = priceTotal;
 	}
 	public String getProductId() {

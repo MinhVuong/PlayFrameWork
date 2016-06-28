@@ -117,4 +117,88 @@ public class ProductCountService {
 			return null;
 		}
 	}
+	public boolean CheckExistProductCount(ProductCountEntity entity){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			ProductCountEntity result = (ProductCountEntity) em.createNativeQuery("Select * From product_colors_stock  Where product_id=? and key_color=? and value_color=?", ProductCountEntity.class)
+					.setParameter(1, entity.getProductId()).setParameter(2, entity.getKey()).setParameter(3, entity.getValue()).getSingleResult();
+			em.close();
+			if(result != null)
+				return true;
+			else
+				return false;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("CheckExistProductCount(ProductCountEntity entity)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return false;
+		}
+	}
+	
+	public int UpdateProductCount(ProductCountEntity entity){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			ProductCountEntity result = (ProductCountEntity) em.createNativeQuery("Select * From product_colors_stock  Where id_product_color_stock=?", ProductCountEntity.class).setParameter(1, entity.getId()).getSingleResult();
+			result.setCount(entity.getCount());
+			result.setKey(entity.getKey());
+			result.setPrice(entity.getPrice());
+			result.setProductId(entity.getProductId());
+			result.setValue(entity.getValue());
+			
+			em.getTransaction().commit();
+			em.close();
+			
+			return 1;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("UpdateProductCount(ProductCountEntity entity)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return 0;
+		}
+	}
+	
+	public int DeleteProductCount(int id){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			ProductCountEntity result = (ProductCountEntity) em.createNativeQuery("Select * From product_colors_stock  Where id_product_color_stock=?", ProductCountEntity.class).setParameter(1, id).getSingleResult();
+			em.remove(result);			
+			em.getTransaction().commit();
+			em.close();
+			
+			return 1;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("DeleteProductCount(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return 0;
+		}
+	}
+	
+	public int AddProductCount(ProductCountEntity entity){
+		if(CheckExistProductCount(entity))
+			return -1;
+		else{
+			try{
+				EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+				EntityManager em = emf.createEntityManager();
+				em.getTransaction().begin();
+				em.persist(entity);
+				em.getTransaction().commit();
+				em.close();
+				return 1;
+			}catch(Exception e)
+			{
+				ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("AddProductCount(ProductCountEntity entity)", e.getMessage());
+				exceptionService.AddException(exceptionEntity);
+				return 0;
+			}
+		}
+		
+	}
 }

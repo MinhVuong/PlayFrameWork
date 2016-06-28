@@ -20,6 +20,27 @@ public class CartService {
 	public CartService() {
 	    
 	}
+	public CartEntity GetEntityById(int id)
+	{
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			CartEntity result = (CartEntity)em.find(CartEntity.class, id);
+			em.close();
+			if(result != null)
+				return result;
+			else
+				return null;
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("CartEntity GetEntityById(int id)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+	
 	
 	public boolean AddCart(CartEntity entity)
 	{
@@ -30,6 +51,9 @@ public class CartService {
 			em.persist(entity);
 			em.getTransaction().commit();
 			em.close();
+			
+			
+			
 			return true;
 			
 		}catch(Exception e)
@@ -37,6 +61,32 @@ public class CartService {
 			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("AddCart(CartEntity entity)", e.getMessage());
 			exceptionService.AddException(exceptionEntity);
 			return false;
+		}
+	}
+	public int AddCartReturnId(CartEntity entity)
+	{
+		if(AddCart(entity)){
+			try{
+				EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+				EntityManager em = emf.createEntityManager();
+				em.getTransaction().begin();
+				CartEntity result = (CartEntity)em.createNativeQuery("Select * From carts where create_at=?", CartEntity.class).setParameter(1, entity.getCreateAt()).getSingleResult();
+				
+				em.close();
+				if(result != null)
+					return result.getId();
+				else
+					return 0;
+				
+			}catch(Exception e)
+			{
+				ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("AddCartReturnId(CartEntity entity)", e.getMessage());
+				exceptionService.AddException(exceptionEntity);
+				return 0;
+			}
+		}
+		else{
+			return 0;
 		}
 	}
 	
@@ -69,7 +119,7 @@ public class CartService {
 			price_Total += pro.getPrice();
 		}
 		cart.setCountTotal(count_Total);
-		cart.setPriceTotal(priceToString(price_Total));
+		cart.setPriceTotal(price_Total);
 		cart.setProductId(ids);
 		cart.setProductName(names);
 		cart.setProductCount(counts);

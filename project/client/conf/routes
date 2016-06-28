@@ -17,6 +17,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET		/login					controllers.AccountController.login
 POST	/loginSubmit			controllers.AccountController.loginSubmit
 POST	/registerSubmit			controllers.AccountController.registerSubmit
+GET		/activeAccount/:token/:id	controllers.AccountController.activaAccount(token: String, id: String)
 GET		/infor					controllers.AccountController.infor
 POST	/address				controllers.AccountController.address
 POST	/updateInfor			controllers.AccountController.updateInfor
@@ -30,10 +31,18 @@ GET		/getPriceByColor/:color/:id	controllers.ProductController.getPriceByColor(c
 POST	/cart/add/:key		controllers.ProductController.cartAdd(key: String)
 POST	/cart/sub/:key		controllers.ProductController.cartSub(key: String)
 POST	/cart/delete		controllers.ProductController.cartDelete()
+GET		/cart/infor/:first/:last/:phone/:street/:city/:check			controllers.ProductController.cartInfor(first: String, last: String, phone: String, street: String, city: String, check: Integer)
 GET		/checkout			controllers.ProductController.checkout()
 GET		/checkout/success	controllers.ProductController.checkoutSuccess()
 GET		/checkout/fail		controllers.ProductController.checkoutFail()
 
+GET		/product/detail/:id	controllers.ProductController.productDetail(id: Integer)
+GET		/product/compare/:id	controllers.ProductController.compare(id: Integer)
+GET		/product/compare/del/:id	controllers.ProductController.compareDel(id: Integer)
+
 GET		/forgot					controllers.AccountController.forgot
 
 GET	/encrypt				controllers.AccountController.encrypt
+
+##### Ajax
+GET		/ajax				controllers.AccountController.demoajax

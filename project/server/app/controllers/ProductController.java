@@ -11,9 +11,11 @@ import models.IndexRequest;
 import models.ProductCart;
 import pakageResult.CategoryProduct2Pakage;
 import pakageResult.CategoryProductPakage;
+import pakageResult.ComparePakage;
 import pakageResult.IndexFullPakage;
 import pakageResult.IndexPagePakage;
 import pakageResult.IndexPakage;
+import pakageResult.ProductDetailPakage;
 import pakageResult.ProductPakage;
 import pakageResultAdmin.ProductAdminPakage;
 import pakageResultAdmin.ProductCountAdminPakage;
@@ -25,6 +27,9 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.CategoryProductService;
 import services.ProductCountService;
+import services.ProductImageService;
+import services.ProductInforService;
+import services.ProductRealateService;
 import services.ProductService;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,6 +38,7 @@ import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 import entities.ProductCountEntity;
 import entities.ProductEntity;
+import entities.ProductRelateEntity;
 
 
 
@@ -41,7 +47,9 @@ public class ProductController extends Controller{
 	private ProductService productS = new ProductService();
 	private ProductCountService productCountS = new ProductCountService();
 	private CategoryProductService categoryProductS = new CategoryProductService();
-	
+	private ProductInforService inforS = new ProductInforService();
+	private ProductImageService imageS = new ProductImageService();
+	private ProductRealateService relateS = new ProductRealateService();
 	public Result productList()
 	{
 		JsonNode json = request().body().asJson();
@@ -135,18 +143,14 @@ public class ProductController extends Controller{
 	
 	public Result productListAjax(int count, int page, int cate)
 	{
-			
-		
 		List<ProductEntity> products =  productS.GetProductsByPage(page, count, cate);
 		IndexPagePakage pakage = new IndexPagePakage();
 		if(products.isEmpty())
 		{
 			pakage.setProducts(null);;
-			
 		}
 		else
 		{
-			
 			pakage.setProducts(products);
 			
 		}
@@ -178,6 +182,32 @@ public class ProductController extends Controller{
 		}
 		return ok(Json.toJson(pakage));
 	}
+	
+	public Result productDetail(int id){
+		ProductDetailPakage pakage = new ProductDetailPakage();
+		pakage.setProduct(productS.GetProductById(id));
+		pakage.setInfors(inforS.GetListInforProductByIdProduct(id));
+		pakage.setImages(imageS.GetListImageProductBuIdProduct(id));
+		List<ProductEntity> productR = new ArrayList<ProductEntity>();
+		List<ProductRelateEntity> relates = relateS.GetProductRelateByProductId(id);
+		for(ProductRelateEntity re : relates){
+			ProductEntity p = productS.GetProductById(re.getProductRelate());
+			productR.add(p);
+		}
+		pakage.setRelates(productR);
+		pakage.setType(1);
+		return ok(Json.toJson(pakage));
+	}
+	
+	public Result compare(int id){
+		ComparePakage pakage = new ComparePakage();
+		pakage.setProduct(productS.GetProductById(id));
+		pakage.setInfor(inforS.GetListInforProductByIdProduct(id));
+		pakage.setImage(imageS.GetListImageProductBuIdProduct(id));
+		pakage.setType(1);
+		return ok(Json.toJson(pakage));
+	}
+	
 	
 	
 	/////////////////////////		ADMIN		/////////////
@@ -236,8 +266,48 @@ public class ProductController extends Controller{
 	public Result cacs(){
 		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
 		pakage.setType(1);
-		pakage.setColors(productCountS.GetListShow());
+		pakage.setColors(productCountS.GetList());
 		pakage.setCates(productS.GetCateProductToColorAndCount());
+		return ok(Json.toJson(pakage));
+	}
+	
+	public Result cacAdd(){
+		JsonNode json = request().body().asJson();
+		ProductCountEntity entity = Json.fromJson(json, ProductCountEntity.class);
+		int result = productCountS.AddProductCount(entity);
+		
+		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
+		pakage.setType(result);
+		if(result != 0){
+			pakage.setColors(productCountS.GetList());
+			pakage.setCates(productS.GetCateProductToColorAndCount());
+		}
+		return ok(Json.toJson(pakage));
+	}
+	
+	public Result cacEdit(){
+		JsonNode json = request().body().asJson();
+		ProductCountEntity entity = Json.fromJson(json, ProductCountEntity.class);
+		int result = productCountS.UpdateProductCount(entity);
+		
+		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
+		pakage.setType(result);
+		if(result != 0){
+			pakage.setColors(productCountS.GetList());
+			pakage.setCates(productS.GetCateProductToColorAndCount());
+		}
+		return ok(Json.toJson(pakage));
+	}
+	
+	public Result cacDel(int id){		
+		int result = productCountS.DeleteProductCount(id);
+		
+		ProductCountAdminPakage pakage = new ProductCountAdminPakage();
+		pakage.setType(result);
+		if(result != 0){
+			pakage.setColors(productCountS.GetList());
+			pakage.setCates(productS.GetCateProductToColorAndCount());
+		}
 		return ok(Json.toJson(pakage));
 	}
 	

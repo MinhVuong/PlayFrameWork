@@ -1,6 +1,7 @@
 package pakageResult;
 
 public class CartPakage extends AbstractPakage{
+	private int idC;		//id luu danh sach san pham trong database cart
 	private String message;
 
 	public CartPakage() {
@@ -13,8 +14,10 @@ public class CartPakage extends AbstractPakage{
 		// TODO Auto-generated constructor stub
 	}
 
-	public CartPakage(String message) {
+	
+	public CartPakage(int idC, String message) {
 		super();
+		this.idC = idC;
 		this.message = message;
 	}
 
@@ -24,6 +27,14 @@ public class CartPakage extends AbstractPakage{
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public int getIdC() {
+		return idC;
+	}
+
+	public void setIdC(int idC) {
+		this.idC = idC;
 	}
 	
 	

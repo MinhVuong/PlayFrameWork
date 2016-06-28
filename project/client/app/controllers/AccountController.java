@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import PakageResult.ActiveAccountPakage;
 import PakageResult.InforPakage;
 import PakageResult.LoginPakage;
 import PakageResult.RegisterPakage;
@@ -25,6 +26,7 @@ import models.Menu;
 import models.Register;
 import models.ProductEntity;
 import play.Logger;
+import play.Routes;
 import play.libs.ws.WS;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
@@ -40,7 +42,7 @@ import play.cache.*;
 
 public class AccountController extends Controller {
 
-	private final Logger.ALogger log = Logger.of("AccountController");
+	private final Logger.ALogger log = Logger.of(AccountController.class);
 	private final Crypto crypto;
 	
 	@Inject
@@ -64,9 +66,7 @@ public class AccountController extends Controller {
 		Menu menu = new Menu();
 		menu = GetMenuFromSession();
 		session().remove("ID");
-		
-		
-		log.info("Show Login");
+		log.trace("Show Login");
 		return ok(login.render("", "", menu.getCategories(), menu.getCategoryProducts()));
 	}
 	public CompletionStage<Result> loginSubmit()
@@ -78,7 +78,12 @@ public class AccountController extends Controller {
 		menu.setCategoryProducts(menuS.getCategoryProducts());
 		
 		Session session = Http.Context.current().session();
+		
+		
 		Login login_form = Form.form(Login.class).bindFromRequest().get();
+		
+		
+		
 		log.info(login_form.getEmail() + login_form.getPassword());
 		String url = "http://localhost:9001/login";
 		
@@ -96,6 +101,7 @@ public class AccountController extends Controller {
             	switch(pakage.getType())
             	{
             	case 1:{
+            		log.info("Login Success !");
             		User user = pakage.getUser();
             		session.put("ID", Integer.toString(user.getId()));
             		session.put("user", Json.toJson(user).toString());
@@ -178,6 +184,28 @@ public class AccountController extends Controller {
 		return result;
 	}
 
+	public CompletionStage<Result> activaAccount(String token, String id){
+		Session session = Http.Context.current().session();
+		String url = "http://localhost:9001/activeAccount/"+token+"/"+id;
+		CompletionStage<WSResponse> receive  = WS.url(url).get();
+		CompletionStage<Result> result = receive.thenApply(resp -> {
+			log.info("status active: " + resp.getStatus());
+			JsonNode jsonNode = resp.asJson();
+			ActiveAccountPakage pakage = new ActiveAccountPakage();
+			pakage = Json.fromJson(jsonNode, ActiveAccountPakage.class);
+			if(resp.getStatus()== 200)
+            {	
+            	session.put("user", Json.toJson(pakage.getUser()).toString());
+            	return redirect(routes.HomeController.index());
+            }
+             else
+             {
+            	 //logger.info("bad--------------------------");
+            	 return badRequest("bad");
+             }
+         });
+		return result;
+	}
 	
 	public CompletionStage<Result> infor()
 	{
@@ -391,6 +419,10 @@ public class AccountController extends Controller {
 		result += " ";
 		result += myCryp.decrypt(result);
 		return ok(result);
+	}
+	
+	public Result demoajax(){
+		return ok("ok");
 	}
 	
 	

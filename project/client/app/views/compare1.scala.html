@@ -1,0 +1,198 @@
+@import PakageResult.User; 
+@import play.mvc.Http.Session; 
+@import models.ProductEntity; 
+@import java.util.List; 
+@import models.IndexRequest; 
+@import models.CategoryEntity; 
+@import models.CategoryProductEntity; 
+@import models.InforConpareShow;
+@import entities.ProductInforEntity;
+@(user: User, categories: List[CategoryEntity], productCategories:List[List[CategoryProductEntity]], product: ProductEntity, infors: List[InforConpareShow]) 
+@main("Compare") {
+
+
+<header id="header">
+	<!--header-->
+	<link rel="stylesheet" href="http://www.compareninja.com/template/skins/Sky/skin.css" type="text/css">
+	<div class="header_top">
+		<!--header_top-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="contactinfo">
+						<ul class="nav nav-pills">
+							<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88
+									821</a></li>
+							<li><a href="#"><i class="fa fa-envelope"></i>
+									websmartphone527@@domain.com</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="social-icons pull-right">
+						<ul class="nav navbar-nav">
+							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+							<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/header_top-->
+
+	<div class="header-middle">
+		<!--header-middle-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="logo pull-left">
+						<a href="@routes.HomeController.index()"><img
+							src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
+					</div>
+					<div class="btn-group pull-left">
+						<div class="btn-group">
+							<select style="margin-left: 10px; margin-top: 10px">
+								<option value="volvo">USD</option>
+								<option value="saab">VND</option>
+							</select>
+
+						</div>
+
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<div class="shop-menu pull-right">
+						<ul class="nav navbar-nav">
+
+							<li><a href="@routes.ProductController.cart()"><i
+									class="fa fa-shopping-cart"></i> Cart</a></li> @if(user.getId() == 0) {
+							<li><a href="@routes.AccountController.login()"><i
+									class="fa fa-lock"></i> Login</a></li> } else {
+
+							<li><a href="@routes.AccountController.infor()"><i
+									class="fa fa-user"></i> @user.getFirstName()</a></li>
+							<li><a href="@routes.AccountController.login()"><i
+									class="fa fa-lock"></i> LogOut</a></li> }
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/header-middle-->
+
+	<div class="header-bottom">
+		<!--header-bottom-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-9">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target=".navbar-collapse">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="mainmenu pull-left">
+						<ul class="nav navbar-nav collapse navbar-collapse">
+							<li><a href="@routes.HomeController.index()" class="active">Home</a></li>
+
+							@for(category <- categories){
+							<li class="dropdown"><a
+								href="@routes.HomeController.category(category.getId())">@category.getName()<i
+									class="fa fa-angle-down"></i></a>
+								<ul role="menu" class="sub-menu">
+									@defining(productCategories.get(category.getNumberRow())) { cP=> 
+									@for(cp <- cP){
+									<li><a
+										href="@routes.HomeController.categoryProduct(category.getId(), cp.getId())">@cp.getName()</a></li>
+									} }
+								</ul> }
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="search_box pull-right">
+						<input type="text" placeholder="Search" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/header-bottom-->
+</header>
+<!--/header-->
+<section id="slider">
+	<!--slider-->
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12"></div>
+		</div>
+	</div>
+</section>
+<!--/slider-->
+
+<section>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-3" style="margin-left: -50px"></div>
+
+			<div class="col-sm-9 padding-right">
+				<div class="features_items_compare">
+					<!--features_items-->
+					<!-- Start show products -->
+					<h2 id="titleS" class="title text-center">Compare Product Same
+						Category</h2>
+					<!-- Start show products -->
+					
+					<div style="width: 100%;" id="tableWrapper">
+						<table id="vsTable">
+							<tbody>
+								<tr>
+									<td style="width: 20%;" class="cat title"></td>
+									<td style="width: 40%;" class="title"><div class=""><b>@product.getName()</b></div></td>
+									<td style="width: 40%;" class="title"><div class=""><b></b></div></td>
+								</tr>
+								<tr class="second">
+									<td style="width: 20%;" class="cat"><div class=""><b>IMAGE</b></div></td>
+									<td style="width: 40%;"><img width="210" height="165" src=@routes.Assets.versioned(product.getImage()) alt="" /></td>
+									<td style="width: 40%;"></td>
+								</tr>
+								<tr class="second">
+									<td style="width: 20%;" class="cat"><div class=""><b>PRICE</b></div></td>
+									<td style="width: 40%;"><h2>@product.priceToString() <small>vnd</small></h2></td>
+									<td style="width: 40%;"></td>
+								</tr>
+								@for(infor <- infors){
+								<tr class="second">
+									<td style="width: 20%;" class="cat"><div class=""><b>@infor.getName()</b></div></td>
+									<td style="width: 40%;">@infor.getValue1()</td>
+									<td style="width: 40%;">@infor.getValue2()</td>
+								</tr>
+								}
+								<tr class="second">
+									<td style="width: 20%;" class="cat"><div class=""><b>Delete</b></div></td>
+									<td style="width: 40%;"><a href="@routes.ProductController.compareDel(1)">Delete @product.getName()</a></div></td>
+									<td style="width: 40%;"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!--features_items-->
+
+
+
+			</div>
+		</div>
+	</div>
+</section>
+
+
+}
