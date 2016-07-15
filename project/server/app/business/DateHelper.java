@@ -9,9 +9,11 @@ import java.util.Date;
 
 
 
+
 import org.joda.time.DateTime;
 import org.joda.time.Hours;
 
+import play.Logger;
 import entities.ExceptionEntity;
 import services.ExceptionService;
 
@@ -93,4 +95,34 @@ public class DateHelper {
 		
 		return 0;
 	}
+	// Time Token: stop and start.
+		public int TimeExpireToken(String start)
+		{
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			String stop = getDateTimeCurrent();
+			try {
+				Date date1 = (Date)dateFormat.parse(start);
+				Date date2 = (Date)dateFormat.parse(stop);
+				
+				long t1 = date1.getTime();
+				Logger.info("t1: " + t1);
+				long t2 = date2.getTime();
+				Logger.info("t2: " + t2);
+				long t = t2 - t1;
+				
+				t = t/3600;
+				Logger.info("t/3600: " + t);
+				if(t<1800)
+					return 1;
+				else
+				return 0;
+				
+			} catch (ParseException e) {
+				ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("CalculationBetweenTwoTime(String time)", e.getMessage());
+				exceptionService.AddException(exceptionEntity);
+				return 0;
+			}
+			
+			
+		}
 }

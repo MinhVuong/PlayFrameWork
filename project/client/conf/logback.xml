@@ -30,6 +30,7 @@
   <logger name="intercepter" level="DEBUG" />
   <logger name="home" level="DEBUG" />
   <logger name="product" level="DEBUG" />
+   <logger name="seach" level="DEBUG" />
 
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
   <logger name="com.avaje.ebean.config.PropertyMapLoader" level="OFF" />

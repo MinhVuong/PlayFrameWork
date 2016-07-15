@@ -122,6 +122,29 @@ public class AddressService {
 			return null;
 		}
 	}
+	public AddressEntity GetAddressAndTime(int id_Customer, String time)
+	{
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			AddressEntity address = (AddressEntity)em.createNativeQuery("Select * From customer_address  Where customer_id=? and create_at=?", AddressEntity.class)
+					.setParameter(1, id_Customer).setParameter(2, time).getSingleResult();
+			if(address != null){
+				em.close();
+				return address;
+			}else{
+				em.close();
+				return null;
+			}
+			
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("GetAddress(int id_Customer)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
 	
 	public Address ConvertAddressEntityToAddress(AddressEntity entity)
 	{

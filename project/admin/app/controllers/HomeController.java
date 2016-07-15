@@ -15,10 +15,11 @@ public class HomeController extends Controller {
     public Result index() {
     	User user = new User();
     	user = sessionH.GetUser("user");
+    	int role = sessionH.GetRole();
     	if(user.getId() == 0){
     		return ok(login.render("",user));
     	}else{
-    		return ok(index.render(user));
+    		return ok(index.render(user, role));
         }
     }
 

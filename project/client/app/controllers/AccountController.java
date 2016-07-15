@@ -39,7 +39,6 @@ import play.api.libs.Crypto;
 import play.cache.*;
 
 
-
 public class AccountController extends Controller {
 
 	private final Logger.ALogger log = Logger.of(AccountController.class);
@@ -49,6 +48,7 @@ public class AccountController extends Controller {
 	public AccountController(final Crypto cry)
 	{
 		this.crypto = cry;
+		
 	}
 	private Menu GetMenuFromSession()
 	{
@@ -75,18 +75,12 @@ public class AccountController extends Controller {
 		Menu menu = new Menu();
 		Menu menuS = GetMenuFromSession();
 		menu.setCategories(menuS.getCategories());
-		menu.setCategoryProducts(menuS.getCategoryProducts());
-		
-		Session session = Http.Context.current().session();
-		
+		menu.setCategoryProducts(menuS.getCategoryProducts());	
+		Session session = Http.Context.current().session();		
 		
 		Login login_form = Form.form(Login.class).bindFromRequest().get();
-		
-		
-		
 		log.info(login_form.getEmail() + login_form.getPassword());
 		String url = "http://localhost:9001/login";
-		
 		JsonNode json = Json.toJson(login_form);
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).post(json);
 		
@@ -123,12 +117,14 @@ public class AccountController extends Controller {
             	}
             	return ok("ok");
             	
+            }else if(resp.getStatus()== 402){
+            	return ok(login.render("Account didn't create!","", menu.getCategories(), menu.getCategoryProducts()));
+            }else if(resp.getStatus()== 403){
+            	return ok(login.render("Password was fail!","", menu.getCategories(), menu.getCategoryProducts()));
+            }else if(resp.getStatus()== 405){
+            	return ok(login.render("Account didn't active!","", menu.getCategories(), menu.getCategoryProducts()));
             }
-             else
-             {
-            	 //logger.info("bad--------------------------");
-            	 return badRequest("bad");
-             }
+            return ok("ok");
          });
 		return result;
 	}
@@ -221,7 +217,7 @@ public class AccountController extends Controller {
 		menu.setCategories(menuS.getCategories());
 		menu.setCategoryProducts(menuS.getCategoryProducts());
 		
-		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(60000).get();
+		CompletionStage<WSResponse> receive  = WS.url(url).get();
 		CompletionStage<Result> result = receive.thenApply(resp -> {
 			JsonNode jsonNode = resp.asJson();
 			InforPakage pakage = new InforPakage();
@@ -426,4 +422,5 @@ public class AccountController extends Controller {
 	}
 	
 	
+
 }

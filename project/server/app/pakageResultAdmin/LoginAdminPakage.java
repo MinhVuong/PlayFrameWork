@@ -9,6 +9,7 @@ import pakageResult.User;
 public class LoginAdminPakage extends AbstractPakage{
 	List<AdminRoleEntity> rules;
 	User user;
+	int role;
 	
 	public LoginAdminPakage() {
 		super();
@@ -17,10 +18,11 @@ public class LoginAdminPakage extends AbstractPakage{
 
 	
 
-	public LoginAdminPakage(List<AdminRoleEntity> rules, User user) {
+	public LoginAdminPakage(List<AdminRoleEntity> rules, User user, int role) {
 		super();
 		this.rules = rules;
 		this.user = user;
+		this.role = role;
 	}
 
 
@@ -48,6 +50,18 @@ public class LoginAdminPakage extends AbstractPakage{
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+
+
+	public int getRole() {
+		return role;
+	}
+
+
+
+	public void setRole(int role) {
+		this.role = role;
 	}
 	
 	

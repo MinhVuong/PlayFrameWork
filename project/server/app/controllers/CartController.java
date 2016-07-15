@@ -2,6 +2,8 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
@@ -12,6 +14,7 @@ import pakageResult.CartPakage;
 import pakageResult.OrderPakage;
 import pakageResult.ProductGoodPakage;
 import pakageResultAdmin.OrderAdminPakage;
+import play.Logger;
 import play.libs.Json;
 import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
@@ -22,6 +25,8 @@ import services.CustomerService;
 import services.OrderService;
 import services.ProductCountService;
 import services.ProductService;
+import services.TokenService;
+import business.DateHelper;
 import business.MailHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -31,14 +36,17 @@ import entities.CartEntity;
 import entities.CustomerEntity;
 import entities.OrderEntity;
 import entities.ProductEntity;
+import entities.TokenEntity;
 
 public class CartController extends Controller{
+	private Logger.ALogger logger = Logger.of("product");
 	private CartService cartS = new CartService();
 	private ProductCountService productCountS = new ProductCountService();
 	private AddressService addressS = new AddressService();
 	private OrderService orderS = new OrderService();
 	private ProductService productS = new ProductService();
 	private CustomerService customerS = new CustomerService();
+	TokenService tokenS = new TokenService();
 	
 	private final MailerClient mailerClient;
 	@Inject
@@ -87,7 +95,7 @@ public class CartController extends Controller{
 		JsonNode json = request().body().asJson();
 		CheckOut checkp = new CheckOut();
 		checkp = Json.fromJson(json, CheckOut.class);
-		
+		logger.info("check: " + Json.toJson(checkp));
 		CartEntity cartE = cartS.GetEntityById(checkp.getCartId());
 		OrderEntity entity = new OrderEntity();
 		entity.ConvertFromCheckOut(checkp, cartE);
@@ -97,6 +105,13 @@ public class CartController extends Controller{
 			AddressEntity addressE = addressS.GetAddress(checkp.getCustomerId());
 			entity.setAddressId(addressE.getId());
 		}else{
+			AddressEntity addressE = new AddressEntity();
+			addressE.ConvertFromAddress(checkp.getAddress());
+			addressS.AddAddress(addressE);
+			String time = addressE.getCreateAt();
+			AddressEntity address = addressS.GetAddressAndTime(checkp.getAddress().getId(), time);
+			logger.info("address: "+Json.toJson(address));
+			entity.setAddressId(address.getId());
 			
 		}
 		List<String> names = CutContent(cartE.getProductName());
@@ -129,20 +144,42 @@ public class CartController extends Controller{
 		ProductGoodPakage pakage = new ProductGoodPakage();
 		
 		List<ProductEntity> list = new ArrayList<ProductEntity>();
-		for(ProductGood or : orderS.GetIdProductGood()){
-			list.add(productS.GetProductById(or.getId()));
+		List<ProductGood> goods = orderS.GetIdProductGood();
+		if(goods == null || goods.size() == 0){
+			list = productS.GetProductGood(3);
+		}else{
+			for(ProductGood or : goods){
+				list.add(productS.GetProductById(or.getId()));
+			}
 		}
 		pakage.setProducts(list);
 		return ok(Json.toJson(pakage));
 	}
 	
 	
-	public Result orders(){
-		OrderAdminPakage pakage = new OrderAdminPakage();
-		pakage.setType(1);
-		pakage.setOrders(orderS.GetList());
-		pakage.setCustomers(customerS.GetListCustomer());
-		return ok(Json.toJson(pakage));
+	public CompletionStage<Result> orders(String token){
+		Result resp = ok("");
+		if(token == null || token.equals(""))
+		{
+			resp = status(401, "");
+		}else{
+			TokenEntity tokenE = tokenS.GetTokenFormTokenString(token);
+			if(tokenE != null){
+				DateHelper dateH = new DateHelper();
+				if(dateH.TimeExpireToken(tokenE.getCreateAt()) == 1){
+					OrderAdminPakage pakage = new OrderAdminPakage();
+					pakage.setType(1);
+					pakage.setOrders(orderS.GetList());
+					pakage.setCustomers(customerS.GetListCustomer());
+					resp = ok(Json.toJson(pakage));
+				}else{
+					resp = status(401, "");
+				}				
+			}else{
+				resp = status(401, "");
+			}			
+		}
+		return CompletableFuture.completedFuture(resp);
 	}
 	
 	public Result count()

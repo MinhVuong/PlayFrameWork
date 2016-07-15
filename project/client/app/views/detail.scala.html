@@ -13,35 +13,7 @@
 <header id="header">
 	<!--header-->
 	<link rel="stylesheet" href="http://www.compareninja.com/template/skins/Sky/skin.css" type="text/css">
-	<div class="header_top">
-		<!--header_top-->
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6">
-					<div class="contactinfo">
-						<ul class="nav nav-pills">
-							<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88
-									821</a></li>
-							<li><a href="#"><i class="fa fa-envelope"></i>
-									websmartphone527@@domain.com</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="social-icons pull-right">
-						<ul class="nav navbar-nav">
-							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-							<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!--/header_top-->
+
 
 	<div class="header-middle">
 		<!--header-middle-->
@@ -51,16 +23,6 @@
 					<div class="logo pull-left">
 						<a href="@routes.HomeController.index()"><img
 							src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
-					</div>
-					<div class="btn-group pull-left">
-						<div class="btn-group">
-							<select style="margin-left: 10px; margin-top: 10px">
-								<option value="volvo">USD</option>
-								<option value="saab">VND</option>
-							</select>
-
-						</div>
-
 					</div>
 				</div>
 				<div class="col-sm-8">
@@ -118,7 +80,9 @@
 				</div>
 				<div class="col-sm-3">
 					<div class="search_box pull-right">
-						<input type="text" placeholder="Search" />
+						<form action="@routes.SearchController.SearchForm()" method="POST">
+							<input type="text" name="key" required placeholder="Search"/>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -135,10 +99,11 @@
 							<h2>Prices</h2>
 							<div class="brands-name">
 								<ul class="nav nav-pills nav-stacked">
-									<li><a href="#"> <span class="pull-right"></span>1-100</a></li>
-									<li><a href="#"> <span class="pull-right"></span>101-300</a></li>
-									<li><a href="#"> <span class="pull-right"></span>301-500</a></li>
-									<li><a href="#"> <span class="pull-right"></span>>500</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "1")"> <span class="pull-right"></span>nhỏ hơn 5 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "2")"> <span class="pull-right"></span>5 triệu - 8 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "3")"> <span class="pull-right"></span>8 triệu - 12 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "4")"> <span class="pull-right"></span>lớn hơn 12 triệu</a></li>
+									
 								</ul>
 							</div>
 						</div><!--/brands_products-->
@@ -147,21 +112,13 @@
 							<h2>Color</h2>
 							<div class="brands-name">
 								<ul class="nav nav-pills nav-stacked">
-									<li><a href="#"> <span class="pull-right"></span>Yelow</a></li>
-									<li><a href="#"> <span class="pull-right"></span>White</a></li>
-									<li><a href="#"> <span class="pull-right"></span>Black</a></li>
-									<li><a href="#"> <span class="pull-right"></span>Pink</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "Y")"> <span class="pull-right"></span>Yelow</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "W")"> <span class="pull-right"></span>White</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "B")"> <span class="pull-right"></span>Black</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "P")"> <span class="pull-right"></span>Pink</a></li>
 								</ul>
 							</div>
 						</div><!--/brands_products-->
-						
-						<div class="price-range"><!--price-range-->
-							<h2>Price Range</h2>
-							<div class="well text-center">
-								 <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" ><br />
-								 <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
-							</div>
-						</div><!--/price-range-->
 						
 						<div class="shipping text-center"><!--shipping-->
 							<img src=@routes.Assets.versioned("images/home/shipping.jpg") alt="" />
@@ -178,25 +135,7 @@
 							</div>
 							<div id="similar-product" class="carousel slide" data-ride="carousel">
 								
-								  <!-- Wrapper for slides -->
-								    <div class="carousel-inner">
-										<div class="item active">
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar1.jpg") alt=""></a>
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar2.jpg") alt=""></a>
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar3.jpg") alt=""></a>
-										</div>
-										<div class="item">
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar1.jpg") alt=""></a>
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar2.jpg") alt=""></a>
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar3.jpg") alt=""></a>
-										</div>
-										<div class="item">
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar1.jpg") alt=""></a>
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar2.jpg") alt=""></a>
-										  <a href=""><img src=@routes.Assets.versioned("images/product-details/similar3.jpg") alt=""></a>
-										</div>
-										
-									</div>
+								  
 
 								  <!-- Controls -->
 								  <a class="left item-control" href="#similar-product" data-slide="prev">
@@ -224,8 +163,7 @@
 								</span>
 								<p><b>Availability:</b> In Stock</p>
 								<p><b>Condition:</b> New</p>
-								<p><b>Brand:</b> E-SHOPPER</p>
-								<a href=""><img src=@routes.Assets.versioned("images/product-details/share.png") class="share img-responsive"  alt="" /></a>
+								
 							</div><!--/product-information-->
 						</div>
 					</div><!--/product-details-->
@@ -406,69 +344,8 @@
 						</div>
 					</div><!--/recommended_items-->
 					<!-- ------------------------------- -->
-					<div class="response-area">
-						<h2>3 Comments</h2>
-						<ul class="media-list">
-							<li class="media">
-								
-								<a class="pull-left" href="#">
-									<img class="media-object" src=@routes.Assets.versioned("images/blog/man-two.jpg") alt="">
-								</a>
-								<div class="media-body">
-									<ul class="sinlge-post-meta">
-										<li><i class="fa fa-user"></i>Janis Gallagher</li>
-										<li><i class="fa fa-clock-o"></i> 1:33 pm</li>
-										<li><i class="fa fa-calendar"></i> DEC 5, 2013</li>
-									</ul>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-									<a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-								</div>
-							</li>
-							<li class="media second-media">
-								<a class="pull-left" href="#">
-									<img class="media-object" src=@routes.Assets.versioned("images/blog/man-three.jpg") alt="">
-								</a>
-								<div class="media-body">
-									<ul class="sinlge-post-meta">
-										<li><i class="fa fa-user"></i>Janis Gallagher</li>
-										<li><i class="fa fa-clock-o"></i> 1:33 pm</li>
-										<li><i class="fa fa-calendar"></i> DEC 5, 2013</li>
-									</ul>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-									<a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-								</div>
-							</li>
-							<li class="media">
-								<a class="pull-left" href="#">
-									<img class="media-object" src=@routes.Assets.versioned("images/blog/man-four.jpg") alt="">
-								</a>
-								<div class="media-body">
-									<ul class="sinlge-post-meta">
-										<li><i class="fa fa-user"></i>Janis Gallagher</li>
-										<li><i class="fa fa-clock-o"></i> 1:33 pm</li>
-										<li><i class="fa fa-calendar"></i> DEC 5, 2013</li>
-									</ul>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-									<a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-								</div>
-							</li>
-						</ul>					
-					</div><!--/Response-area-->
-					<div class="replay-box">
-						<div class="row">
-							<h2>Here to you post comment</h2>
-							<div class="col-sm-8">
-								<div class="text-area">
-									<div class="blank-arrow">
-										<label>Your Name</label>
-									</div>
-									<span>*</span>
-									<textarea name="message" rows="11"></textarea>
-									<a class="btn btn-primary" href="">post comment</a>
-								</div>
-							</div>
-						</div>
-					</div><!--/Repaly Box-->
+					
+					
 				</div>
 			</div>
 		</div>

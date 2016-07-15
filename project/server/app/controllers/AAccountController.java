@@ -2,7 +2,12 @@ package controllers;
 
 
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
 import javax.inject.Inject;
+
+
 
 
 import models.Login;
@@ -35,12 +40,11 @@ public class AAccountController extends Controller{
 		this.crypto = cryp;
 	}
 	
-	public Result login() {
+	public CompletionStage<Result> login() {
+		Result resp = new Result(200);
 		Login login = new Login();
 		JsonNode json = request().body().asJson();
 		login = Json.fromJson(json, Login.class);
-		//login.setEmail("admin@gmail.com");
-		//login.setPassword("minhvuong");
 		int result = aCustomerS.CheckLoginAdmin(login, this.crypto);
 		
 		LoginAdminPakage pakage = new LoginAdminPakage();
@@ -49,9 +53,12 @@ public class AAccountController extends Controller{
 			int group = aCustomerS.GetRoleAdmin(login, crypto);
 			pakage.setUser(customerS.CreateUser(login));
 			pakage.setRules(adminRoleS.GetListRuleByIdAdmin(group));
-			
+			pakage.setRole(group);
+			resp = status(200, Json.toJson(pakage));
+		}else{
+			resp = status(401, "");
 		}
-        return ok(Json.toJson(pakage));
+        return CompletableFuture.completedFuture(resp);
     }
 	
 	

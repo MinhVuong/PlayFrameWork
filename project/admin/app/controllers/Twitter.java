@@ -96,8 +96,6 @@ public class Twitter extends Controller{
 		if (Strings.isNullOrEmpty(verifier)) {
 			String url = routes.Twitter.auth().absoluteURL(request());
 			RequestToken requestToken = TWITTER.retrieveRequestToken(url);
-			saveSessionTokenPair(requestToken);
-			
 			return redirect(TWITTER.redirectUrl(requestToken.token));
 			// return status(401, "Strange response type");
 		} else {
@@ -107,7 +105,7 @@ public class Twitter extends Controller{
 			RequestToken accessToken = TWITTER.retrieveAccessToken(requestToken, verifier);
 			saveSessionTokenPair(accessToken);
 			
-			// return redirect(routes.Twitter.homeTimeline());
+			//return redirect(routes.Twitter.homeTimeline());
 			//return redirect(routes.Twitter.homeTimeline(requestToken.token, requestToken.secret));
 			return ok("token: " + accessToken.token + "\nsecret: " + accessToken.secret);
 		}

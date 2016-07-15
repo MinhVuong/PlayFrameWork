@@ -30,40 +30,30 @@ public class OrderController extends Controller{
 	
 	public CompletionStage<Result> orders(){
 		User user = sessionH.GetUser("user");
-		String url = "http://localhost:9001/order/list";
+		int role = sessionH.GetRole();
+		String url = "http://localhost:9001/order/list/"+user.getToken();
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
 		CompletionStage<Result> result = receive.thenApply(resp -> {
-            
-    		JsonNode jsonNode = resp.asJson();
-    		OrderAdminPakage pakage = new OrderAdminPakage();
-    		pakage = Json.fromJson(jsonNode, OrderAdminPakage.class);
-    		
             if(resp.getStatus()== 200)
             {	
-            	switch(pakage.getType()){
-            	case 1:{
-            		List<OrderShow> shows = new ArrayList<OrderShow>();
-            		List<CustomerEntity> customers = pakage.getCustomers();
-            		for(OrderEntity o:pakage.getOrders()){
-            			OrderShow or = new OrderShow();
-            			or.ConvertFormOrderEntityAndCustomerEntity(o, GetNameFromListCustomer(customers, o.getCustomerId()));
-            			shows.add(or);
-            		}
-            		StatusList statusL = new StatusList();
-            		statusL.setStatus(AddStatusList());
-            		return ok(order.render("ok", user, shows, statusL.getStatus()));
-            	}
-            	case 0:{
-            		return ok("Server fail!");
-            	}
-            	}
-            	return ok("ok");
+            	JsonNode jsonNode = resp.asJson();
+	    		OrderAdminPakage pakage = new OrderAdminPakage();
+	    		pakage = Json.fromJson(jsonNode, OrderAdminPakage.class);
+	    		List<OrderShow> shows = new ArrayList<OrderShow>();
+        		List<CustomerEntity> customers = pakage.getCustomers();
+        		for(OrderEntity o:pakage.getOrders()){
+        			OrderShow or = new OrderShow();
+        			or.ConvertFormOrderEntityAndCustomerEntity(o, GetNameFromListCustomer(customers, o.getCustomerId()));
+        			shows.add(or);
+        		}
+        		StatusList statusL = new StatusList();
+        		statusL.setStatus(AddStatusList());
+        		return ok(order.render("ok", user, shows, statusL.getStatus(), role));
             	
             }
              else
              {
-            	 //logger.info("bad--------------------------");
-            	 return badRequest("bad");
+            	 return ok(login.render("", null));
              }
          });
 		return result;
@@ -92,6 +82,7 @@ public class OrderController extends Controller{
 	
 	public CompletionStage<Result> orderUpdate(){
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		OrderUpdate entity = Form.form(OrderUpdate.class).bindFromRequest().get();
 		JsonNode json = Json.toJson(entity);
 		
@@ -116,7 +107,7 @@ public class OrderController extends Controller{
             		}
             		StatusList statusL = new StatusList();
             		statusL.setStatus(AddStatusList());
-            		return ok(order.render("ok", user, shows, statusL.getStatus()));
+            		return ok(order.render("ok", user, shows, statusL.getStatus(), role));
             	}
             	case 0:{
             		return ok("Server fail!");

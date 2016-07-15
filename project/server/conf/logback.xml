@@ -30,8 +30,12 @@
   <logger name="oauth" level="DEBUG" />
   
   <logger name="accountController" level="INFO" />
+  <logger name="search" level="INFO" />
+  
   
  <logger name="email" level="DEBUG" />
+ <logger name="product" level="INFO" />
+ <logger name="productCache" level="INFO" />
  
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
   <logger name="com.avaje.ebean.config.PropertyMapLoader" level="OFF" />

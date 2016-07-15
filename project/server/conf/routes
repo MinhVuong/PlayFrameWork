@@ -42,13 +42,16 @@ POST	/cart							controllers.CartController.cart
 GET		/color							controllers.CartController.count
 POST	/cart/checkoutS					controllers.CartController.checkoutS
 GET		/cart/productGood				controllers.CartController.productGood
-GET		/order/list						controllers.CartController.orders()
+GET		/order/list/:token				controllers.CartController.orders(token: String)
 
+GET		/search/:cate/:key				controllers.SearchController.search(cate: Integer, key: String)
 
-
-
+	
 GET		/demoCsrf						controllers.ProductController.demoCsrf
 GET		/token							controllers.ProductController.token
+
+## Product Cache
+GET		/removePrCache/:page/:count/:cate	controllers.ProductController.removeProductCache(page: Integer, count: Integer, cate: Integer)
 
 
 ###############################################

@@ -14,6 +14,7 @@ import entities.CategoryEntity;
 import entities.CategoryProductEntity;
 import entities.CustomerEntity;
 import entities.ExceptionEntity;
+import entities.ProductCountEntity;
 import entities.ProductEntity;
 import business.EntityManagerFactorySingleton;
 import business.ExceptionHelper;
@@ -62,21 +63,15 @@ public class ProductService {
 	}
 	
 	public List<ProductEntity> GetProductsByPage(int page, int counts, int category){
-		int start = counts * (page - 1);
-		int end = counts * page;
+		int start = (page -1)*10;
 		try{
 			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
 			EntityManager em = emf.createEntityManager();
 			em.getTransaction().begin();
-			List<ProductEntity> result = (List<ProductEntity>) em.createNativeQuery("Select * From product p, category_product c  Where p.is_active=1  AND(p.category_product_id = c.id_category_product and c.category_id=?)", ProductEntity.class).setParameter(1, (int)category).getResultList();
+			List<ProductEntity> result = (List<ProductEntity>) em.createNativeQuery("Select * From product p, category_product c  Where p.is_active=1  AND(p.category_product_id = c.id_category_product and c.category_id=?) limit ?, ?", ProductEntity.class)
+					.setParameter(1, (int)category).setParameter(2, (int)start).setParameter(3, (int)counts).getResultList();
 			em.close();
-			ArrayList<ProductEntity> result1 = new ArrayList<ProductEntity>();
-			for(int i = start; i< end; i++)
-			{
-				if(result.size() > i)
-					result1.add(result.get(i));
-			}
-			return result1;
+			return result;
 			
 		}catch(Exception e)
 		{
@@ -126,9 +121,9 @@ public class ProductService {
 			return null;
 		}
 	}
+	
 	public List<CategoryProductEntity> GetCategoryProductByIdCategory(int category)
 	{
-
 		try{
 			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
 			EntityManager em = emf.createEntityManager();
@@ -204,8 +199,7 @@ public class ProductService {
 			return "";
 		}
 	}
-	
-	
+		
 	public List<Category> ChangeCategoryEntityToCategory(List<CategoryEntity> entity)
 	{
 		List<Category> categories = new ArrayList<Category>();
@@ -399,6 +393,85 @@ public class ProductService {
 		}catch(Exception e)
 		{
 			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductCountCate> GetCateProductToColorAndCount()", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+	
+	public List<ProductEntity> SearchPrice(float m1, float m2){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			List<ProductEntity> result = (List<ProductEntity>) em.createNativeQuery("Select * From product where price between ? and ?", ProductEntity.class)
+					.setParameter(1, m1).setParameter(2, m2).getResultList();
+			if(result == null)
+				result = new ArrayList<ProductEntity>();
+			return result;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductEntity> SearchPrice(float m1, float m2))", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+	public List<ProductEntity> SearchColor(String key){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			List<ProductCountEntity> list = (List<ProductCountEntity>) em.createNativeQuery("Select * From product_colors_stock where key_color=?", ProductCountEntity.class)
+					.setParameter(1, key).getResultList();
+			List<ProductEntity> result = new ArrayList<ProductEntity>(); 
+			for(ProductCountEntity i : list){
+				ProductEntity pro = GetProductById(i.getProductId());
+				result.add(pro);
+			}
+			return result;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductEntity> SearchColor(String key)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+	
+	public List<ProductEntity> SearchName(String name){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			name = name.toLowerCase();
+			name = name.replace('_', ' ');
+			name = "%"+name+"%";
+			List<ProductEntity> result = (List<ProductEntity>) em.createNativeQuery("Select * From product where name like ?", ProductEntity.class)
+					.setParameter(1, name).getResultList();
+			if(result == null)
+				result = new ArrayList<ProductEntity>();
+			return result;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductEntity> SearchName(String name)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+	
+	public List<ProductEntity> GetProductGood(int count){
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			List<ProductEntity> result = (List<ProductEntity>) em.createNativeQuery("Select * From product  Where is_active=1 limit 0, ?", ProductEntity.class)
+					.setParameter(1, count).getResultList();
+			em.close();
+			if(result == null){
+				result = new ArrayList<ProductEntity>();
+			}
+			return result;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("List<ProductEntity> GetProductGood(int count)", e.getMessage());
 			exceptionService.AddException(exceptionEntity);
 			return null;
 		}

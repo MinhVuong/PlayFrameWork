@@ -12,31 +12,6 @@
 	
 	<!-- @user = Json.fromJson(Json.parse(session.get("user")), User.class); -->
 	<header id="header"><!--header-->
-		<div class="header_top"><!--header_top-->
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="contactinfo">
-							<ul class="nav nav-pills">
-								<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
-								<li><a href="#"><i class="fa fa-envelope"></i> websmartphone527@@domain.com</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="social-icons pull-right">
-							<ul class="nav navbar-nav">
-								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-								<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div><!--/header_top-->
 		
 		<div class="header-middle"><!--header-middle-->
 			<div class="container">
@@ -44,16 +19,6 @@
 					<div class="col-sm-4">
 						<div class="logo pull-left">
 							<a href="@routes.HomeController.index()"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
-						</div>
-						<div  class="btn-group pull-left">
-							<div class="btn-group">
-								<select style="margin-left:10px; margin-top:10px">
-								  <option value="volvo">USD</option>
-								  <option value="saab">VND</option>
-								</select>
-								
-							</div>
-							
 						</div>
 					</div>
 					<div class="col-sm-8">
@@ -109,7 +74,9 @@
 					</div>
 					<div class="col-sm-3">
 						<div class="search_box pull-right">
-							<input type="text" placeholder="Search"/>
+							<form action="@routes.SearchController.SearchForm()" method="POST">
+								<input type="text" name="key" required placeholder="Search"/>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -125,10 +92,11 @@
 							<h2>Prices</h2>
 							<div class="brands-name">
 								<ul class="nav nav-pills nav-stacked">
-									<li><a href="#"> <span class="pull-right"></span>1-100</a></li>
-									<li><a href="#"> <span class="pull-right"></span>101-300</a></li>
-									<li><a href="#"> <span class="pull-right"></span>301-500</a></li>
-									<li><a href="#"> <span class="pull-right"></span>>500</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "1")"> <span class="pull-right"></span>nhỏ hơn 5 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "2")"> <span class="pull-right"></span>5 triệu - 8 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "3")"> <span class="pull-right"></span>8 triệu - 12 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "4")"> <span class="pull-right"></span>lớn hơn 12 triệu</a></li>
+									
 								</ul>
 							</div>
 						</div><!--/brands_products-->
@@ -137,10 +105,10 @@
 							<h2>Color</h2>
 							<div class="brands-name">
 								<ul class="nav nav-pills nav-stacked">
-									<li><a href="#"> <span class="pull-right"></span>Yelow</a></li>
-									<li><a href="#"> <span class="pull-right"></span>White</a></li>
-									<li><a href="#"> <span class="pull-right"></span>Black</a></li>
-									<li><a href="#"> <span class="pull-right"></span>Pink</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "Y")"> <span class="pull-right"></span>Yelow</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "W")"> <span class="pull-right"></span>White</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "B")"> <span class="pull-right"></span>Black</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "P")"> <span class="pull-right"></span>Pink</a></li>
 								</ul>
 							</div>
 						</div><!--/brands_products-->
@@ -179,7 +147,7 @@
 										<div class="product-overlay">
 											<div class="overlay-content">
 												<h2>@product.priceToString() <small>vnd</small></h2>
-												<p>@product.getName()</p>
+												<a href="@routes.ProductController.productDetail(product.getId())"><p>@product.getName()</p></a>
 											</div>
 										</div>
 										@if(product.getIsNew() == 1) {

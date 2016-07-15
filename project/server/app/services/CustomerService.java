@@ -26,7 +26,7 @@ public class CustomerService {
 	
 	private ExceptionService exceptionService = new ExceptionService();
 	private ExceptionHelper exceptionHelper = new ExceptionHelper();
-
+	TokenService tokenS = new TokenService();
 	public CustomerService() {
 	    
 	}
@@ -285,7 +285,24 @@ public class CustomerService {
 		user.setId(customer.getId());
 		user.setEmail(login.getEmail());
 		user.setFirstName(customer.getFirstName());
-		user.setToken("");
+		// Generate Token to add Token into database
+		if(customer.getGroupId() != 1){
+			TokenEntity tokenEntity = new TokenEntity();
+			TokenHelper tokenHelper = new TokenHelper();
+			// Find token before
+			TokenEntity temp = tokenS.FindTokenFormTokenString(customer.getId());
+			if(temp == null){
+				
+			}else{
+				tokenS.DeleteToken(temp.getToken());
+			}			
+			tokenEntity = tokenHelper.CreateTokenForAdmin(customer.getId());
+			tokenS.AddToken(tokenEntity);
+			user.setToken(tokenEntity.getToken());
+		}else{
+			user.setToken("");
+		}
+		
 		return user;
 	}
 	// Increase Number Log of Customer after login success.

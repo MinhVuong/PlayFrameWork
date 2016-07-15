@@ -29,7 +29,7 @@ public class ACustomerService {
 			em.getTransaction().begin();
 
 			CustomerEntity result = (CustomerEntity) em.createNativeQuery(
-							"Select * From customer  Where email=? and group_id=2",
+							"Select * From customer  Where email=? and group_id != 1",
 							CustomerEntity.class).setParameter(1, login.getEmail()).getSingleResult();
 			em.close();
 

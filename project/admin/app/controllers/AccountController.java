@@ -33,7 +33,9 @@ public class AccountController extends Controller{
     }
 	public Result index() {
 		User user = new User();
-        return ok(index.render(user));
+		user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
+        return ok(index.render(user, role));
     }
 	public CompletionStage<Result> submitLogin() {
 		Session sessionM = Http.Context.current().session();
@@ -45,37 +47,26 @@ public class AccountController extends Controller{
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).post(json);
 		
 		
-    	CompletionStage<Result> result = receive.thenApply(resp -> {
-            
-    		JsonNode jsonNode = resp.asJson();
-    		LoginAdminPakage pakage = new LoginAdminPakage();
-    		pakage = Json.fromJson(jsonNode, LoginAdminPakage.class);
-    		User user = new User();
+    	CompletionStage<Result> result = receive.thenApply(resp -> {    		
             if(resp.getStatus()== 200)
             {	
-            	switch(pakage.getType()){
-            	case 2:{
-            		
-            		return ok(login.render("Password is not correct!", user));
-            	}
-            	case 1:{
-            		List<AdminRoleEntity> rules = pakage.getRules();
-            		user = pakage.getUser();
-            		sessionM.put("user", Json.toJson(user).toString());
-            		
-            		return ok(index.render(user));
-            	}
-            	case 0:{
-            		return ok(login.render("Email did not exist!", user));
-            	}
-            	}
-            	return ok("ok");
+            	JsonNode jsonNode = resp.asJson();
+        		LoginAdminPakage pakage = new LoginAdminPakage();
+        		pakage = Json.fromJson(jsonNode, LoginAdminPakage.class);
+        		User user = new User();
+        		
+        		List<AdminRoleEntity> rules = pakage.getRules();
+        		user = pakage.getUser();
+        		sessionM.put("user", Json.toJson(user).toString());
+        		sessionM.put("role", Integer.toString(pakage.getRole()));
+        		log.info("Role: "+pakage.getRole());
+        		return ok(index.render(user, pakage.getRole()));
             	
             }
              else
              {
             	 //logger.info("bad--------------------------");
-            	 return badRequest("bad");
+            	 return ok(login.render("", null));
              }
          });
 		return result;

@@ -71,8 +71,10 @@ public class OrderService {
 				String counts = or.getCounts();
 				String[] ida = ids.split(";");
 				String[] counta = counts.split(";");
+				
 				for(int i = 0; i<ida.length; i++){
-					if(!("".equals(ida[i]))){
+					if(ida[i] == null ||ida[i].equals("")){
+					}else{
 						ProductGood p = new ProductGood(Integer.parseInt(ida[i]), Integer.parseInt(counta[i]));
 						if(result.size() < 10){
 							result = AddAndSort(result, p);

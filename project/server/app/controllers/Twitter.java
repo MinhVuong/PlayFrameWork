@@ -38,6 +38,7 @@ public class Twitter extends Controller {
 	private static final OAuth TWITTER = new OAuth(SERVICE_INFO);
 
 	private final WSClient ws;
+	
 
 	@Inject
 	public Twitter(WSClient ws) {
@@ -60,6 +61,7 @@ public class Twitter extends Controller {
                 if(resp.getStatus()== 200)
                 {	
                 	pakage.setType(1);
+                	
                 	return ok("200");
                 }else {
                 	pakage.setType(resp.getStatus());

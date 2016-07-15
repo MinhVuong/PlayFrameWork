@@ -117,5 +117,26 @@ public class TokenService {
 		}
 	}
 	
+	public TokenEntity FindTokenFormTokenString(int id)
+	{
+		try{
+			EntityManagerFactory emf = EntityManagerFactorySingleton.getInstance();
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			
+			TokenEntity tokenEntity = (TokenEntity)em.createNativeQuery("Select * From token  Where customer_id=?", TokenEntity.class).setParameter(1, id).getSingleResult();
+			em.close();
+			if(tokenEntity != null)
+				return tokenEntity;
+			else
+				return null;
+		}catch(Exception e)
+		{
+			ExceptionEntity exceptionEntity = exceptionHelper.createExceptionEntityFromException("AddToken(TokenEntity entity)", e.getMessage());
+			exceptionService.AddException(exceptionEntity);
+			return null;
+		}
+	}
+	
 	
 }

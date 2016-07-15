@@ -42,7 +42,15 @@ GET		/product/compare/del/:id	controllers.ProductController.compareDel(id: Integ
 
 GET		/forgot					controllers.AccountController.forgot
 
+
+
+## Search
+GET	/search/:cate/:key		controllers.SearchController.Search(cate: Integer, key: String)
+POST	/searchForm			controllers.SearchController.SearchForm
+
+
 GET	/encrypt				controllers.AccountController.encrypt
 
 ##### Ajax
 GET		/ajax				controllers.AccountController.demoajax
+

@@ -32,6 +32,7 @@ public class ProductController extends Controller{
 	
 	public CompletionStage<Result> products(){
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		String url = "http://localhost:9001/admin/pro/all";
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
     	CompletionStage<Result> result = receive.thenApply(resp -> {
@@ -48,7 +49,7 @@ public class ProductController extends Controller{
             		List<CategoryProductEntity> categorys = pakage.getCategories();
             		ProductShow show = new ProductShow();
             		show.CreateProductShow(products, categorys);
-            		return ok(listProduct.render("", user, show.getProducts(), categorys));
+            		return ok(listProduct.render("", user, show.getProducts(), categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -69,6 +70,7 @@ public class ProductController extends Controller{
 	
 	public CompletionStage<Result> productAdd(){
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		ProductEntityShow data =  Form.form(ProductEntityShow.class).bindFromRequest().get();
 		data.setId(0);
 		ProductEntity entity = new ProductEntity();
@@ -93,7 +95,7 @@ public class ProductController extends Controller{
             		List<CategoryProductEntity> categorys = pakage.getCategories();
             		ProductShow show = new ProductShow();
             		show.CreateProductShow(products, categorys);
-            		return ok(listProduct.render("", user, show.getProducts(), categorys));
+            		return ok(listProduct.render("", user, show.getProducts(), categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -103,7 +105,7 @@ public class ProductController extends Controller{
             		List<CategoryProductEntity> categorys = pakage.getCategories();
             		ProductShow show = new ProductShow();
             		show.CreateProductShow(products, categorys);
-            		return ok(listProduct.render("", user, show.getProducts(), categorys));
+            		return ok(listProduct.render("", user, show.getProducts(), categorys, role));
             	}
             	
             	}
@@ -121,7 +123,7 @@ public class ProductController extends Controller{
 	
 	public CompletionStage<Result> productDel(int id){
 		User user = sessionH.GetUser("user");
-		
+		int role = sessionH.GetRole();
 		String url = "http://localhost:9001/admin/pro/del/"+id;
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
     	CompletionStage<Result> result = receive.thenApply(resp -> {
@@ -138,7 +140,7 @@ public class ProductController extends Controller{
             		List<CategoryProductEntity> categorys = pakage.getCategories();
             		ProductShow show = new ProductShow();
             		show.CreateProductShow(products, categorys);
-            		return ok(listProduct.render("", user, show.getProducts(), categorys));
+            		return ok(listProduct.render("", user, show.getProducts(), categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -159,6 +161,7 @@ public class ProductController extends Controller{
 	
 	public CompletionStage<Result> productEdit(){
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		ProductEntityShow data =  Form.form(ProductEntityShow.class).bindFromRequest().get();
 		ProductEntity entity = new ProductEntity();
 		entity.ConvertByProductShow(data);
@@ -182,7 +185,7 @@ public class ProductController extends Controller{
             		List<CategoryProductEntity> categorys = pakage.getCategories();
             		ProductShow show = new ProductShow();
             		show.CreateProductShow(products, categorys);
-            		return ok(listProduct.render("", user, show.getProducts(), categorys));
+            		return ok(listProduct.render("", user, show.getProducts(), categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -202,7 +205,7 @@ public class ProductController extends Controller{
 	
 	public CompletionStage<Result> cacs(){
 		User user = sessionH.GetUser("user");
-		
+		int role = sessionH.GetRole();
 		String url = "http://localhost:9001/admin/pro/cac/list";
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
     	CompletionStage<Result> result = receive.thenApply(resp -> {
@@ -230,7 +233,7 @@ public class ProductController extends Controller{
             		}
             		
             		
-            		return ok(colors.render("", user, shows, categorys));
+            		return ok(colors.render("", user, shows, categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -251,6 +254,7 @@ public class ProductController extends Controller{
 	
 	public CompletionStage<Result> cacAdd(){
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		ProductCountShow s = Form.form(ProductCountShow.class).bindFromRequest().get();
 		log.info("price " + s.getPrice_S());
 		ProductCountEntity entity = new ProductCountEntity();
@@ -283,7 +287,7 @@ public class ProductController extends Controller{
                 		}
             			shows.add(show);
             		}
-            		return ok(colors.render("", user, shows, categorys));
+            		return ok(colors.render("", user, shows, categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -302,7 +306,7 @@ public class ProductController extends Controller{
                 		}
             			shows.add(show);
             		}
-            		return ok(colors.render("", user, shows, categorys));
+            		return ok(colors.render("", user, shows, categorys, role));
             	}
             	}
             	return ok("ok");
@@ -319,7 +323,7 @@ public class ProductController extends Controller{
 	
 	public CompletionStage<Result> cacDel(int id){
 		User user = sessionH.GetUser("user");
-		
+		int role = sessionH.GetRole();
 		String url = "http://localhost:9001/admin/pro/cac/del/" + id;
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
     	CompletionStage<Result> result = receive.thenApply(resp -> {
@@ -345,7 +349,7 @@ public class ProductController extends Controller{
                 		}
             			shows.add(show);
             		}
-            		return ok(colors.render("", user, shows, categorys));
+            		return ok(colors.render("", user, shows, categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -365,6 +369,7 @@ public class ProductController extends Controller{
 	
 	public CompletionStage<Result> cacEdit(){
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		ProductCountShow s = Form.form(ProductCountShow.class).bindFromRequest().get();
 		log.info("price " + s.getPrice_S());
 		ProductCountEntity entity = new ProductCountEntity();
@@ -399,7 +404,7 @@ public class ProductController extends Controller{
                 		}
             			shows.add(show);
             		}
-            		return ok(colors.render("", user, shows, categorys));
+            		return ok(colors.render("", user, shows, categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");

@@ -5,54 +5,15 @@
 @import models.IndexRequest;
 @import models.CategoryEntity;
 @import models.CategoryProductEntity;
-@(user: User, products: List[ProductEntity], pageS: Integer, laptops: List[ProductEntity], pageL: Integer, categories: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]])
+@(user: User, products: List[ProductEntity], pageS: Integer, laptops: List[ProductEntity], pageL: Integer, tablets: List[ProductEntity], pageT: Integer, categories: List[CategoryEntity], productCategories: List[List[CategoryProductEntity]], goods: List[ProductEntity])
 
-@main("Home") {
-	
-	
-	<header id="header"><!--header-->
-		<div class="header_top"><!--header_top-->
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="contactinfo">
-							<ul class="nav nav-pills">
-								<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
-								<li><a href="#"><i class="fa fa-envelope"></i> websmartphone527@@domain.com</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="social-icons pull-right">
-							<ul class="nav navbar-nav">
-								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-								<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div><!--/header_top-->
-		
+@main("Home") {		
 		<div class="header-middle"><!--header-middle-->
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="logo pull-left">
 							<a href="@routes.HomeController.index()"><img src="@routes.Assets.versioned("images/home/logo.png")" alt="" /></a>
-						</div>
-						<div  class="btn-group pull-left">
-							<div class="btn-group">
-								<select style="margin-left:10px; margin-top:10px">
-								  <option value="volvo">USD</option>
-								  <option value="saab">VND</option>
-								</select>
-								
-							</div>
-							
 						</div>
 					</div>
 					<div class="col-sm-8">
@@ -108,8 +69,9 @@
 					</div>
 					<div class="col-sm-3">
 						<div class="search_box pull-right">
-							<input type="text" placeholder="Search"/>
-							
+							<form action="@routes.SearchController.SearchForm()" method="POST">
+								<input type="text" name="key" required placeholder="Search"/>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -128,43 +90,33 @@
 						</ol>
 						
 						<div class="carousel-inner">
-							<div class="item active">
-								<div class="col-sm-6">
-									<h1><span>E</span>-SHOPPER</h1>
-									<h2>Free E-Commerce Template</h2>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-									<button type="button" class="btn btn-default get">Get it now</button>
+						@for(good <- goods){
+							@if(good.getId() == goods.get(0).getId()){
+								<div class="item active">
+									<div class="col-sm-6">
+										<h1><span>E</span>-SHOPPER</h1>
+										<h2>@good.getName()</h2>
+										<p>Sản phẩm được người dùng yêu thích nhất</p>
+										
+									</div>
+									<div class="col-sm-6" style="">
+										<a href="@routes.ProductController.productDetail(good.getId())"><img src=@routes.Assets.versioned(good.getImage()) class="girl img-responsive" alt="" /></a>
+									</div>
 								</div>
-								<div class="col-sm-6">
-									<img src=@routes.Assets.versioned("images/home/girl1.jpg") class="girl img-responsive" alt="" />
-									<img src=@routes.Assets.versioned("images/home/pricing.png")  class="pricing" alt="" />
+							}else{
+								<div class="item">
+									<div class="col-sm-6">
+										<h1><span>E</span>-SHOPPER</h1>
+										<h2>@good.getName()</h2>
+										<p>Sản phẩm được người dùng yêu thích nhất</p>
+										
+									</div>
+									<div class="col-sm-6" style="">
+										<a href="@routes.ProductController.productDetail(good.getId())"><img src=@routes.Assets.versioned(good.getImage()) class="girl img-responsive" alt="" /></a>
+									</div>
 								</div>
-							</div>
-							<div class="item">
-								<div class="col-sm-6">
-									<h1><span>E</span>-SHOPPER</h1>
-									<h2>100% Responsive Design</h2>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-									<button type="button" class="btn btn-default get">Get it now</button>
-								</div>
-								<div class="col-sm-6">
-									<img src=@routes.Assets.versioned("images/home/girl2.jpg") class="girl img-responsive" alt="" />
-									<img src=@routes.Assets.versioned("images/home/pricing.png")  class="pricing" alt="" />
-								</div>
-							</div>
-							
-							<div class="item">
-								<div class="col-sm-6">
-									<h1><span>E</span>-SHOPPER</h1>
-									<h2>Free Ecommerce Template</h2>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-									<button type="button" class="btn btn-default get">Get it now</button>
-								</div>
-								<div class="col-sm-6">
-									<img src=@routes.Assets.versioned("images/home/girl3.jpg") class="girl img-responsive" alt="" />
-									<img src=@routes.Assets.versioned("images/home/pricing.png") class="pricing" alt="" />
-								</div>
-							</div>
+							}
+						}
 							
 						</div>
 						
@@ -190,10 +142,10 @@
 							<h2>Prices</h2>
 							<div class="brands-name">
 								<ul class="nav nav-pills nav-stacked">
-									<li><a href="javascript:void(0)" onclick="demoajax()"> <span class="pull-right"></span>1-100</a></li>
-									<li><a href="#"> <span class="pull-right"></span>101-300</a></li>
-									<li><a href="#"> <span class="pull-right"></span>301-500</a></li>
-									<li><a href="#"> <span class="pull-right"></span>500</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "1")"> <span class="pull-right"></span>nhỏ hơn 5 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "2")"> <span class="pull-right"></span>5 triệu - 8 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "3")"> <span class="pull-right"></span>8 triệu - 12 triệu</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(1, "4")"> <span class="pull-right"></span>lớn hơn 12 triệu</a></li>
 									
 								</ul>
 							</div>
@@ -203,21 +155,14 @@
 							<h2>Color</h2>
 							<div class="brands-name">
 								<ul class="nav nav-pills nav-stacked">
-									<li><a href="#"> <span class="pull-right"></span>Yelow</a></li>
-									<li><a href="#"> <span class="pull-right"></span>White</a></li>
-									<li><a href="#"> <span class="pull-right"></span>Black</a></li>
-									<li><a href="#"> <span class="pull-right"></span>Pink</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "Y")"> <span class="pull-right"></span>Yelow</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "W")"> <span class="pull-right"></span>White</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "B")"> <span class="pull-right"></span>Black</a></li>
+									<li><a style="float: left" href="@routes.SearchController.Search(2, "P")"> <span class="pull-right"></span>Pink</a></li>
 								</ul>
 							</div>
 						</div><!--/brands_products-->
 						
-						<div class="price-range"><!--price-range-->
-							<h2>Price Range</h2>
-							<div class="well text-center">
-								 <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" ><br />
-								 <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
-							</div>
-						</div><!--/price-range-->
 						
 						<div class="shipping text-center"><!--shipping-->
 							<img src=@routes.Assets.versioned("images/home/shipping.jpg") alt="" />
@@ -264,6 +209,7 @@
 						</div>
 						}
 						</div>
+						@if(pageS > 1){
 						<div class="pagination">
 					        <li onclick="pageSmartPr(@pageS)" class="page">Prev</li>
 					        @for(page <- 1 until pageS+1){
@@ -275,6 +221,8 @@
 					        }
 					        <li onclick="pageSmartNetx(@pageS)" class="page">Next</li>
 					    </div>
+						}
+						
 					</div><!--features_items-->
 					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Laptop</h2>
@@ -306,6 +254,7 @@
 						</div>
 						}
 						</div>
+						@if(pageL > 1){
 						<div class="pagination">
 					        <a onclick="pageLapPre(@pageL)" class="page">Prev</a>
 					        @for(page <- 1 until pageL+1){
@@ -317,9 +266,62 @@
 					        }
 					        <a onclick="pageLapNext(@pageL)" class="page">Next</a>
 					    </div>
+						}
+						
 					</div><!--features_items-->
 					
-					
+					<div class="features_items"><!--features_items-->
+					<!-- Start show products -->
+						<h2 id = "titleS" class="title text-center">Tablets</h2>
+						<!-- Start show products -->
+						<div id = "resultT"> 
+						@for(product <- tablets){
+						<div class="col-sm-4" style="width:210px; margin-left: -10px">
+							<div class="product-image-wrapper">
+								<div class="single-products">
+										<div class="productinfo text-center">
+											<img width="210" height="165" src=@routes.Assets.versioned(product.getImage()) alt="" />
+											
+											<h2>@product.priceToString() <small>vnd</small></h2>
+											<p>@product.getName()</p>
+										</div>
+										<div class="product-overlay">
+											<div class="overlay-content">
+												<h2>@product.priceToString() <small>vnd</small></h2>
+												<p>@product.getName()</p>
+												<a href="@routes.ProductController.productDetail(product.getId())">View Detail</a>
+											</div>
+										</div>
+										@if(product.getIsNew() == 1) {
+										<img src=@routes.Assets.versioned("images/home/new.png") class="new" alt="" />
+										} else {}
+								</div>
+								<div class="choose">
+									<ul class="nav nav-pills nav-justified">
+										<li><a href="@routes.ProductController.compare(product.getId())"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+										<li><a href="@routes.ProductController.cart(product.getId())"><i class="fa fa-plus-square"></i>Add to cart</a></li>
+									</ul>
+								</div>
+								
+							</div>
+						</div>
+						}
+						</div>
+						@if(pageT > 1){
+						<div class="pagination">
+					        <li onclick="pageTabletPre(@pageT)" class="page">Prev</li>
+					        @for(page <- 1 until pageT+1){
+					         @if(page == 1){
+					         	<li id="pageT@page" onclick="pageTablet(@page, @pageT)" class="page active">@page</li>
+					         }else{
+					         	<li id="pageT@page" onclick="pageTablet(@page, @pageT)" class="page">@page</li>
+					         }
+					        }
+					        <li onclick="pageTabletNext(@pageT)" class="page">Next</li>
+					    </div>
+						}
+						
+					</div><!--features_items-->
 				</div>
 			</div>
 		</div>
@@ -515,6 +517,99 @@
 		}
 	}
 	
+	function pageTablet(count, max){
+		$.ajax({
+	        type : 'GET',
+	        url : 'http://localhost:9001/productListAjax/10/'+count+'/3',
+	        dataType: 'json',
+	        contentType: 'application/json; charset=utf-8',
+	        data : {},
+	        success : function(data) {
+	        	$('#resultT').html('');
+	        	console.log(data);
+	            var products = data['products'];
+	            var html = '';
+	            $.each(products, function(key, item){
+	            	var money = '' + item['price'];
+	            	var n = money.length;
+	            	//console.log(money);
+	            	//console.log(money.substr(0, n-6) + ',' + money.substr(n-6, 3) + ',' + money.substr(n-3, 3));
+	            	money = money.substr(0, n-6) + ',' + money.substr(n-6, 3) + ',' + money.substr(n-3, 3);
+	            	
+	            	html += '<div class="col-sm-4" style="width:210px; margin-left: -10px">';
+	            	html += '<div class="product-image-wrapper">';
+					html += '<div class="single-products">';
+							html += '<div class="productinfo text-center">';
+							html += '<img width="210" height="165" src=/assets/' +item['image'] + ' alt="" />';
+							html += '<h2>'+ money +'<small>vnd</small></h2>';
+							html += '<p>'+item['name']+'</p>';
+						html += '</div>';
+						html += '<div class="product-overlay">';
+						html += '<div class="overlay-content">';
+						html += '<h2>'+ money +'<small>vnd</small></h2>';
+						html += '<p>'+ item['name'] +'</p>';
+						html += '</div>';
+						html += '</div>';
+						if(item['isNew'] == 1){
+							html += '<img src="/assets/images/home/new.png" class="new" alt="" />';
+						}else{}
+						
+					html += '</div>';
+					html += '<div class="choose">';
+						html += '<ul class="nav nav-pills nav-justified">';
+							html += '<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>';
+								html += '<li><a href="cart?id='+ item['id']+'"><i class="fa fa-plus-square"></i>Add to cart</a></li>';
+									html += '</ul>';
+										html += '</div>';
+					
+											html += '</div>';
+												html += '</div>';
+	            	//console.log(item['name']);
+	            });
+	            $('#resultT').html(html);
+	            for (var i = 1; i <= max; i++) {
+	            	var pagea = '#pageT'+i;
+		           	$(pagea).removeAttr("class");
+		           	$(pagea).prop('class','page');
+	            }
+	           	var pagec = '#pageT'+count;
+	            $(pagec).prop('class','page active');
+	        },
+	        error: function() { 
+	        	alert('Failed!'); 
+	        }
+	    });
+	}
+	function pageTabletPre(max){
+		var current = 0;
+		for (var i = 1; i <= max; i++) {
+        	var pagea = '#pageT'+i;
+           	if($(pagea).hasClass('page active'))
+           	{
+           		current = i;
+           	}
+        }
+		if(current > 1){
+			current  = current - 1;
+			pageTablet(current, max);
+		}
+	}
+	function pageTabletNext(max){
+		
+		var current = 0;
+		for (var i = 1; i <= max; i++) {
+        	var pagea = '#pageT'+i;
+           	if($(pagea).hasClass('page active'))
+           	{
+           		current = i;
+           	}
+        }
+		if(current < max){
+			current  = current + 1;
+			pageTablet(current, max);
+		}
+	}
+	
 	function demoajax(){
 		jsRoutes.controllers.AccountController.demoajax().ajax(ajaxCallBack);
 		var ajaxCall = function() {
@@ -549,6 +644,7 @@
 	        }
 	    });
 	}
+	
 	</script>
 	
 	

@@ -61,6 +61,8 @@ public class HomeController extends Controller {
     	indexR.setPageSmartphone(1);
     	indexR.setCountLaptop(10);
     	indexR.setPageLaptop(1);
+    	indexR.setCountTablet(10);;
+    	indexR.setPageTablet(1);
     	
     	JsonNode json = Json.toJson(indexR);
     	String url = "http://localhost:9001/productList";
@@ -86,10 +88,15 @@ public class HomeController extends Controller {
             		//List<ProductEntity> products = new ArrayList<ProductEntity>();
             		List<ProductEntity> smartphone = pakage.getSmartphones();
             		List<ProductEntity> laptop = pakage.getLaptop();
+            		List<ProductEntity> tablets = pakage.getLaptop();
             		int pageS = pakage.getPageSmartphone();
             		int pageL = pakage.getPagelaptop();
+            		int pageT = pakage.getPagetablet();
             		
-            		return ok(index.render(user, smartphone, pageS, laptop, pageL, categories, categoryProducts));
+            		
+            		List<ProductEntity> goods = pakageF.getGoods();
+            		log.info("goods: "+Json.toJson(goods));
+            		return ok(index.render(user, smartphone, pageS, laptop, pageL, tablets, pageT, categories, categoryProducts, goods));
             		}
             	case 0:{
             		return ok(errorp.render("Didn't connect server !!!"));

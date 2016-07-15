@@ -13,6 +13,5 @@ public class EntityManagerFactorySingleton {
 	public static EntityManagerFactory getInstance(){
 		return instance;
 	}
-	   
-	   
+   
 }

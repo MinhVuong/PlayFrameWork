@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import models.AddCount;
@@ -34,6 +35,7 @@ import PakageResult.User;
 import business.CartService;
 import business.SessionManager;
 import views.html.*;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import entities.ProductImageEntity;
@@ -48,20 +50,23 @@ public class ProductController extends Controller{
 		CartProducts productsS = sessionM.GetCartProducts();
 		User user1 = sessionM.GetUser();
 		Menu menu1 = sessionM.GetMenu();
-		
+		Logger.info("id: "+id);
+		if(id == 0){
+			CartProducts products = new CartProducts(productsS);
+			Result res = ok(cart.render("", user1, menu1.getCategories(), menu1.getCategoryProducts(), productsS));
+			return CompletableFuture.completedFuture(res);
+		}else{
 		String url = "http://localhost:9001/product/" + id;
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
     	CompletionStage<Result> result = receive.thenApply(resp -> {
-            
-    		JsonNode jsonNode = resp.asJson();
-    		ProductPakage pakage = new ProductPakage();
-    		pakage = Json.fromJson(jsonNode, ProductPakage.class);
-    		
-    		User user = new User(user1);
-			Menu menu = new Menu(menu1);
-			
             if(resp.getStatus()== 200)
             {	
+            	JsonNode jsonNode = resp.asJson();
+        		ProductPakage pakage = new ProductPakage();
+        		pakage = Json.fromJson(jsonNode, ProductPakage.class);
+        		
+        		User user = new User(user1);
+    			Menu menu = new Menu(menu1);
             	switch(pakage.getType())
             	{
             	case 1:{
@@ -94,6 +99,7 @@ public class ProductController extends Controller{
          });
 		
 		return result;
+		}
 	}
 	
 	public Result getPriceByColor(String color, int id)
@@ -266,7 +272,9 @@ public class ProductController extends Controller{
 			checkp.setAddressId(idc);
 		}else{
 			checkp.setAddressId(0);
-			checkp.setAddress(sessionM.GetAddress());
+			Address address = sessionM.GetAddress();
+			address.setId(id);
+			checkp.setAddress(address);
 		}
 		checkp.setCartId(sessionM.GetIdCart());
 		JsonNode json = Json.toJson(checkp);
@@ -468,4 +476,7 @@ public class ProductController extends Controller{
 		return ok("checkout fail");
 		
 	}
+	
+	
+
 }

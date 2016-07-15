@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import business.DateHelper;
+import models.Address;
+
 @Entity
 @Table(name = "customer_address")
 public class AddressEntity {
@@ -100,5 +103,16 @@ public class AddressEntity {
 		this.city = city;
 	}
 	
+	public void ConvertFromAddress(Address addr){
+		this.customer_id = addr.getId();
+		this.firstName = addr.getFirstName();
+		this.lastName = addr.getLastName();
+		this.phone = addr.getPhone();
+		this.street = addr.getStreet();
+		this.street = addr.getCity();
+		DateHelper timeH = new DateHelper();
+		this.createAt = timeH.getDateTimeCurrent();
+		
+	}
 
 }

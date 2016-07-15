@@ -34,6 +34,7 @@ public class CategoryController extends Controller{
 	
 	public CompletionStage<Result> category() {
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		String url = "http://localhost:9001/admin/categories";
 		
 		
@@ -52,7 +53,7 @@ public class CategoryController extends Controller{
             	switch(pakage.getType()){
             	case 1:{
             		List<CategoryEntity> categorys = pakage.getCategory();
-            		return ok(categories.render("", user, categorys));
+            		return ok(categories.render("", user, categorys, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -74,6 +75,7 @@ public class CategoryController extends Controller{
 	public CompletionStage<Result> categoryAdd() {
 		
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		Category cate = Form.form(Category.class).bindFromRequest().get();
 		String name = cate.getName().replace(' ', ';');
 		
@@ -89,14 +91,14 @@ public class CategoryController extends Controller{
             	switch(pakage.getType()){
             	case 1:{
             		List<CategoryEntity> cates = pakage.getCategories();
-            		return ok(categories.render("", user, cates));
+            		return ok(categories.render("", user, cates, role));
             	}
             	case 0:{
             		return ok("Server fail!");
             	}
             	case -1:{
             		List<CategoryEntity> cates = pakage.getCategories();
-            		return ok(categories.render("", user, cates));
+            		return ok(categories.render("", user, cates, role));
             	}
             	}
             	return ok("ok");
@@ -112,7 +114,7 @@ public class CategoryController extends Controller{
         
     }
 	public CompletionStage<Result> categoryEdit() {
-		
+		int role = sessionH.GetRole();
 		User user = sessionH.GetUser("user");
 		CategoryEdit cate = Form.form(CategoryEdit.class).bindFromRequest().get();
 		String name = cate.getName().replace(' ', ';');
@@ -132,7 +134,7 @@ public class CategoryController extends Controller{
             	switch(pakage.getType()){
             	case 1:{
             		List<CategoryEntity> cates = pakage.getCategories();
-            		return ok(categories.render("", user, cates));
+            		return ok(categories.render("", user, cates, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -153,7 +155,7 @@ public class CategoryController extends Controller{
 	
 	public CompletionStage<Result> categoryDel(int id) {
 		User user = sessionH.GetUser("user");
-		
+		int role = sessionH.GetRole();
 		String url = "http://localhost:9001/admin/category/delete/"+id;
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
     	CompletionStage<Result> result = receive.thenApply(resp -> {
@@ -166,7 +168,7 @@ public class CategoryController extends Controller{
             	switch(pakage.getType()){
             	case 1:{
             		List<CategoryEntity> cates = pakage.getCategories();
-            		return ok(categories.render("", user, cates));
+            		return ok(categories.render("", user, cates, role));
             	}
             	case 0:{
             		return ok("Server fail!");
@@ -192,7 +194,7 @@ public class CategoryController extends Controller{
 	
 	
 	public CompletionStage<Result> categoryProduct() {
-		
+		int role = sessionH.GetRole();
 		User user = sessionH.GetUser("user");
 		String url = "http://localhost:9001/admin/categoryProduct";
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
@@ -211,7 +213,7 @@ public class CategoryController extends Controller{
             		List<CategoryEntity> cates = pakage.getCategories();
             		CategoryProductShow show = new CategoryProductShow(); 
             		show.CreateCategoryProductShow(categories, cates);;
-            		return ok(categoryProducts.render(user, show.getList(), cates));
+            		return ok(categoryProducts.render(user, show.getList(), cates, role));
             	}
             	case 0:{
             		return ok("false");
@@ -230,7 +232,7 @@ public class CategoryController extends Controller{
     }
 	
 	public CompletionStage<Result> catePAdd() {
-		
+		int role = sessionH.GetRole();
 		User user = sessionH.GetUser("user");
 		CategoryProductAdd add = Form.form(CategoryProductAdd.class).bindFromRequest().get();
 		String name = add.getName().replace(' ', ';');
@@ -258,14 +260,14 @@ public class CategoryController extends Controller{
             		List<CategoryEntity> cates = pakage.getCategories();
             		CategoryProductShow show = new CategoryProductShow(); 
             		show.CreateCategoryProductShow(categories, cates);;
-            		return ok(categoryProducts.render(user, show.getList(), cates));
+            		return ok(categoryProducts.render(user, show.getList(), cates, role));
             	}
             	case -1:{
             		List<CategoryProductEntity> categories = pakage.getCategoryP();
             		List<CategoryEntity> cates = pakage.getCategories();
             		CategoryProductShow show = new CategoryProductShow(); 
             		show.CreateCategoryProductShow(categories, cates);;
-            		return ok(categoryProducts.render(user, show.getList(), cates));
+            		return ok(categoryProducts.render(user, show.getList(), cates, role));
             	}
             	case 0:{
             		return ok("false");
@@ -284,6 +286,7 @@ public class CategoryController extends Controller{
     }
 	public CompletionStage<Result> catePEdit(){
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		CategoryProductEntity entity  = Form.form(CategoryProductEntity.class).bindFromRequest().get();
 		String name = entity.getName().replace(' ', ';');
 		entity.setName(name);
@@ -307,7 +310,7 @@ public class CategoryController extends Controller{
             		List<CategoryEntity> cates = pakage.getCategories();
             		CategoryProductShow show = new CategoryProductShow(); 
             		show.CreateCategoryProductShow(categories, cates);;
-            		return ok(categoryProducts.render(user, show.getList(), cates));
+            		return ok(categoryProducts.render(user, show.getList(), cates, role));
             	}
             	case 0:{
             		return ok("false");
@@ -327,6 +330,7 @@ public class CategoryController extends Controller{
 	
 	public CompletionStage<Result> catePDel(int id){
 		User user = sessionH.GetUser("user");
+		int role = sessionH.GetRole();
 		String url = "http://localhost:9001/admin/cateP/delete/" +id;
 		CompletionStage<WSResponse> receive  = WS.url(url).setRequestTimeout(90000).get();
     	CompletionStage<Result> result = receive.thenApply(resp -> {
@@ -344,7 +348,7 @@ public class CategoryController extends Controller{
             		List<CategoryEntity> cates = pakage.getCategories();
             		CategoryProductShow show = new CategoryProductShow(); 
             		show.CreateCategoryProductShow(categories, cates);;
-            		return ok(categoryProducts.render(user, show.getList(), cates));
+            		return ok(categoryProducts.render(user, show.getList(), cates, role));
             	}
             	case 0:{
             		return ok("false");
